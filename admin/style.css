@@ -1,0 +1,53 @@
+
+@font-face{
+  font-family: dashicons;
+  src: url("fonts/dashicons.woff2");
+}
+.dashicons,
+.dashicons-before:before {
+  font-family: dashicons;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.dashicons-undo::before {content: "\f171";}
+.dashicons-redo::before {content: "\f172";}
+.dashicons-category::before {content: "\f318";}
+.dashicons-images-alt::before {content: "\f232";}
+.dashicons-media-video::before {content: "\f490";}
+.dashicons-format-gallery::before {content: "\f161";}
+.dashicons-open-folder::before {content: "\f18f";}
+.dashicons-leftright::before {content: "\f229";}
+.dashicons-arrow-left::before {content: "\f141";}
+.dashicons-arrow-right::before {content: "\f139";}
+.dashicons-arrow-down::before {content: "\f140";}
+.dashicons-arrow-up::before {content: "\f142";}
+.dashicons-plus::before {content: "\f132";}
+.dashicons-plus-alt2::before {content: "\f543";}
+.dashicons-update::before {content: "\f463";}
+.dashicons-images-alt::before {content: "\f232";}
+
+:focus-visible {
+  outline: none;
+}
+
+body {
+  font-family: Arial;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+
+}
+a {
+  text-decoration: none;
+}
+
+.karma-fields .popup {
+  padding: 0;
+}
+.karma-fields input.text-input,
+.karma-fields textarea:not(.clipboard) {
+  border-width: 1px;
+  font-family: inherit;
+  font-size: inherit;
+}

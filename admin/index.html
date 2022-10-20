@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Index</title>
+    <link href="css/karma-fields.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+  </head>
+  <body>
+    <div id="karma-fields-field-nav" class="karma-fields"></div>
+
+    <script>
+      KarmaFieldsAlpha = {
+        restURL: "/admin",
+        uploadURL: "/uploads",
+        nonce: "",
+        locale: "fr-CH"
+      };
+
+    	document.addEventListener("DOMContentLoaded", async () => {
+    		var container = document.getElementById("karma-fields-field-nav");
+
+        const resource = await fetch("/admin/resource.json").then(response => response.json());
+    		const field = new KarmaFieldsAlpha.field.layout(resource);
+
+    		KarmaFieldsAlpha.build(field.build(), container);
+    		KarmaFieldsAlpha.tables = field;
+
+    	});
+    </script>
+
+    <script src="js/media.js"></script>
+    <script src="js/build-v7.7.js"></script>
+    <script src="js/fields/field.js"></script>
+    <script src="js/fields/container.js"></script>
+    <script src="js/fields/group.js"></script>
+    <script src="js/fields/form.js"></script>
+    <script src="js/fields/input.js"></script>
+    <script src="js/fields/date.js"></script>
+    <script src="js/fields/gallery.js"></script>
+    <script src="js/fields/dropdown.js"></script>
+    <script src="js/fields/checkboxes.js"></script>
+    <script src="js/fields/checkbox.js"></script>
+    <script src="js/fields/textarea.js"></script>
+    <script src="js/fields/text.js"></script>
+    <script src="js/fields/button.js"></script>
+    <script src="js/fields/submit.js"></script>
+    <script src="js/fields/array.js"></script>
+    <script src="js/fields/link.js"></script>
+    <script src="js/fields/separator.js"></script>
+    <script src="js/fields/tinymce.js"></script>
+    <script src="js/fields/clipboard.js"></script>
+    <script src="js/fields/tags.js"></script>
+
+    <script src="js/tables/layout.js"></script>
+    <script src="js/tables/navigation.js"></script>
+    <script src="js/tables/controls.js"></script>
+    <script src="js/tables/header.js"></script>
+    <script src="js/tables/modal.js"></script>
+    <script src="js/tables/upload.js"></script>
+    <script src="js/tables/changefile.js"></script>
+    <script src="js/tables/directory-dropdown.js"></script>
+    <script src="js/tables/breadcrumb.js"></script>
+    <script src="js/tables/table.js"></script>
+    <script src="js/tables/table-row.js"></script>
+    <script src="js/tables/table-modal.js"></script>
+    <script src="js/tables/collection.js"></script>
+    <script src="js/tables/medias.js"></script>
+    <script src="js/tables/medias-description.js"></script>
+
+
+    <script src="js/utils/deep-object.js"></script>
+    <script src="js/utils/nav.js"></script>
+    <script src="js/utils/gateway.js"></script>
+    <script src="js/utils/rect.js"></script>
+    <script src="js/utils/segment.js"></script>
+    <script src="js/utils/buffer.js"></script>
+    <script src="js/utils/expression.js"></script>
+    <script src="js/utils/type.js"></script>
+    <script src="js/utils/history.js"></script>
+    <script src="js/utils/manager-selection.js"></script>
+    <script src="js/utils/manager-selection-sorter.js"></script>
+    <script src="js/utils/manager-cells.js"></script>
+    <script src="js/utils/clipboard.js"></script>
+    <script src="js/utils/params.js"></script>
+
+    <script src="js/vendor/papaparse.min.js"></script>
+
+    <script src="fields/multilanguage-interface.js"></script>
+    <script src="fields/input.js"></script>
+    <script src="fields/textarea.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1016 @@
+{
+  "navigation": {
+    "children": [
+      {
+        "type": "menu",
+        "items": [
+          {
+            "title": "Carousel",
+            "hash": "table=carousel"
+          },
+          {
+            "title": "Files",
+            "hash": "table=files"
+          },
+          {
+            "title": "Stories",
+            "hash": "table=stories",
+            "items": [
+              {
+                "title": "Groups",
+                "hash": "table=gameGroups"
+              },
+              {
+                "title": "Games",
+                "hash": "table=games"
+              },
+              {
+                "title": "Sports",
+                "hash": "table=sports"
+              },
+              {
+                "title": "Countries",
+                "hash": "table=countries"
+              },
+              {
+                "title": "Options",
+                "hash": "table=stories-options"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "tables":[
+    {
+      "id":"carousel",
+      "header": {
+        "title": "Carousel"
+      },
+      "modal": {
+        "width": "40em"
+      },
+      "body": {
+        "type": "collection",
+        "driver": "items",
+        "params": {
+          "ppp": 20
+        },
+        "style": "flex: 1 1 0",
+        "children": [
+          {
+            "label": "",
+            "type": "tableIndex"
+          },
+          {
+            "label": "Titre",
+            "sortable": true,
+            "order": "asc",
+            "width": "1fr",
+            "orderby": "jeux",
+            "type": "modalHandle",
+            "value": ["?", ["=", ["getParam", "language"], "en"], ["get", "string", "jeux-en"], ["get", "string", "jeux"]]
+          },
+          {
+            "type": "input",
+            "key": "noinv",
+            "label": "noinv"
+          },
+          {
+            "type": "text",
+            "label": "Date",
+            "value": ["date", ["get", "string", "date"]],
+            "orderby": "date",
+            "order": "desc",
+            "sortable": true
+          }
+        ],
+        "modal": {
+          "children": [
+            {
+              "type": "textarea",
+              "key": "titre",
+              "label": "titre",
+              "translatable" : true,
+              "hidden": true
+            },
+            {
+              "type": "textarea",
+              "key": "auteur",
+              "label": "auteur",
+              "translatable" : true,
+              "hidden": true
+            },
+            {
+              "type": "textarea",
+              "key": "denom",
+              "label": "denom",
+              "translatable" : true,
+              "hidden": true
+            },
+            {
+              "type": "input",
+              "key": "jeux",
+              "label": "jeux",
+              "translatable" : true
+            },
+            {
+              "type": "textarea",
+              "key": "dimension",
+              "label": "dimension",
+              "translatable" : true,
+              "hidden": true
+            },
+            {
+              "type": "textarea",
+              "key": "technique",
+              "label": "technique",
+              "translatable" : true,
+              "hidden": true
+            },
+            {
+              "type": "array",
+              "key": "medias",
+              "children": [
+                {
+                  "type": "file",
+                  "key": "image",
+                  "table": "files",
+                  "width": "auto",
+                  "folder": "carousel"
+                },
+                {
+                  "type": "textarea",
+                  "key": "text",
+                  "height": "10em",
+                  "translatable" : true
+                }
+              ]
+            },
+            {
+              "type": "textarea",
+              "key": "note",
+              "label": "note",
+              "input": {
+                "style": "height:20em"
+              },
+              "translatable" : true
+            },
+            {
+              "type": "gallery",
+              "label": "Gallery",
+              "key": "images",
+              "table": "files",
+              "driver": "files",
+              "joins": [],
+              "parent": "4"
+            }
+          ]
+        }
+      },
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["request", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "",
+            "text": "fr",
+            "active": ["=", ["request", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo",
+          "insert"
+        ]
+      },
+      "filters": {
+        "type":"group",
+        "display":"flex",
+        "children":[
+          {
+            "type":"dropdown",
+            "label":"Categorie",
+            "options":[
+              {
+                "id":"",
+                "name":"-"
+              },
+              {
+                "id":"1",
+                "name":"Categorie 1"
+              },
+              {
+                "id":"2",
+                "name":"Categorie 2"
+              }
+            ]
+          },
+          {
+            "type":"input",
+            "label":"Search",
+            "key":"search"
+          }
+        ]
+      }
+    },
+    {
+      "id": "files",
+      "header": {
+        "title": "Media Library"
+      },
+      "modal": {
+        "width": "25em"
+      },
+      "body": {
+        "type": "medias",
+        "driver": "files",
+        "params": {
+          "ppp": 100,
+          "orderby": "name",
+          "parent": "0"
+        },
+        "children": [],
+        "modal": {
+          "width": "25em",
+          "children": [
+            "mediaDescription",
+            {
+              "type": "group",
+              "display": "flex",
+              "children": [
+                {
+                  "type": "changeFile",
+                  "title": "Change file",
+                  "action": ["request", "change-file"],
+                  "visible": ["=", ["get", "string", "filetype"], "file"]
+                },
+                {
+                  "type": "button",
+                  "title": "Regenerate files",
+                  "action": "regen",
+                  "visible": ["=", ["get", "string", "filetype"], "file"]
+                }
+              ]
+            },
+            {
+              "type": "input",
+              "key": "name",
+              "visible": ["=", ["get", "string", "filetype"], "folder"]
+            },
+            {
+              "type": "breadcrumb",
+              "key": "parent",
+              "visible": ["!", ["selection"]]
+            }
+          ]
+        }
+      },
+      "controls": {
+        "children": [
+          "save",
+          {
+            "type": "add",
+            "title": "Create Folder",
+            "value": {
+              "params": {"filetype": "folder"}
+            }
+          },
+          {
+            "type": "upload",
+            "title": "Upload File"
+          },
+          "delete",
+          "separator",
+          "undo",
+          "redo",
+          "insert"
+        ]
+      },
+      "filters": {
+        "type": "group",
+        "display": "flex",
+        "children": [
+          {
+            "label": "Directory",
+            "type": "directoryDropdown",
+            "key": "parent",
+            "options": [{"id": "0", "name": "Uploads"}]
+          },
+          "separator",
+          {
+            "type": "input",
+            "label": "Search",
+            "key": "search"
+          }
+        ]
+      }
+    },
+
+
+
+
+
+
+    {
+      "id": "stories",
+      "header": {
+        "title": "Stories"
+      },
+      "modal": {
+        "width": "40em"
+      },
+      "body": {
+        "type": "collection",
+        "driver": "stories",
+        "params": {
+          "ppp": 20
+        },
+        "children": [
+          {
+            "label": "",
+            "type": "tableIndex"
+          },
+          {
+            "label": "Name",
+            "sortable": true,
+            "order": "asc",
+            "width": "auto",
+            "orderby": "lastname",
+            "type": "modalHandle",
+            "value": ["replace", "% %", "%", ["get", "string", "firstname"], ["get", "string", "lastname"]]
+          },
+          {
+            "label": "Title",
+            "width": "1fr",
+            "type": "modalHandle",
+            "key": "title"
+          },
+          {
+            "label": "Sport",
+            "sortable": true,
+            "order": "asc",
+            "orderby": "sport",
+            "type": "modalHandle",
+            "value": ["query", "sports", "", [], "string", ["get", "string", "sport"], "name"]
+          },
+          {
+            "label": "Country",
+            "sortable": true,
+            "order": "asc",
+            "orderby": "country",
+            "type": "modalHandle",
+            "value": ["query", "countries", "", [], "string", ["get", "string", "country"], "name"]
+          }
+        ],
+        "modal": {
+          "width": "40em",
+          "children": [
+            {
+              "type": "group",
+              "display": "flex",
+              "children": [
+                {
+                  "type": "dropdown",
+                  "label": "Winter/Summer",
+                  "key": "season",
+                  "options": [
+                    {"id": "", "name": "-"},
+                    {"id": "1", "name": "Summer"},
+                    {"id": "2", "name": "Winter"}
+                  ]
+                },
+                {
+                  "type": "dropdown",
+                  "label": "Game Group",
+                  "key": "gameGroup",
+                  "options": [{"id": "", "name": "-"}],
+                  "table": "gameGroups"
+                }
+              ]
+            },
+            {
+              "type": "tags",
+              "key": "country",
+              "label": "Country",
+              "table": "countries"
+            },
+            {
+              "type": "group",
+              "display": "flex",
+              "children": [
+                {
+                  "type": "input",
+                  "key": "firstname",
+                  "label": "Firstame"
+                },
+                {
+                  "type": "input",
+                  "key": "lastname",
+                  "label": "Lastname"
+                }
+              ]
+            },
+            {
+              "type": "input",
+              "key": "nicknames",
+              "label": "Nicknames",
+              "translatable": true
+            },
+            {
+              "type": "input",
+              "key": "title",
+              "label": "Title",
+              "translatable" : true
+            },
+            {
+              "type": "tags",
+              "key": "sport",
+              "label": "Sport",
+              "table": "sports",
+              "max": 1
+            },
+            {
+              "type": "array",
+              "key": "games",
+              "label": "Games",
+              "children": [
+                {
+                  "type": "tags",
+                  "key": "game",
+                  "label": "Game",
+                  "table": "games",
+                  "max": 1,
+                  "width": "1fr"
+                },
+                {
+                  "type": "input",
+                  "key": "discipline",
+                  "label": "Discipline",
+                  "width": "30%",
+                  "translatable": true
+                },
+                {
+                  "type": "dropdown",
+                  "key": "medal",
+                  "label": "Medal",
+                  "options": [
+                    {"id": "", "name": "-"},
+                    {"id": "1", "name": "Gold"},
+                    {"id": "2", "name": "Silver"},
+                    {"id": "3", "name": "Bronze"}
+                  ],
+                  "width": "20%"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "key": "medias",
+              "label": "Medias",
+              "children": [
+                {
+                  "type": "gallery",
+                  "max": 1,
+                  "key": "file",
+                  "table": "files",
+                  "folder": "stories",
+                  "driver": "files",
+                  "joins": [],
+                  "width": "auto"
+                },
+                {
+                  "type": "group",
+                  "width": "1fr",
+                  "children": [
+                    {
+                      "type": "input",
+                      "label": "Copyright",
+                      "key": "copyright",
+                      "translatable": true
+                    },
+                    {
+                      "type": "input",
+                      "key": "caption",
+                      "label": "Caption",
+                      "translatable": true
+                    },
+                    {
+                      "type": "textarea",
+                      "key": "body",
+                      "label": "Body",
+                      "translatable": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "filters": {
+        "display": "flex",
+        "children": [
+          {
+            "type": "dropdown",
+            "key": "season",
+            "label": "Summer/Winter",
+            "options": [
+              {"id": "", "name": "-"},
+              {"id": "1", "name": "Summer"},
+              {"id": "2", "name": "Winter"}
+            ]
+          },
+          {
+            "type": "dropdown",
+            "key": "gameGroup",
+            "label": "Game Group",
+            "options": [{"id": "", "name": "-"}],
+            "table": "gameGroups"
+          },
+          {
+            "type": "dropdown",
+            "key": "country",
+            "label": "Country",
+            "options": [{"id": "", "name": "-"}],
+            "table": "countries"
+          },
+          {
+            "type": "dropdown",
+            "key": "sport",
+            "label": "Sport",
+            "options": [{"id": "", "name": "-"}],
+            "table": "sports"
+          },
+          "separator",
+          {
+            "type": "input",
+            "key": "search",
+            "label": "Search",
+            "input": {"type": "search"}
+          }
+        ]
+      },
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["request", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "",
+            "text": "fr",
+            "active": ["=", ["request", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo",
+          "insert"
+        ]
+      }
+    },
+    {
+      "id": "sports",
+      "header": {
+        "title": "Sports"
+      },
+      "modal": {
+
+      },
+      "body": {
+        "type": "collection",
+        "driver": "sports",
+        "params": {
+          "ppp": 20,
+          "orderby": "name"
+        },
+        "children": [
+          {
+            "label": "",
+            "type": "tableIndex"
+          },
+          {
+            "label": "Name",
+            "sortable": true,
+            "orderby": "name",
+            "type": "handle",
+            "value": ["get", "string", "name"],
+            "width": "1fr"
+          }
+        ],
+        "modal": {
+          "children": [
+            {
+              "label": "Name",
+              "type": "input",
+              "key": "name",
+              "width": "1fr",
+              "translatable": true
+            }
+          ]
+        }
+      },
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["request", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "",
+            "text": "fr",
+            "active": ["=", ["request", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo",
+          "insert"
+        ]
+      }
+    },
+    {
+      "id": "countries",
+      "header": {
+        "title": "Countries"
+      },
+      "modal": {
+      },
+      "body": {
+        "driver": "countries",
+        "type": "collection",
+        "params": {
+          "ppp": 20
+        },
+        "children": [
+          {
+            "label": "",
+            "type": "tableIndex"
+          },
+          {
+            "label": "Name",
+            "sortable": true,
+            "order": "asc",
+            "width": "1fr",
+            "orderby": "name",
+            "type": "handle",
+            "value": ["get", "string", "name"]
+          }
+        ],
+        "modal": {
+          "children": [
+            {
+              "label": "Name",
+              "sortable": true,
+              "type": "input",
+              "key": "name"
+            },
+            {
+              "label": "Image",
+              "type": "gallery",
+              "key": "image",
+              "max": 1,
+              "table": "files",
+              "folder": "countries",
+              "driver": "files",
+              "joins": [],
+              "query": {
+                "driver": "files",
+                "joins": []
+              }
+            }
+          ]
+        }
+      },
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["request", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "",
+            "text": "fr",
+            "active": ["=", ["request", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo",
+          "insert"
+        ]
+      }
+    },
+    {
+      "id": "games",
+      "header": {
+        "title": "Games"
+      },
+      "modal": {},
+      "body": {
+        "driver": "games",
+        "type": "collection",
+        "params": {
+          "ppp": 20
+        },
+        "children": [
+          {
+            "label": "",
+            "type": "tableIndex"
+          },
+          {
+            "type": "handle",
+            "label": "Name",
+            "value": ["get", "string", "name"],
+            "width": "1fr"
+          },
+          {
+            "type": "handle",
+            "label": "Season",
+            "sortable": true,
+            "orderby": "season",
+            "value": ["?", ["=", ["get", "string", "season"], "2"], "Winter", "Summer"],
+            "width": "auto"
+          }
+        ],
+        "modal": {
+          "children": [
+            {
+              "label": "Year",
+              "type": "input",
+              "key": "year"
+            },
+            {
+              "label": "City",
+              "sortable": true,
+              "type": "input",
+              "key": "city",
+              "width": "1fr"
+            },
+            {
+              "label": "Season",
+              "type": "dropdown",
+              "key": "season",
+              "options": [
+                {"id": "", "name": "-"},
+                {"id": "1", "name": "Summer"},
+                {"id": "2", "name": "Winter"}
+              ]
+            }
+          ]
+        }
+      },
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          "undo",
+          "redo",
+          "insert"
+        ]
+      }
+    },
+    {
+      "id": "gameGroups",
+      "header": {
+        "title": "Game Groups"
+      },
+      "modal": {},
+      "body": {
+        "driver": "gameGroups",
+        "type": "collection",
+        "params": {
+          "ppp": 20
+        },
+        "children": [
+          {
+            "label": "",
+            "type": "tableIndex"
+          },
+          {
+            "label": "Name",
+            "sortable": true,
+            "orderby": "name",
+            "type": "handle",
+            "value": ["get", "string", "name"],
+            "width": "1fr"
+          }
+        ],
+        "modal": {
+          "children": [
+            {
+              "label": "Season",
+              "type": "dropdown",
+              "key": "season",
+              "options": [
+                {"id": "", "name": "-"},
+                {"id": "1", "name": "Summer"},
+                {"id": "2", "name": "Winter"}
+              ]
+            },
+            {
+              "label": "Début",
+              "type": "input",
+              "key": "date1"
+            },
+            {
+              "label": "Fin",
+              "type": "input",
+              "key": "date2"
+            }
+          ]
+        }
+      },
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          "undo",
+          "redo",
+          "insert"
+        ]
+      }
+    },
+    {
+      "id": "stories-options",
+
+      "type": "table",
+      "header": {
+        "children": [
+          {
+            "type": "title",
+            "value": "Stories Options"
+          },
+          "close"
+        ]
+      },
+      "body": {
+        "driver": "options",
+        "params": {
+          "id": "stories"
+        },
+        "type": "table",
+        "children": [
+          {
+            "type": "input",
+            "key": "title",
+            "label": "Title",
+            "translatable": true
+          },
+          {
+            "type": "group",
+            "label": "Words",
+            "display": "flex",
+            "key": "translation",
+            "children": [
+              {
+                "type": "input",
+                "key": "games",
+                "placeholder": "games",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Sport",
+                "placeholder": "Sport",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Nicknames",
+                "placeholder": "Nicknames",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Etc",
+                "placeholder": "Etc",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "ID",
+                "placeholder": "Id",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Summer",
+                "placeholder": "Summer",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Winter",
+                "placeholder": "Winter",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Gold",
+                "placeholder": "Gold",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Silver",
+                "placeholder": "Silver",
+                "translatable": true,
+                "language_inheritance": false
+              },
+              {
+                "type": "input",
+                "key": "Bronze",
+                "placeholder": "Bronze",
+                "translatable": true,
+                "language_inheritance": false
+              }
+            ]
+          },
+          {
+            "type": "gallery",
+            "key": "screensaver",
+            "label": "ScreenSaver",
+            "table": "files",
+            "folder": "screensaver"
+          },
+          {
+            "type": "input",
+            "key": "screensaverline",
+            "label": "ScreenSaver Line",
+            "translatable": true
+          }
+        ]
+      },
+
+
+      "controls": {
+        "children": [
+          "save",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["request", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "",
+            "text": "fr",
+            "active": ["=", ["request", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo"
+        ]
+      }
+
+    }
+  ]
+}

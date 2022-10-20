@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Wall</title>
+    <link href="style.css" rel="stylesheet">
+    <script src="js/build-v7.7.js"></script>
+    <script src="js/TinyAnimate.js"></script>
+    <script src="js/swipe-v2.js"></script>
+    <script src="js/media-player-v4.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/wall.js"></script>
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+
+  </head>
+  <body>
+    <div id="container"></div>
+    <script>
+
+      var socket = io();
+      var wall = new Wall();
+
+      build(wall.build(), document.getElementById("container"));
+
+      socket.on('pop', function(msg) {
+        wall.pop(msg);
+      });
+
+    </script>
+  </body>
+</html>

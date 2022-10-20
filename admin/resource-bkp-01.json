@@ -1,0 +1,278 @@
+{
+  "navigation": {
+    "children": [
+      {
+        "type": "menu",
+        "items": [
+          {
+            "title": "Stories",
+            "hash": "table=stories"
+          },
+          {
+            "title": "Files",
+            "hash": "table=files"
+          }
+        ]
+      }
+    ]
+  },
+  "tables":[
+    {
+      "id":"stories",
+      "driver":"items",
+      "type":"tableGrid",
+      "ppp":10,
+      "orderby":"name",
+      "title":"Stories",
+      "style": "flex: 1 1 0",
+      "modal": {
+        "body": {
+          "children": [
+            {
+              "type": "input",
+              "label": "Title",
+              "key": "name",
+              "translatable": true
+            },
+            {
+              "type": "textarea",
+              "label": "Content",
+              "key": "content",
+              "translatable": true
+            },
+            {
+              "type": "gallery",
+              "label": "Gallery",
+              "key": "images",
+              "table": "files",
+              "driver": "files",
+              "joins": [],
+              "parent": "2"
+            }
+          ]
+        }
+      },
+      "children": [
+        {
+          "label": "",
+          "type": "tableIndex"
+        },
+        {
+          "label": "Titre",
+          "sortable": true,
+          "order": "asc",
+          "width": "1fr",
+          "orderby": "name",
+          "type": "modalHandle",
+          "value": ["get", "string", "name"],
+          "value": ["?", ["=", ["dispatch", "language", "string"], "fr"], ["get", "string", "name"], ["get", "string", "name_en"]]
+        },
+        {
+          "type": "text",
+          "label": "Date",
+          "value": ["date", ["get", "string", "date"]],
+          "orderby": "date",
+          "order": "desc",
+          "sortable": true
+        },
+        {
+          "type": "input",
+          "key": "noinv",
+          "label": "noinv"
+        },
+        {
+          "type": "textarea",
+          "key": "titre",
+          "label": "titre",
+          "translatable" : true
+        },
+        {
+          "type": "textarea",
+          "key": "auteur",
+          "label": "auteur",
+          "translatable" : true
+        },
+        {
+          "type": "textarea",
+          "key": "denom",
+          "label": "denom",
+          "translatable" : true
+        },
+        {
+          "type": "textarea",
+          "key": "jeux",
+          "label": "jeux",
+          "translatable" : true
+        },
+        {
+          "type": "textarea",
+          "key": "dimension",
+          "label": "dimension",
+          "translatable" : true
+        },
+        {
+          "type": "textarea",
+          "key": "technique",
+          "label": "technique",
+          "translatable" : true
+        },
+        {
+          "type": "textarea",
+          "key": "note",
+          "label": "note",
+          "translatable" : true
+        }
+
+
+      ],
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["dispatch", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "fr",
+            "text": "fr",
+            "active": ["=", ["dispatch", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo",
+          "insert"
+        ]
+      },
+      "filters":{
+        "type":"group",
+        "display":"flex",
+        "children":[
+          {
+            "type":"dropdown",
+            "label":"Categorie",
+            "options":[
+              {
+                "id":"",
+                "name":"-"
+              },
+              {
+                "id":"1",
+                "name":"Categorie 1"
+              },
+              {
+                "id":"2",
+                "name":"Categorie 2"
+              }
+            ]
+          },
+          {
+            "type":"input",
+            "label":"Search",
+            "key":"search"
+          }
+        ]
+      }
+    },
+    {
+      "id": "files",
+      "type": "tableMedias",
+      "driver": "files",
+      "ppp": 100,
+      "orderby": "name",
+      "title": "Media Library",
+      "params": {
+        "parent": "0"
+      },
+      "header": {
+        "children": [
+          {
+            "type": "title",
+            "value": "Media Library"
+          },
+          "count",
+          "pagination",
+          "close"
+        ]
+      },
+      "modal": {
+        "width": "25em",
+        "keepAlive": true,
+        "header": {
+          "children": [
+            {
+              "type": "title",
+              "value": "Media"
+            },
+            "prev",
+            "next",
+            "close"
+          ]
+        },
+        "body": {
+          "children": [
+            "mediaDescription",
+            {
+              "type": "input",
+              "key": "name",
+              "visible": ["=", ["get", "string", "filetype"], "folder"]
+            },
+            {
+              "type": "breadcrumb",
+              "key": "parent",
+              "visible": ["!", ["selection"]]
+            }
+          ]
+        }
+      },
+
+      "controls": {
+        "children": [
+          "save",
+          {
+            "type": "add",
+            "title": "Create Folder",
+            "value": {
+              "filetype": "folder"
+            }
+          },
+          {
+            "type": "upload",
+            "title": "Upload File"
+          },
+          "delete",
+          "separator",
+          "undo",
+          "redo",
+          "insert"
+        ]
+      },
+      "filters": {
+        "type": "group",
+        "display": "flex",
+        "children": [
+          {
+            "label": "Directory",
+            "type": "directoryDropdown",
+            "key": "parent",
+            "options": [{"id": "0", "name": "Uploads"}]
+          },
+          "separator",
+          {
+            "type": "input",
+            "label": "Search",
+            "key": "search"
+          }
+        ]
+      }
+
+
+    }
+  ]
+}

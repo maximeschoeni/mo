@@ -1,0 +1,172 @@
+
+
+/* Font-face
+----------------------------------------- */
+@font-face {
+ font-family: "tom-pro";
+ font-weight: 300;
+ src: url("fonts/TOM-LIGHT-PRO.otf");
+}
+@font-face {
+ font-family: "tom-pro";
+ font-weight: 400;
+ src: url("fonts/TOM-REGULAR-PRO.otf");
+}
+@font-face {
+ font-family: "tom-pro";
+ font-weight: 500;
+ src: url("fonts/TOM-BOLD-PRO.otf");
+}
+
+/* General
+----------------------------------------- */
+
+:root {
+  --screen-transition-duration: 300ms;
+  --front-color: #e5ddc5;
+  --back-color: #5b5644;
+  --fade-duration: 200ms;
+  --box-shadow: 0 0 8px #00000080;
+  --gap: 0.5em;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-size: 1vw;
+
+  background-color: black;
+
+  font-family: "tom-pro";
+
+
+}
+
+#container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+a {
+  color: white;
+}
+.hidden {
+  display: none !important;
+}
+h1, h2, h3 {
+  font: inherit;
+  font-size: inherit;
+  margin: 0;
+}
+.triangle {
+  display: block;
+  height: 0;
+  width: 0;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+  border-left: 1.7213em solid black;
+  margin-left: 0.5em;
+}
+figure {
+  margin: 0;
+}
+
+
+/* Wall
+----------------------------------------- */
+
+.wall {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.wall .background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  padding: 0 0;
+}
+.wall .background img.thumb {
+  display: block;
+  position: absolute;
+}
+
+.wall .popups {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 9999999;
+}
+.wall .popups .popup {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.wall .popups .popup .image,
+.wall .popups .popup .video {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  width: 90vw;
+  position: absolute;
+  top: -45vh;
+  left: -45vw;
+}
+.wall .popups .popup img,
+.wall .popups .popup video {
+
+  display: block;
+
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: auto;
+
+  /* transition: transform 4000ms;
+  transform: translate(50vw, 200vh) scale(0.2, 0.2); */
+
+  /* box-shadow: 0 0 32px black; */
+}
+.wall .popups .popup img.portrait,
+.wall .popups .popup video.portrait {
+  width: auto;
+  height: 100%;
+}
+
+
+.wall .popups .popup.active img,
+.wall .popups .popup.active video {
+  /* transform:  translate(50vw, 50vh) scale(1.0, 1.0); */
+
+  /* -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 70%); */
+}
+
+
+.wall .popups .popup {
+  transition: transform 500ms;
+  transform: translate(50vw, 120vh) scale(0.2, 0.2);
+}
+
+
+.wall .popups .popup.active {
+  transform:  translate(50vw, 50vh) scale(1.0, 1.0);
+}
+
+
+/* ----------------------------------------- */
