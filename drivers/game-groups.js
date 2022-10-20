@@ -34,6 +34,14 @@ exports.gameGroups = class {
       rows = rows.filter(row => row.name === query.name);
     }
 
+    if (query.date1) {
+      rows = rows.filter(row => row.date1 === query.date1);
+    }
+
+    if (query.date2) {
+      rows = rows.filter(row => row.date2 === query.date2);
+    }
+
     return rows;
   }
 

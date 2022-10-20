@@ -56,6 +56,10 @@ app.get("/uploads/*", (req, res) => {
   res.sendFile(__dirname + "/"+decodeURI(req.url));
 });
 
+app.get("/db.json", (req, res) => {
+  res.sendFile(__dirname + "/"+req.url);
+});
+
 app.get("*", (req, res) => {
   res.sendFile(__dirname + "/public/"+req.url);
 });

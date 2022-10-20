@@ -172,11 +172,16 @@ figure {
   object-position: center; */
   min-width: 0;
   min-height: 0;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
+  /* max-width: 100%;
+  max-height: 100%; */
+  width: 100%;
   height: auto;
   transform: scale3d(1.0, 1.0, 1);
+}
+
+.screen .slideshow .viewer .slide figure img.portrait {
+  width: auto;
+  height: 100%;
 }
 
 /* Screen Popup

@@ -179,6 +179,7 @@ class Screen {
                             img.element.src = src;
                             img.element.width = file.width;
                             img.element.height = file.height;
+                            img.element.classList.toggle("portrait", file.width/file.height < 1);
                           }
                         }
                       };
@@ -230,7 +231,7 @@ class Screen {
                                 update: async frame => {
                                   const file = await fetch("/get/files/"+media.image[0]).then(response => response.json());
                                   frame.element.classList.toggle("active", Boolean(media.image && mediaId === media.image[0]));
-                                  if (media.image && mediaId === media.image[0]) {
+                                  if (true || media.image && mediaId === media.image[0]) {
                                     frame.children = [
                                       {
                                         tag: "figure",
@@ -295,6 +296,27 @@ class Screen {
                                                   video.element.src = src;
                                                   video.element.type = file.type;
                                                   video.element.controls = true;
+
+                                                  video.element.onplay = event => {
+                                                    this.onPop({
+                                                      screenId: this.screenId,
+                                                      mediaId: file.id,
+                                                      currentTime: video.element.currentTime
+                                                    });
+                                                  };
+                                                  video.element.onpause = event => {
+                                                    const slide = this.player.getCurrent();
+                                                    this.onPop({
+                                                      screenId: this.screenId,
+                                                      mediaId: file.id,
+                                                      currentTime: video.element.currentTime,
+                                                      playing: false
+                                                    });
+                                                  };
+                                                }
+                                                // console.log(video.element.paused, this.popupActive);
+                                                if (!video.element.paused && !this.popupActive) {
+                                                  video.element.pause();
                                                 }
                                               }
                                             };
@@ -481,18 +503,30 @@ class Screen {
                                 init: button => {
                                   button.element.onclick = async event => {
                                     this.stopScreensaver();
-                                    this.onPop({ // -> depop
-                                      screenId: this.screenId
-                                    });
 
                                     this.popupActive = false;
                                     await popup.render();
 
                                     // wait for animation...
 
+
+
                                     setTimeout(() => {
                                       this.currentSlide = null;
+
                                       popup.render();
+
+                                      this.onPop({ // -> depop
+                                        screenId: this.screenId
+                                      });
+
+                                      // setTimeout(async () => {
+                                      //
+                                      // }, 1000)
+
+
+
+
                                     }, 200);
                                   }
                                 },
