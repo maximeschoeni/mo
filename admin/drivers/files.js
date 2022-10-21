@@ -293,8 +293,8 @@ exports.files = class {
       const matches = basename.match(/.*(-(\d+))$/);
 
       if (matches) {
-        basename = basename.slice(-matches[1].length);
-        basename += "-" + (Number(matches[0]) + 1).toString();
+        basename = basename.slice(0, -matches[1].length);
+        basename += "-" + (Number(matches[2]) + 1).toString();
       } else {
         basename += "-1";
       }
