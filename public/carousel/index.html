@@ -26,7 +26,6 @@
         build(screen.build(), document.getElementById("container"));
 
         screen.onPop = (msg) => {
-          console.log(msg);
           socket.emit('pop', msg);
         }
 

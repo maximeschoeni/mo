@@ -358,7 +358,7 @@ figure {
   /* align-items: center; */
   /* padding: 0.5em 1.75em 0.2em; */
   /* letter-spacing: 0.01em; */
-  padding: 3.85em 0 0;
+  padding: 3.85em 4em 0 0;
 }
 .screen .popup .details .details-body .title h1 {
   font-size: 2.0833em;
@@ -373,20 +373,29 @@ figure {
   flex: 1 1 0;
   overflow: auto;
   position: relative;
-  padding: 0 0 10em;
+  /* padding: 0 0 10em; */
 }
+.screen .popup .details .details-body .content::-webkit-scrollbar {
+  width: 2px;
+}
+.screen .popup .details .details-body .content::-webkit-scrollbar-thumb {
+  background-color: white;
+}
+
+
 .screen .popup .details .details-body .content .text {
   white-space: break-spaces;
   font-size: 1.5em;
   line-height: 1.2em;
-  margin-bottom: 1em;
 }
-
+.screen .popup .details .details-body .content .placeholder {
+  padding: 0 0 10em;
+}
 .screen .popup .details .details-body::after {
   content: "";
   position: absolute;
   left: 0;
-  width: 100%;
+  right: 2px;
   height: 9.7917em;
   bottom: 0;
   background: linear-gradient(0deg, black 0%, transparent 100%);

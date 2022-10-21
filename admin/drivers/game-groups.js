@@ -170,6 +170,11 @@ exports.gameGroups = class {
             row[key] = body[key][0].toString();
             break;
 
+          case "images":
+            // -> as string array
+            row[key] = body[key];
+            break;
+
           default:
             break;
 

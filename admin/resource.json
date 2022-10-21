@@ -55,7 +55,7 @@
         "type": "collection",
         "driver": "items",
         "params": {
-          "ppp": 20
+          "ppp": 200
         },
         "style": "flex: 1 1 0",
         "children": [
@@ -132,6 +132,7 @@
             {
               "type": "array",
               "key": "medias",
+              "label": "medias",
               "children": [
                 {
                   "type": "file",
@@ -236,7 +237,7 @@
         "type": "medias",
         "driver": "files",
         "params": {
-          "ppp": 100,
+          "ppp": 500,
           "orderby": "name",
           "parent": "0"
         },
@@ -334,7 +335,7 @@
         "type": "collection",
         "driver": "stories",
         "params": {
-          "ppp": 20
+          "ppp": 200
         },
         "children": [
           {
@@ -599,7 +600,7 @@
         "type": "collection",
         "driver": "sports",
         "params": {
-          "ppp": 20,
+          "ppp": 200,
           "orderby": "name"
         },
         "children": [
@@ -665,7 +666,7 @@
         "driver": "countries",
         "type": "collection",
         "params": {
-          "ppp": 20
+          "ppp": 200
         },
         "children": [
           {
@@ -743,7 +744,7 @@
         "driver": "games",
         "type": "collection",
         "params": {
-          "ppp": 20
+          "ppp": 200
         },
         "children": [
           {
@@ -814,7 +815,7 @@
         "driver": "gameGroups",
         "type": "collection",
         "params": {
-          "ppp": 20
+          "ppp": 200
         },
         "children": [
           {
@@ -851,6 +852,12 @@
               "label": "Fin",
               "type": "input",
               "key": "date2"
+            },
+            {
+              "label": "Screensaver Images",
+              "key": "images",
+              "type": "files",
+              "table": "files"
             }
           ]
         }
@@ -970,13 +977,6 @@
                 "language_inheritance": false
               }
             ]
-          },
-          {
-            "type": "gallery",
-            "key": "screensaver",
-            "label": "ScreenSaver",
-            "table": "files",
-            "folder": "screensaver"
           },
           {
             "type": "input",

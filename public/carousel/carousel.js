@@ -54,7 +54,8 @@ class Screen {
         this.screensaving = true;
 
         this.items = await fetch("/query/items").then(response => response.json());
-
+        this.files = await fetch("/query/files").then(response => response.json());
+        this.filesDirectory = Object.fromEntries(this.files.map(file => [file.id, file]));
 
       },
       children: [
@@ -126,12 +127,13 @@ class Screen {
               const slide = this.player.getCurrent();
               const img = slide.element.querySelector("img");
               const box = img.getBoundingClientRect();
+              const media = slide.item.medias && slide.item.medias.find(media => media.image && media.image[0]);
               if (swipe.x >= box.left && swipe.x <= box.right && swipe.y >= box.top && swipe.y <= box.bottom) {
                 slideshow.element.classList.remove("rolling");
                 this.onPop({
                   screenId: this.screenId,
                   // mediaId: slide.id
-                  mediaId: slide.item.images[0]
+                  mediaId: media.image[0]
                 });
                 this.currentSlide = slide;
                 // slideshow.render();
@@ -173,13 +175,20 @@ class Screen {
                             img.element.draggable = false;
                           },
                           update: async img => {
-                            const file = await fetch("/get/files/"+item.images[0]).then(response => response.json());
-                            const medium = file.sizes.find(size => size.key === "medium");
-                            const src = "/uploads/" + medium.filename;
-                            img.element.src = src;
-                            img.element.width = file.width;
-                            img.element.height = file.height;
-                            img.element.classList.toggle("portrait", file.width/file.height < 1);
+                            // const file = await fetch("/get/files/"+item.images[0]).then(response => response.json());
+                            const medias = item.medias || [];
+                            const media = medias.find(media => media.image && media.image.length);
+                            const fileId = media && media.image[0];
+                            const file = this.filesDirectory[fileId];
+                            const medium = file && file.sizes.find(size => size.key === "medium");
+
+                            if (medium && !img.element.src.endsWith(medium.filename)) {
+                              const src = "/uploads/" + medium.filename;
+                              img.element.src = src;
+                              img.element.width = file.width;
+                              img.element.height = file.height;
+                              img.element.classList.toggle("portrait", file.width/file.height < 1);
+                            }
                           }
                         }
                       };
@@ -208,13 +217,15 @@ class Screen {
             if (this.currentSlide) {
               const item = this.currentSlide.item;
               // let mediaId = item.images[0];
-              let mediaId = item.medias && item.medias[0] && item.medias[0].image && item.medias[0].image[0];
-              let currentSection;
+              let currentMedia = item.medias && item.medias.find(media => media.image && media.image[0]);
+              // let mediaId
+              // let currentSection;
 
               popup.element.style.display = "block";
               popup.children = [{
                 class: "popup-content",
                 update: content => {
+                  const currentFileId = currentMedia && currentMedia.image && currentMedia.image[0];
                   content.children = [
                     {
                       class: "media",
@@ -222,16 +233,17 @@ class Screen {
                         {
                           class: "viewer",
                           update: viewer => {
-                            // viewer.children = item.images.map(fileId => {
                             const medias = item.medias || [];
                             viewer.children = medias.filter(media => media.image && media.image[0]).map(media => {
-
                               return {
                                 class: "frame",
                                 update: async frame => {
-                                  const file = await fetch("/get/files/"+media.image[0]).then(response => response.json());
-                                  frame.element.classList.toggle("active", Boolean(media.image && mediaId === media.image[0]));
-                                  if (true || media.image && mediaId === media.image[0]) {
+                                  const fileId = media.image[0];
+                                  const file = this.filesDirectory[fileId];
+
+                                  // const file = await fetch("/get/files/"+media.image[0]).then(response => response.json());
+                                  frame.element.classList.toggle("active", currentFileId === fileId);
+                                  if (file) {
                                     frame.children = [
                                       {
                                         tag: "figure",
@@ -333,17 +345,22 @@ class Screen {
                         {
                           class: "gallery",
                           update: gallery => {
-                            gallery.element.classList.toggle("hidden", item.images.length <= 1);
-                            if (item.images.length > 1) {
+                            const medias = item.medias || [];
+                            gallery.element.classList.toggle("hidden", medias.length <= 1);
+
+                            if (medias.length > 1) {
                               // gallery.children = item.images.map(fileId => {
-                              const medias = item.medias || [];
+
+
                               gallery.children = medias.filter(media => media.image && media.image.length).map(media => {
                                 const fileId = media.image[0];
+                                const file = this.filesDirectory[fileId];
                                 return {
                                   class: "frame",
                                   update: async frame => {
-                                    frame.element.classList.toggle("active", Boolean(mediaId === fileId));
-                                    const file = await fetch("/get/files/"+fileId).then(response => response.json());
+                                    frame.element.classList.toggle("active", currentFileId === fileId);
+                                    // const file = await fetch("/get/files/"+fileId).then(response => response.json());
+
                                     frame.children = [
                                       {
                                         tag: "figure",
@@ -370,11 +387,11 @@ class Screen {
                                                     //     mediaId: mediaId
                                                     //   });
                                                     // } else {
-                                                      mediaId = fileId;
-                                                      currentSection = fileId;
+                                                      currentMedia = media;
+                                                      // currentSection = fileId;
                                                       this.onPop({
                                                         screenId: this.screenId,
-                                                        mediaId: mediaId
+                                                        mediaId: file.id
                                                       });
                                                     // }
                                                     content.render();
@@ -440,8 +457,8 @@ class Screen {
                                                     event.preventDefault();
                                                     // this.fullscreenItem = file;
                                                     // this.renderOverlay();
-                                                    mediaId = fileId;
-                                                    currentSection = fileId;
+                                                    currentMedia = media;
+                                                    // currentSection = fileId;
                                                     this.onPop({
                                                       screenId: this.screenId,
                                                       mediaId: file.id,
@@ -560,14 +577,14 @@ class Screen {
                                       children: [
                                         {
                                           class: "sections",
-                                          children: (item.medias || []).filter(media => media.text).map((media, index) => {
+                                          children: (item.medias || []).filter(media => media.text).map(media => {
                                             return {
                                               class: "text",
                                               update: text => {
                                                 const mediaImageId = media.image && media.image[0] || "";
                                                 const key = `text${this.getSuffix()}`;
                                                 text.element.innerHTML = media[key];
-                                                if (mediaId === mediaImageId && text.element.offsetTop !== content.element.scrollTop) {
+                                                if (media === currentMedia && text.element.offsetTop !== content.element.scrollTop) {
                                                   // content.element.scrollTo(0, text.element.offsetTop);
                                                   TinyAnimate.animate(content.element.scrollTop, text.element.offsetTop, 200, value => {
                                                     content.element.scrollTo(0, value);
@@ -584,6 +601,9 @@ class Screen {
                                       update: content => {
                                         content.element.innerHTML = item["note"+this.getSuffix()];
                                       }
+                                    },
+                                    {
+                                      class: "placeholder"
                                     }
                                   ];
                                 }
@@ -606,116 +626,116 @@ class Screen {
               popup.children = [];
             }
           }
-        },
-        {
-          class: "overlay",
-          init: overlay => {
-            this.renderOverlay = overlay.render;
-          },
-          update: overlay => {
-            let playing = false;
-            overlay.element.classList.toggle("active", Boolean(this.overlayActive));
-
-
-            if (this.fullscreenItem) {
-              const videoId = this.fullscreenItem.id;
-              overlay.children = [{
-                class: "overlay-content",
-                children: [
-                  {
-                    class: "close",
-                    init: close => {
-                      close.element.onclick = async event => {
-                        this.overlayActive = false;
-                        await overlay.render();
-
-                        // wait for animation...
-
-                        setTimeout(() => {
-                          this.fullscreenItem = null;
-                          overlay.render();
-                        }, 200);
-                      }
-                    },
-                    child: {
-                      tag: "span",
-                      init: span => {
-                        span.element.innerHTML = "X";
-                      }
-                    }
-                  },
-                  {
-                    tag: "figure",
-                    class: "video",
-                    update: figure => {
-                      figure.children = [
-                        {
-                          tag: "video",
-                          init: video => {
-                            video.element.src = "/uploads/"+this.fullscreenItem.filename;
-                            video.element.type = this.fullscreenItem.type;
-
-                            video.element.onloadeddata = event => {
-                              if (!this.overlayActive) {
-                                requestAnimationFrame(() => {
-                                  console.log("video loaded");
-                                  this.overlayActive = true;
-                                  overlay.render();
-                                });
-                              }
-                            }
-
-                            video.element.onplay = event => {
-                              this.onPop({
-                                screenId: this.screenId,
-                                mediaId: videoId,
-                                currentTime: video.element.currentTime
-                              });
-                            };
-                            video.element.onpause = event => {
-                              const slide = this.player.getCurrent();
-                              this.onPop({
-                                screenId: this.screenId,
-                                mediaId: videoId,
-                                currentTime: video.element.currentTime,
-                                playing: false
-                              });
-                            };
-                          },
-                          update: video => {
-                            if (playing) {
-                              video.element.play();
-                            } else {
-                              video.element.pause();
-                            }
-                          }
-                        },
-                        {
-                          class: "video-play",
-                          update: button => {
-                            button.element.classList.toggle("playing", Boolean(playing));
-                            button.element.onclick = event => {
-                              playing = !playing;
-                              figure.render();
-                            }
-                          },
-                          child: {
-                            class: "circle",
-                            child: {
-                              class: "triangle"
-                            }
-                          }
-                        }
-                      ];
-                    }
-                  }
-                ]
-              }];
-            } else {
-              overlay.children = [];
-            }
-          }
         }
+        // {
+        //   class: "overlay",
+        //   init: overlay => {
+        //     this.renderOverlay = overlay.render;
+        //   },
+        //   update: overlay => {
+        //     let playing = false;
+        //     overlay.element.classList.toggle("active", Boolean(this.overlayActive));
+        //
+        //
+        //     if (this.fullscreenItem) {
+        //       const videoId = this.fullscreenItem.id;
+        //       overlay.children = [{
+        //         class: "overlay-content",
+        //         children: [
+        //           {
+        //             class: "close",
+        //             init: close => {
+        //               close.element.onclick = async event => {
+        //                 this.overlayActive = false;
+        //                 await overlay.render();
+        //
+        //                 // wait for animation...
+        //
+        //                 setTimeout(() => {
+        //                   this.fullscreenItem = null;
+        //                   overlay.render();
+        //                 }, 200);
+        //               }
+        //             },
+        //             child: {
+        //               tag: "span",
+        //               init: span => {
+        //                 span.element.innerHTML = "X";
+        //               }
+        //             }
+        //           },
+        //           {
+        //             tag: "figure",
+        //             class: "video",
+        //             update: figure => {
+        //               figure.children = [
+        //                 {
+        //                   tag: "video",
+        //                   init: video => {
+        //                     video.element.src = "/uploads/"+this.fullscreenItem.filename;
+        //                     video.element.type = this.fullscreenItem.type;
+        //
+        //                     video.element.onloadeddata = event => {
+        //                       if (!this.overlayActive) {
+        //                         requestAnimationFrame(() => {
+        //                           console.log("video loaded");
+        //                           this.overlayActive = true;
+        //                           overlay.render();
+        //                         });
+        //                       }
+        //                     }
+        //
+        //                     video.element.onplay = event => {
+        //                       this.onPop({
+        //                         screenId: this.screenId,
+        //                         mediaId: videoId,
+        //                         currentTime: video.element.currentTime
+        //                       });
+        //                     };
+        //                     video.element.onpause = event => {
+        //                       const slide = this.player.getCurrent();
+        //                       this.onPop({
+        //                         screenId: this.screenId,
+        //                         mediaId: videoId,
+        //                         currentTime: video.element.currentTime,
+        //                         playing: false
+        //                       });
+        //                     };
+        //                   },
+        //                   update: video => {
+        //                     if (playing) {
+        //                       video.element.play();
+        //                     } else {
+        //                       video.element.pause();
+        //                     }
+        //                   }
+        //                 },
+        //                 {
+        //                   class: "video-play",
+        //                   update: button => {
+        //                     button.element.classList.toggle("playing", Boolean(playing));
+        //                     button.element.onclick = event => {
+        //                       playing = !playing;
+        //                       figure.render();
+        //                     }
+        //                   },
+        //                   child: {
+        //                     class: "circle",
+        //                     child: {
+        //                       class: "triangle"
+        //                     }
+        //                   }
+        //                 }
+        //               ];
+        //             }
+        //           }
+        //         ]
+        //       }];
+        //     } else {
+        //       overlay.children = [];
+        //     }
+        //   }
+        // }
       ]
     }
   }
