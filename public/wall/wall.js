@@ -61,7 +61,17 @@ class Wall {
 
     for (let file of files) {
 
+      if (!file.sizes) {
+        console.error("no file sizes", file)
+      }
+
       const tile = file.sizes.find(size => size.key === "tile");
+
+      if (!tile) {
+        console.error("no tile", tile)
+      }
+
+
       const src = "/uploads/"+tile.filename;
       const image = await this.loadImage(src);
 
@@ -116,7 +126,7 @@ class Wall {
 
     let x = 0;
     let y = margin;
-    let speed = 0.02;
+    let speed = 0.01;
 
     let numRow = 10;
 
@@ -217,7 +227,7 @@ class Wall {
     }
 
     const transition = 8;
-    const force = 8*window.innerHeight;
+    const force = 12*window.innerHeight;
 
     let gX = (item.x-item.currentX)/transition;
     let gY = (item.row.y-item.currentY)/transition;
@@ -494,13 +504,119 @@ class Wall {
                     class: "image",
                     update: node => {
                       if (media.type === "image" || !media.type) {
+
+                        const box = node.element.getBoundingClientRect();
+                        const file = media;
+                        const isPortrait = Number(file.width)/Number(file.height) < box.width/box.height;
+
+                        // const file = media;
+                        // // const box = {
+                        // //   x: 0,
+                        // //   y: 0,
+                        // //   width: window.innerWidth,
+                        // //   height: window.innerHeight
+                        // // };
+                        // const isPortrait = Number(file.width)/Number(file.height) < box.width/box.height;
+                        // const zoom = 3;
+                        //
+                        // // console.log(box, isPortrait, file);
+                        //
+                        // if (this.eye.data.zoom) {
+                        //
+                        //   let x = this.eye.data.zoomX;
+                        //   let y = this.eye.data.zoomY;
+                        //
+                        //
+                        //   let originX = 100*x;
+                        //   let originY = 100*y;
+                        //
+                        //   if (isPortrait) {
+                        //     // originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/(file.height*box.width) - 1)/(zoom - 1);
+                        //     originY = 50 + (x-0.5)*100*(file.width*box.height*zoom/file.height - box.width)/(box.width*zoom - box.width);
+                        //   } else {
+                        //     originY = 50 + (y-0.5)*100*(file.height*box.width*zoom/file.width - box.height)/(box.height*zoom - box.height);
+                        //   }
+                        //
+                        //   console.log(box, file, isPortrait, originX, originY);
+                        //
+                        //   node.element.style.transformOrigin = `${originX}% ${originY}%`;
+                        //   node.element.style.transform = `scale(${zoom})`;
+                        //
+                        // } else {
+                        //
+                        //   node.element.style.transform = `scale(1)`;
+                        //
+                        // }
+
+                        // const updateZoom = (x, y) => {
+                        //
+                        //   // x = Math.max(Math.min(1, x), 0);
+                        //   // y = Math.max(Math.min(1, y), 0);
+                        //
+                        //   let originX = 100*x;
+                        //   let originY = 100*y;
+                        //
+                        //   if (isPortrait) {
+                        //     // originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/(file.height*box.width) - 1)/(zoom - 1);
+                        //     originY = 50 + (x-0.5)*100*(file.width*box.height*zoom/file.height - box.width)/(box.width*zoom - box.width);
+                        //   } else {
+                        //     originY = 50 + (y-0.5)*100*(file.height*box.width*zoom/file.width - box.height)/(box.height*zoom - box.height);
+                        //   }
+                        //
+                        //   node.element.style.transformOrigin = `${originX}% ${originY}%`;
+                        //   node.element.style.transform = `scale(${zoom})`;
+                        // }
+
+
                         node.children = [{
                           tag: "img",
                           update: img => {
-                            img.element.src = media.src;
-                            img.element.width = media.width;
-                            img.element.height = media.height;
-                            img.element.classList.toggle("portrait", media.width/media.height < window.innerWidth/window.innerHeight);
+                            if (!img.element.src.endsWith(media.src)) {
+                              img.element.src = media.src;
+                              img.element.width = media.width;
+                              img.element.height = media.height;
+                              img.element.classList.toggle("portrait", isPortrait);
+                            }
+
+
+                            // const box = {
+                            //   x: 0,
+                            //   y: 0,
+                            //   width: window.innerWidth,
+                            //   height: window.innerHeight
+                            // };
+
+                            const zoom = 3;
+
+                            // console.log(box, isPortrait, file);
+
+                            if (this.eye && this.eye.data && this.eye.data.zoom) {
+
+                              let x = this.eye.data.zoomX;
+                              let y = this.eye.data.zoomY;
+
+
+                              let originX = 100*x;
+                              let originY = 100*y;
+
+                              if (isPortrait) {
+                                // originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/(file.height*box.width) - 1)/(zoom - 1);
+                                originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/file.height - box.width)/(box.width*zoom - box.width);
+                              } else {
+                                originY = 50 + (y-0.5)*100*(file.height*box.width*zoom/file.width - box.height)/(box.height*zoom - box.height);
+                              }
+
+                              // console.log(x, y);
+
+                              img.element.style.transformOrigin = `${originX}% ${originY}%`;
+                              img.element.style.transform = `scale(${zoom})`;
+
+                            } else {
+
+                              img.element.style.transform = `scale(1)`;
+
+                            }
+
                           }
                         }];
                       } else {

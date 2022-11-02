@@ -22,7 +22,10 @@
     		var container = document.getElementById("karma-fields-field-nav");
 
         const resource = await fetch("/admin/resource.json").then(response => response.json());
-    		const field = new KarmaFieldsAlpha.field.layout(resource);
+    		const field = new KarmaFieldsAlpha.field.login({
+          driver: "users",
+          layout: resource
+        });
 
     		KarmaFieldsAlpha.build(field.build(), container);
     		KarmaFieldsAlpha.tables = field;
@@ -81,13 +84,15 @@
     <script src="js/utils/history.js"></script>
     <script src="js/utils/manager-selection.js"></script>
     <script src="js/utils/manager-selection-sorter.js"></script>
-    <script src="js/utils/manager-cells.js"></script>
+    <script src="js/utils/manager-selection-dropper.js"></script>
+    <script src="js/utils/manager-selection-cells.js"></script>
     <script src="js/utils/clipboard.js"></script>
     <script src="js/utils/params.js"></script>
 
     <script src="js/vendor/papaparse.min.js"></script>
 
-    <script src="fields/multilanguage-interface.js"></script>
+    <!-- <script src="fields/multilanguage-interface.js"></script> -->
+    <script src="fields/login.js"></script>
     <script src="fields/input.js"></script>
     <script src="fields/textarea.js"></script>
   </body>

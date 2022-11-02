@@ -1,4 +1,5 @@
 const {files} = require(ROOT+"/admin/drivers/files");
+const {users} = require(ROOT+"/admin/drivers/users");
 const {items} = require(ROOT+"/admin/drivers/items");
 const {options} = require(ROOT+"/admin/drivers/options");
 const {stories} = require(ROOT+"/admin/drivers/stories");
@@ -20,6 +21,9 @@ function getDriver(driver) {
 
     case "files":
       return new files();
+
+    case "users":
+      return new users();
 
     case "items":
       return new items();
@@ -79,33 +83,80 @@ exports.adminDrivers = class {
 
   static async update(req, res) {
 
-    const driver = getDriver(req.params.driver);
-    await driver.update(req.body.data, req.params.id);
-    res.json(true);
+    if (await (new users()).check(req.cookies)) {
+      const driver = getDriver(req.params.driver);
+      await driver.update(req.body.data, req.params.id);
+      res.json(true);
+    } else {
+      res.json(false);
+    }
 
   }
 
   static async add(req, res) {
 
-    const driver = getDriver(req.params.driver);
-    const id = await driver.add(req.body.data);
-    res.json(id);
+    if (await (new users()).check(req.cookies)) {
+      const driver = getDriver(req.params.driver);
+      const id = await driver.add(req.body.data);
+      res.json(id);
+    } else {
+      res.json(false);
+    }
 
   }
 
   static async upload(req, res) {
 
-    const driver = new files();
-    const id = await driver.upload(req.files.file, req.body);
-    res.json(id);
+    if (await (new users()).check(req.cookies)) {
+      const driver = new files();
+      const id = await driver.upload(req.files.file, req.body);
+      res.json(id);
+    } else {
+      res.json(false);
+    }
 
   }
 
   static async regen(req, res) {
-    const driver = new files();
-    await driver.regen(req.params.id);
-    res.json(true);
 
+    if (await (new users()).check(req.cookies)) {
+      const driver = new files();
+      await driver.regen(req.params.id);
+      res.json(true);
+    } else {
+      res.json(false);
+    }
+
+  }
+
+  static async login(req, res) {
+    const driver = new users();
+    const hash = await driver.login(req.body);
+
+    if (hash) {
+      res
+        .status(201)
+        .cookie('token', hash, {
+          expires: new Date(Date.now() + 10*365*24*60*60*1000)
+        })
+        .cookie('name', req.body.name, {
+          expires: new Date(Date.now() + 10*365*24*60*60*1000)
+        })
+        .redirect(301, '/admin/index.html');
+    } else {
+      res.redirect(301, '/admin/login.html');
+    }
+
+  }
+
+  static async logout(req, res) {
+    const driver = new users();
+    if (await driver.check(req.cookies)) {
+      await driver.logout(req.body.data);
+      res.json(true);
+    } else {
+      res.json(false);
+    }
   }
 
 }

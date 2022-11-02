@@ -134,6 +134,12 @@ exports.countries = class {
       rows.reverse();
     }
 
+    rows.forEach(row => {
+      if (row.image === "" || row.image === "0") {
+        delete row.image;
+      }
+    });
+
     return rows;
   }
 
@@ -171,9 +177,17 @@ exports.countries = class {
             break;
 
           case "name":
+            // -> as string
+            row[key] = body[key][0] || "";
+            break;
+
           case "image":
             // -> as string
-            row[key] = body[key][0].toString();
+            if (body[key][0] && body[key][0] !== "0") {
+              row[key] = body[key][0];
+            } else if (row[key]) {
+              delete row[key];
+            }
             break;
 
           default:

@@ -60,6 +60,7 @@ body {
   font-family: "tom-pro";
 
 
+  user-select: none;
 }
 
 .hidden {
@@ -279,6 +280,7 @@ body {
   height: 100%;
   /* transform: translate(-7.1em, 0); */
   -webkit-perspective: 10em;
+  perspective: 10em;
 
   opacity: 1;
 
@@ -302,7 +304,9 @@ body {
 }
 .body .main-frame .info-frame .pile,
 .body .main-frame .info-frame .face {
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   border-radius: 0.15em;
   transition: transform var(--anim-duration);
@@ -344,6 +348,9 @@ body {
   z-index: 0;
   opacity: 0;
   transition: opacity var(--anim-duration);
+}
+.body .main-frame .info-frame.flip .pile .content .media-body {
+  overflow: hidden;
 }
 .body .main-frame .info-frame .pile .content .media-body.active {
   z-index: 1;
@@ -493,8 +500,13 @@ body {
   flex-grow: 1;
   list-style: none;
   border-radius: 0.16em 0.16em 0 0;
+  overflow: hidden;
+}
+.body .main-frame .info-frame.flip .face .info-body .games .games-body ul {
+
   overflow: auto;
 }
+
 .body .main-frame .info-frame .games .games-body ul li {
   background-color: var(--front-light);
   border-radius: 0.16em;

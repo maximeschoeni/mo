@@ -439,13 +439,15 @@ class Stories {
                                                         },
                                                         {
                                                           class: "toggle-button",
+                                                          init: button => {
+                                                            button.element.onclick = event => {
+                                                              story.showInfo = !story.showInfo;
+                                                              frame.render();
+                                                            }
+                                                          },
                                                           child: {
                                                             init: button => {
                                                               button.element.textContent = "id";
-                                                              button.element.onclick = event => {
-                                                                story.showInfo = !story.showInfo;
-                                                                frame.render();
-                                                              }
                                                             }
                                                           }
                                                         }

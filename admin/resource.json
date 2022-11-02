@@ -9,6 +9,10 @@
             "hash": "table=carousel"
           },
           {
+            "title": "Users",
+            "hash": "table=users"
+          },
+          {
             "title": "Files",
             "hash": "table=files"
           },
@@ -37,9 +41,14 @@
                 "hash": "table=stories-options"
               }
             ]
+          },
+          {
+            "title": "Logout",
+            "action": "logout"
           }
         ]
       }
+
     ]
   },
   "tables":[
@@ -226,6 +235,45 @@
       }
     },
     {
+      "id": "users",
+      "header": {
+        "title": "Users"
+      },
+      "modal": {
+        "width": "25em"
+      },
+      "body": {
+        "type": "collection",
+        "driver": "users",
+        "params": {
+          "ppp": 500,
+          "orderby": "name"
+        },
+        "children": [
+          {
+            "label": "Username",
+            "type": "handle",
+            "value": ["get", "string", "name"]
+          }
+        ],
+        "modal": {
+          "width": "25em",
+          "children": [
+            {
+              "type": "input",
+              "label": "Username",
+              "key": "name"
+            },
+            {
+              "type": "input",
+              "label": "Password",
+              "key": "password"
+            }
+          ]
+        }
+      }
+    },
+    {
       "id": "files",
       "header": {
         "title": "Media Library"
@@ -280,13 +328,7 @@
       "controls": {
         "children": [
           "save",
-          {
-            "type": "add",
-            "title": "Create Folder",
-            "value": {
-              "params": {"filetype": "folder"}
-            }
-          },
+          "createFolder",
           {
             "type": "upload",
             "title": "Upload File"

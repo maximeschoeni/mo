@@ -11,6 +11,7 @@
   - npm install mime-types
   - npm install image-size
   - npm install sanitize-filename
+  - npm install cookie-parser
 */
 
 global.ROOT = __dirname;
@@ -30,12 +31,12 @@ const {adminDrivers} = require("./admin/drivers");
 const {drivers} = require("./drivers");
 // const {db} = require("./admin/db.js");
 
-
+const cookieParser = require('cookie-parser')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
-
+app.use(cookieParser());
 
 app.get("/admin/get/:driver/:id*", adminDrivers.get);
 app.get("/admin/query/:driver*", adminDrivers.query);
@@ -44,6 +45,8 @@ app.post("/admin/update/:driver/:id*", adminDrivers.update);
 app.post("/admin/add/:driver*", adminDrivers.add);
 app.post("/admin/upload*", adminDrivers.upload);
 app.post("/admin/regen/:id*", adminDrivers.regen);
+app.post("/admin/login*", adminDrivers.login);
+app.post("/admin/logout*", adminDrivers.logout);
 
 app.get("/admin/*", (req, res) => {
   res.sendFile(__dirname + req.url);

@@ -258,36 +258,98 @@ class Screen {
                                               },
                                               update: async img => {
                                                 // const file = await fetch("/get/files/"+media.image[0]).then(response => response.json());
+
+                                                const box = figure.element.getBoundingClientRect();
+                                                const isPortrait = Number(file.width)/Number(file.height) < box.width/box.height;
+
                                                 const big = file.sizes.find(size => size.key === "big");
                                                 const src = "/uploads/" + big.filename;
+
                                                 if (!img.element.src.endsWith(src)) {
                                                   img.element.src = src;
                                                   img.element.width = file.width;
                                                   img.element.height = file.height;
-                                                  img.element.classList.toggle("portrait", Number(file.width)/Number(file.height) < 900/877);
+                                                  img.element.classList.toggle("portrait", isPortrait);
                                                 }
-                                                                                                // img.element.onmousedown = event => {
-                                                //   if (event.button === 0) {
-                                                //     const box = img.element.getBoundingClientRect();
-                                                //     const onMouseMove = event => {
-                                                //       let x = (event.clientX - box.x)/box.width;
-                                                //       let y = (event.clientY - box.y)/box.height;
-                                                //       img.element.style.transform = `translate(${(-x+0.5)*500}%, ${(-y+0.5)*500}%) scale(6) `;
-                                                //     }
-                                                //     const onMouseUp = event => {
-                                                //       document.removeEventListener("mouseup", onMouseUp);
-                                                //       document.removeEventListener("mousemove", onMouseMove);
-                                                //       img.element.classList.remove("zoom");
-                                                //       img.element.style.transform = `scale(1)`;
-                                                //     }
-                                                //     onMouseMove(event);
-                                                //     setTimeout(() => {
-                                                //       img.element.classList.add("zoom");
-                                                //     }, 200);
-                                                //     document.addEventListener("mouseup", onMouseUp);
-                                                //     document.addEventListener("mousemove", onMouseMove);
-                                                //   }
-                                                // }
+
+                                                const updateZoom = (clientX, clientY) => {
+
+                                                  let x = (event.clientX - box.x)/box.width;
+                                                  let y = (event.clientY - box.y)/box.height;
+
+                                                  x = Math.max(Math.min(1, x), 0);
+                                                  y = Math.max(Math.min(1, y), 0);
+
+                                                  let originX = 100*x;
+                                                  let originY = 100*y;
+
+                                                  const zoom = 5;
+
+                                                  if (isPortrait) {
+                                                    originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/(file.height*box.width) - 1)/(zoom - 1);
+                                                  } else {
+                                                    originY = 50 + (y-0.5)*100*(file.height*box.width*zoom/file.width - box.height)/(box.height*zoom - box.height);
+                                                  }
+
+                                                  figure.element.style.transformOrigin = `${originX}% ${originY}%`;
+                                                  figure.element.style.transform = `scale(${zoom})`;
+
+                                                  this.onPop({
+                                                    screenId: this.screenId,
+                                                    mediaId: file.id,
+                                                    zoom: 1,
+                                                    zoomX: x,
+                                                    zoomY: y
+                                                  });
+
+                                                }
+
+                                                const endZoom = () => {
+                                                  figure.element.style.transform = `scale(1)`;
+                                                  this.onPop({
+                                                    screenId: this.screenId,
+                                                    mediaId: file.id,
+                                                    zoom: 0
+                                                  });
+                                                }
+
+                                                if ('ontouchstart' in window) {
+                                                  img.element.ontouchstart = event => {
+                                                      const box = img.element.getBoundingClientRect();
+                                                      const onMouseMove = event => {
+                                                        updateZoom(event.touches[0].clientX, event.touches[0].clientY);
+                                                      }
+                                                      const onMouseUp = event => {
+                                                        document.removeEventListener("touchend", onMouseUp);
+                                                        document.removeEventListener("touchmove", onMouseMove);
+                                                        endZoom();
+                                                      }
+                                                      updateZoom(event.touches[0].clientX, event.touches[0].clientY);
+                                                      document.addEventListener("touchend", onMouseUp);
+                                                      document.addEventListener("touchmove", onMouseMove);
+                                                    }
+
+                                                } else {
+
+                                                  img.element.onmousedown = event => {
+                                                    if (event.button === 0) {
+                                                      const onMouseMove = event => {
+                                                        updateZoom(event.clientX, event.clientY);
+                                                      }
+                                                      const onMouseUp = event => {
+                                                        document.removeEventListener("mouseup", onMouseUp);
+                                                        document.removeEventListener("mousemove", onMouseMove);
+                                                        endZoom();
+                                                      }
+                                                      onMouseMove(event.clientX, event.clientY);
+                                                      document.addEventListener("mouseup", onMouseUp);
+                                                      document.addEventListener("mousemove", onMouseMove);
+                                                    }
+                                                  }
+
+                                                }
+
+
                                               }
                                             };
                                           }
