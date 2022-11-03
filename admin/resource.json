@@ -55,7 +55,12 @@
     {
       "id":"carousel",
       "header": {
-        "title": "Carousel"
+        "title": "Carousel",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {
         "width": "40em"
@@ -80,63 +85,15 @@
             "orderby": "jeux",
             "type": "modalHandle",
             "value": ["?", ["=", ["getParam", "language"], "en"], ["get", "string", "jeux-en"], ["get", "string", "jeux"]]
-          },
-          {
-            "type": "input",
-            "key": "noinv",
-            "label": "noinv"
-          },
-          {
-            "type": "text",
-            "label": "Date",
-            "value": ["date", ["get", "string", "date"]],
-            "orderby": "date",
-            "order": "desc",
-            "sortable": true
           }
         ],
         "modal": {
           "children": [
             {
-              "type": "textarea",
-              "key": "titre",
-              "label": "titre",
-              "translatable" : true,
-              "hidden": true
-            },
-            {
-              "type": "textarea",
-              "key": "auteur",
-              "label": "auteur",
-              "translatable" : true,
-              "hidden": true
-            },
-            {
-              "type": "textarea",
-              "key": "denom",
-              "label": "denom",
-              "translatable" : true,
-              "hidden": true
-            },
-            {
               "type": "input",
               "key": "jeux",
               "label": "jeux",
               "translatable" : true
-            },
-            {
-              "type": "textarea",
-              "key": "dimension",
-              "label": "dimension",
-              "translatable" : true,
-              "hidden": true
-            },
-            {
-              "type": "textarea",
-              "key": "technique",
-              "label": "technique",
-              "translatable" : true,
-              "hidden": true
             },
             {
               "type": "array",
@@ -157,24 +114,6 @@
                   "translatable" : true
                 }
               ]
-            },
-            {
-              "type": "textarea",
-              "key": "note",
-              "label": "note",
-              "input": {
-                "style": "height:20em"
-              },
-              "translatable" : true
-            },
-            {
-              "type": "gallery",
-              "label": "Gallery",
-              "key": "images",
-              "table": "files",
-              "driver": "files",
-              "joins": [],
-              "parent": "4"
             }
           ]
         }
@@ -237,7 +176,12 @@
     {
       "id": "users",
       "header": {
-        "title": "Users"
+        "title": "Users",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {
         "width": "25em"
@@ -276,7 +220,12 @@
     {
       "id": "files",
       "header": {
-        "title": "Media Library"
+        "title": "Media Library",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {
         "width": "25em"
@@ -368,7 +317,12 @@
     {
       "id": "stories",
       "header": {
-        "title": "Stories"
+        "title": "Stories",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {
         "width": "40em"
@@ -633,7 +587,12 @@
     {
       "id": "sports",
       "header": {
-        "title": "Sports"
+        "title": "Sports",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {
 
@@ -700,7 +659,12 @@
     {
       "id": "countries",
       "header": {
-        "title": "Countries"
+        "title": "Countries",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {
       },
@@ -779,7 +743,12 @@
     {
       "id": "games",
       "header": {
-        "title": "Games"
+        "title": "Games",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {},
       "body": {
@@ -850,7 +819,12 @@
     {
       "id": "gameGroups",
       "header": {
-        "title": "Game Groups"
+        "title": "Game Groups",
+        "children": [
+          "title",
+          "count",
+          "pagination"
+        ]
       },
       "modal": {},
       "body": {
@@ -925,8 +899,7 @@
           {
             "type": "title",
             "value": "Stories Options"
-          },
-          "close"
+          }
         ]
       },
       "body": {

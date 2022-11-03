@@ -135,9 +135,9 @@ class Stories {
 
           this.stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
 
-          if (this.stories.length < 10) {
+          if (this.stories.length < 13) {
 
-            this.stories = [0,1,2,3,4,5,6,7,8,9].map(index => this.stories[index%this.stories.length]);
+            this.stories = [0,1,2,3,4,5,6,7,8,9,10,11,12].map(index => this.stories[index%this.stories.length]);
 
           }
 
@@ -201,6 +201,7 @@ class Stories {
                             child: {
                               tag: "img",
                               init: img => {
+                                img.element.draggable = false;
                                 img.element.src = "/uploads/" + file.filename;
                               }
                             },
@@ -334,6 +335,7 @@ class Stories {
                                 const medias = story.medias || [];
                                 let currentMedia = 0;
 
+
                                 let x = index - this.nextSlide;
 
                                 while (x < -1) {
@@ -342,6 +344,9 @@ class Stories {
                                 while (x > this.stories.length - 2) {
                                   x -= this.stories.length;
                                 }
+
+                                // const n = this.stories.length;
+                                // let x = ((index - this.nextSlide)%n + n)%n;
 
                                 // slide.element.style.transform = `translate(${x*100}%, 0)`;
                                 slide.element.style.opacity = x === 0 ? "1" : "0";
@@ -426,11 +431,11 @@ class Stories {
                                                           child: {
                                                             tag: "img",
                                                             init: async img => {
+                                                              img.element.draggable = false;
                                                               const countryId = story.country && story.country[0];
                                                               const country = countryId && this.countries.find(country => country.id === countryId);
                                                               const fileId = country && country.image;
                                                               const file = fileId && this.filesDirectory[fileId];
-                                                              console.log(countryId, country, fileId, file);
                                                               if (file) {
                                                                 img.element.src = "/uploads/" + file.filename;
                                                               }
@@ -518,6 +523,7 @@ class Stories {
                                                                   child: {
                                                                     tag: "img",
                                                                     init: img => {
+                                                                      img.element.draggable = false;
                                                                       img.element.src = "/images/Olympic_Rings_black.svg";
                                                                     }
                                                                   }
@@ -628,6 +634,9 @@ class Stories {
                                                     div.children = [
                                                       {
                                                         tag: "img",
+                                                        init: img => {
+                                                          img.element.draggable = false;
+                                                        },
                                                         update: img => {
                                                           const size = file.sizes.find(size => size.key === "medium");
                                                           if (!img.element.src.endsWith(size.filename)) {
@@ -685,6 +694,7 @@ class Stories {
                                                       init: img => {
                                                         const size = file.sizes.find(size => size.key === "thumb");
                                                         img.element.src = "/uploads/" + size.filename;
+                                                        img.element.draggable = false;
                                                       }
                                                     };
                                                   } else if (file && file.type.startsWith("video")) {
@@ -772,27 +782,46 @@ class Stories {
                         return {
                           class: "pagination-thumb",
                           update: thumb => {
+
+                            // const n = this.stories.length;
+                            //
+                            // let x = ((index - this.nextSlide)%n + n)%n - 6;
+
                             let x = index - this.nextSlide;
 
-                            while (x < -4) {
+                            while (x < -6) {
                               x += this.stories.length;
                             }
-                            while (x > this.stories.length - 5) {
+                            while (x > this.stories.length - 7) {
                               x -= this.stories.length;
                             }
 
-                            thumb.element.classList.toggle("index-0", x === -4);
-                            thumb.element.classList.toggle("index-1", x === -3);
-                            thumb.element.classList.toggle("index-2", x === -2);
-                            thumb.element.classList.toggle("index-3", x === -1);
-                            thumb.element.classList.toggle("index-4", x === 0);
-                            thumb.element.classList.toggle("index-5", x === 1);
-                            thumb.element.classList.toggle("index-6", x === 2);
-                            thumb.element.classList.toggle("index-7", x === 3);
-                            thumb.element.classList.toggle("index-8", x === 4);
+                            // thumb.element.classList.toggle("index-0", x === -4 || x === -5 || x === -6);
+                            // thumb.element.classList.toggle("index-1", x === -3);
+                            // thumb.element.classList.toggle("index-2", x === -2);
+                            // thumb.element.classList.toggle("index-3", x === -1);
+                            // thumb.element.classList.toggle("index-4", x === 0);
+                            // thumb.element.classList.toggle("index-5", x === 1);
+                            // thumb.element.classList.toggle("index-6", x === 2);
+                            // thumb.element.classList.toggle("index-7", x === 3);
+                            // thumb.element.classList.toggle("index-8", x === 4 || x === 5 || x === 6);
+
+                            thumb.element.classList.toggle("index-0", x === -6);
+                            thumb.element.classList.toggle("index-1", x === -5);
+                            thumb.element.classList.toggle("index-2", x === -4);
+                            thumb.element.classList.toggle("index-3", x === -3);
+                            thumb.element.classList.toggle("index-4", x === -2);
+                            thumb.element.classList.toggle("index-5", x === -1);
+                            thumb.element.classList.toggle("index-6", x === 0);
+                            thumb.element.classList.toggle("index-7", x === 1);
+                            thumb.element.classList.toggle("index-8", x === 2);
+                            thumb.element.classList.toggle("index-9", x === 3);
+                            thumb.element.classList.toggle("index-10", x === 4);
+                            thumb.element.classList.toggle("index-11", x === 5);
+                            thumb.element.classList.toggle("index-12", x === 6);
 
                             // thumb.element.style.transform = `translate(${50+x*10}%, 0)`;
-                            thumb.element.classList.toggle("hidden", x > 4);
+                            thumb.element.classList.toggle("hidden", x > 6);
                             thumb.element.classList.toggle("current", x === 0);
 
                             thumb.element.onclick = event => {
@@ -804,6 +833,8 @@ class Stories {
                               thumb.child = {
                                 tag: "img",
                                 init: img => {
+                                  img.element.draggable = false;
+
                                   const media = story.medias && story.medias[0];
                                   if (media) {
                                     // const file = this.files.find(file => media.file && media.file.includes(file.id));

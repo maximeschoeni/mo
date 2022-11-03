@@ -659,43 +659,58 @@ body {
 }
 
 .pagination .pagination-thumb.index-0 {
-  transform: translateX(1.48em);
+  transform: translateX(-2.12em);
   opacity: 0
 }
 .pagination .pagination-thumb.index-1 {
+  transform: translateX(-0.32em);
+  opacity: 0
+}
+.pagination .pagination-thumb.index-2 {
+  transform: translateX(1.48em);
+  opacity: 0
+}
+.pagination .pagination-thumb.index-3 {
   transform: translateX(3.28em);
   opacity: 0.25;
 }
-.pagination .pagination-thumb.index-2 {
+.pagination .pagination-thumb.index-4 {
   transform: translateX(5.08em);
   opacity: 0.5;
 }
-.pagination .pagination-thumb.index-3 {
+.pagination .pagination-thumb.index-5 {
   transform: translateX(6.88em);
   opacity: 0.75;
 }
-.pagination .pagination-thumb.index-4 {
+.pagination .pagination-thumb.index-6 {
   transform: translateX(8.68em) scale(1.2759);
 }
-.pagination .pagination-thumb.index-5 {
+.pagination .pagination-thumb.index-7 {
   transform: translateX(10.88em);
   opacity: 0.75;
 }
-.pagination .pagination-thumb.index-6 {
+.pagination .pagination-thumb.index-8 {
   transform: translateX(12.68em);
   opacity: 0.5;
 }
-.pagination .pagination-thumb.index-7 {
+.pagination .pagination-thumb.index-9 {
   transform: translateX(14.48em);
   opacity: 0.25;
 }
-.pagination .pagination-thumb.index-8 {
+.pagination .pagination-thumb.index-10 {
   transform: translateX(16.28em);
   opacity: 0;
 }
+.pagination .pagination-thumb.index-11 {
+  transform: translateX(18.08em);
+  opacity: 0;
+}
+.pagination .pagination-thumb.index-12 {
+  transform: translateX(19.88em);
+  opacity: 0;
+}
 
-
-.pagination .pagination-thumb.index-4::before {
+.pagination .pagination-thumb.index-6::before {
   content: "";
   position: absolute;
   width: 0.1em;

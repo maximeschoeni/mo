@@ -81,11 +81,15 @@ class Screen {
 
             this.player.onRenderSlide = (slide, x) => {
 
+              const diff = Math.abs(x);
+
               const tx = x*40;
               const ty = Math.abs(x)*5;
               const tz = -Math.abs(x)*5 - 2;
               const ry = -x*5;
               const opacity = Math.max(0, 1-Math.abs(x)*0.25);
+
+              slide.element.style.display = diff > 4 ? "none": "flex";
 
               slide.element.style.filter = "brightness("+opacity.toFixed(4)+")" ;
               slide.element.style.transform = "translate3D("+tx.toFixed(4)+"em, "+ty.toFixed(4)+"em, "+tz.toFixed(4)+"em) rotateY("+ry.toFixed(4)+"deg)";
