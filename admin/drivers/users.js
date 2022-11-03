@@ -107,11 +107,11 @@ exports.users = class {
 
           case "name":
             // -> as string
-            row[key] = body[key].toString();
+            row[key] = body[key][0].toString();
             break;
 
           case "password":
-            row.password = crypto.createHash("sha256").update(body.password).digest("hex");
+            row.password = crypto.createHash("sha256").update(body.password[0]).digest("hex");
             break;
 
         }
@@ -184,7 +184,10 @@ exports.users = class {
 
       const id = await this.add({trash: false});
 
-      await this.update(body, id);
+      await this.update({
+        name: [name],
+        password: [password]
+      }, id);
 
       return this.login(body);
 
