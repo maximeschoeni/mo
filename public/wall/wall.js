@@ -15,6 +15,15 @@ class Wall {
       next: 0
     };
 
+    this.cache = {};
+
+  }
+
+  async fetchImages(query) {
+    if (!this.cache[query]) {
+      this.cache[query] = await fetch("/query/"+query).then(response => response.json());
+    }
+    return this.cache[query];
   }
 
   loadImage(filename) {
@@ -30,7 +39,7 @@ class Wall {
 
   async getMedias() {
 
-    const files = await fetch("/query/files?parent=4").then(response => response.json());
+    const files = await this.fetchImages("files");
     const medias = [];
 
     for (let file of files) {
@@ -55,7 +64,7 @@ class Wall {
 
   async getThumbs() {
 
-    const files = await fetch("/query/files?parent=2").then(response => response.json());
+    const files = await this.fetchImages("files?parent=2");
 
     const thumbs = [];
 
