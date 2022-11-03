@@ -107,11 +107,11 @@ exports.users = class {
 
           case "name":
             // -> as string
-            row[key] = body[key][0].toString();
+            row[key] = body[key].toString();
             break;
 
           case "password":
-            row.password = crypto.createHash("sha256").update(body.password[0]).digest("hex");
+            row.password = crypto.createHash("sha256").update(body.password).digest("hex");
             break;
 
         }
