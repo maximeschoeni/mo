@@ -1,0 +1,1708 @@
+
+/* Variables
+--------------------------------------*/
+
+.karma-fields {
+
+  --background-color: #f0f0f1;
+  --selected-color: #484848;
+  --active-color: white;
+  --disabled-color: #c3c4c7;
+  --primary-color: #484848;
+  --frame-border-color: black;
+  --link-active-color: #484848;
+  --link-hover-color: #484848;
+
+  --modified-color: #dadada;
+
+  --gap-width: 0.75em;
+
+}
+
+
+/* Table selection TA
+--------------------------------------*/
+
+.karma-grid-ta {
+  position: fixed;
+  z-index: 99999;
+  top: 0; /*-1000px;*/
+}
+
+
+/* WP Layout
+--------------------------------------*/
+
+.karma-fields-post {
+  /* padding: 12px;
+  margin: -6px -12px -12px;
+  background-color: var(--background-color); */
+}
+.postbox .karma-fields {
+  --background-color: white;
+}
+
+body.karma-table-open {
+  overflow: hidden;
+}
+
+
+
+/* Loading
+--------------------------------------*/
+
+/* .karma-fields .loading, */
+/* .karma-fields .editing, */
+.karma-fields .table-loading .table-control
+{
+  background-color: var(--background-color) !important;
+  background-image: repeating-linear-gradient(60deg, transparent 0 25%, #0000000a 25% 50%);
+
+  background-size: 10em 17.4em;
+  animation: slide 4s infinite linear;
+  color: #e8e8e8 !important;
+  border-color: var(--disabled-color) !important;
+}
+
+@keyframes slide {
+	100% {
+		background-position-x: -10em;
+	}
+}
+
+.karma-fields .loading:not(:focus),
+.karma-fields .editing:not(:focus) {
+  color: var(--disabled-color) !important;
+  border-color: var(--disabled-color) !important;
+  outline-color: var(--disabled-color) !important;
+}
+
+
+/* Fields
+--------------------------------------*/
+
+
+.karma-field-frame {
+  /* background-color: var(--background-color); */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.karma-field-frame.hidden {
+  display: none !important;
+}
+.karma-field-container {
+  gap: var(--gap-width);
+}
+.karma-fields label {
+  font-weight: bold;
+  font-size: 1em;
+  line-height: 1.08em;
+  vertical-align: baseline;
+  margin: 0 0 0.33em;
+  display: block;
+}
+.karma-field-container.disabled label {
+  color: var(--disabled-color);
+}
+.karma-field-container.display-block>.karma-field-frame {
+  flex-grow: 0;
+}
+
+
+
+/* shadow boxes */
+.navigation,
+.table-main-header,
+.table-footer,
+/* .table-modal, */
+.karma-modal,
+.table-modal-header,
+.karma-field-table-section {
+  box-shadow: 0 0 8px 0px #4848487a;
+  outline: 1px solid var(--frame-border-color);
+  position: relative;
+}
+.karma-field-table-section {
+  z-index: 2;
+}
+.table-main-header,
+.table-modal-header {
+  z-index: 3;
+}
+/* .table-modal {
+  z-index: 4;
+} */
+.table-footer {
+  z-index: 5;
+}
+.navigation {
+  z-index: 8;
+}
+
+/* gap */
+.karma-fields .karma-field-table,
+.karma-fields .karma-field-table .table-body,
+.karma-fields .karma-field-table .table-body .table-main,
+.karma-fields .karma-field-table .karma-modal {
+  /* gap: 1px; */
+}
+
+
+
+
+/* Table
+--------------------------------------*/
+
+
+.karma-fields * {
+  box-sizing: border-box;
+}
+.karma-fields .hidden {
+  display: none !important;
+}
+.karma-fields .popup {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  overflow: hidden;
+}
+.karma-fields .popup-content {
+  flex-grow: 1;
+  display: flex;
+  min-width: 0;
+
+  background-color: var(--background-color);
+}
+.karma-fields .navigation {
+  /* display: flex; */
+  flex-shrink: 0;
+  width: 10em;
+  /* padding: var(--gap-width); */
+  background-color: var(--background-color);
+}
+.karma-fields .navigation .karma-field-container {
+  flex-grow: 1;
+}
+
+.karma-fields .navigation ul {
+  margin: 0;
+}
+.karma-fields .navigation ul li {
+  border-bottom: 1px solid var(--selected-color);
+}
+.karma-fields .navigation ul li:last-child {
+  border-bottom: none;
+}
+.karma-fields .navigation ul {
+  border-top: 1px solid var(--selected-color);
+  border-bottom: 1px solid var(--selected-color);
+}
+.karma-fields .navigation .karma-field-menu:first-child ul {
+  border-top: none;
+}
+.karma-fields .navigation .karma-field-menu:last-child ul {
+  border-bottom: none;
+}
+.karma-fields .navigation ul li a {
+  color: var(--selected-color);
+  padding: var(--gap-width);
+  display: block;
+}
+.karma-fields .navigation ul li:hover>a {
+  color: black;
+}
+.karma-fields .navigation ul li.active>a {
+  color: var(--background-color);
+  background-color: var(--selected-color);
+
+  /* text-decoration: none; */
+}
+.karma-fields .navigation ul li ul {
+  padding: 0 0 0 var(--gap-width);
+  border: none;
+}
+.karma-fields .navigation ul li ul li {
+  border: none;
+}
+.karma-fields .tables {
+  flex-grow: 1;
+  display: flex;
+  min-width: 0;
+}
+.karma-fields .table-container {
+  flex-grow: 1;
+  display: flex;
+  min-width: 0;
+}
+
+.karma-field-table {
+  margin-right: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.karma-fields .karma-field-table .table-body {
+  overflow: hidden;
+  flex-grow: 1;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+}
+/* .karma-fields .karma-field-table .table-body .table-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+} */
+.karma-fields .karma-header {
+  background-color: var(--background-color);
+}
+.karma-fields .karma-header .karma-field-container {
+  flex-grow: 1;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow: hidden;
+}
+.karma-fields .karma-header .karma-field-container .karma-field-frame {
+  justify-content: center;
+}
+
+
+.karma-fields .karma-field-table h1 {
+  margin: 0;
+  font-size: 1.5em;
+  line-height: 1.15em;
+}
+.karma-fields button.hidden {
+  display: none;
+}
+.karma-fields .karma-field-table .karma-field-table-section {
+  flex-grow: 0;
+  padding: var(--gap-width);
+  background-color: var(--background-color);
+}
+.karma-fields .karma-field-table-grid-container {
+  overflow: auto;
+  padding: var(--gap-width);
+  flex-grow: 1;
+}
+.karma-fields .karma-field-table .table-main-header {
+  display: flex;
+  flex-shrink: 0;
+  padding: var(--gap-width);
+}
+.karma-fields .karma-field-table.loading .karma-field-frame {
+  background-color: var(--background-color);
+}
+.karma-fields .karma-field-table .table-main-header .header-tab a {
+  cursor: pointer;
+}
+.karma-fields .karma-field-table .table-main-header .header-tab.active a {
+  color: black;
+}
+
+
+/* Table Modal */
+
+.karma-fields .karma-field-table .table-body-columns {
+  display: flex;
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.karma-fields .karma-field-table .table-body-columns .table-body-column.table-content {
+  flex-grow: 1;
+  display: flex;
+}
+
+.karma-fields .karma-field-table .table-body .table-body-column.table-modal {
+  display: flex;
+  flex-shrink: 0;
+  min-width: 0;
+  order: 2;
+  width: 0;
+  transition: width 200ms;
+}
+.karma-fields .karma-field-table .karma-modal {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  flex-grow: 1;
+  padding: var(--gap-width);
+}
+
+
+
+/* Table Control */
+.karma-fields .karma-field-table .table-control {
+  /* background-color: #f1f1f1; */
+  padding: var(--gap-width);
+}
+
+
+
+
+
+
+
+/* .karma-fields .karma-field-table .table-modal .modal-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  bottom: 0;
+  width: 10px;
+  z-index: 10;
+  cursor: col-resize;
+  user-select: none;
+}
+.karma-fields .karma-field-table .table-body .karma-modal .table-modal-header {
+  display: flex;
+  overflow: auto;
+  padding: var(--gap-width);
+  flex-shrink: 0;
+}
+.karma-fields .karma-field-table .table-body .karma-modal .table-modal-header>.karma-field-container {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.karma-fields .karma-field-table .table-body .karma-modal .table-modal-body {
+  display: flex;
+  overflow: auto;
+  padding: var(--gap-width);
+  flex-grow: 1;
+  flex-direction: column;
+}
+ */
+
+
+
+/* Table Grid
+--------------------------------------*/
+
+.karma-fields .table {
+  display: grid;
+  grid-gap: 1px;
+  margin: 2em 0;
+  /* background-color: black; */
+
+  /* width: max-content;
+  height: max-content; */
+
+  position: relative;
+}
+
+.karma-fields .table.filled {
+  /* border: 1px solid black; */
+}
+.karma-fields .table .th,
+.karma-fields .table .td {
+  box-sizing: border-box;
+  text-align: left;
+  padding: 0;
+  display: flex;
+  outline: 1px solid black !important; /* override loading */
+}
+.karma-fields .table .th {
+  background-color: var(--background-color);
+  font-weight: bold;
+
+  min-height: 3.5em;
+  min-width: 3em;
+
+  gap: var(--gap-width);
+  padding: 0 var(--gap-width);
+}
+
+.karma-fields .table .td {
+  min-height: 3.5em;
+
+  background-color: var(--background-color);
+  position: relative;
+}
+/* .karma-fields .table .td::after {
+  font-family: dashicons;
+  position: absolute;
+  font-size: 1.5em;
+  top: 0.2em;
+  right: 0.2em;
+  color: #0000002b;
+}
+.karma-fields .table .td.modified::after {
+  content: "";
+  background-color: #0000002b;
+  border-radius: 50%;
+  width: 0.6em;
+  height: 0.6em;
+} */
+.karma-fields .table .td.modified {
+  background-color: var(--modified-color);
+}
+.karma-fields .table .td.selected {
+  background-color: var(--disabled-color);
+}
+.karma-fields .table .td.selecting,
+.karma-fields .clipboard:focus + .table .td.selected:not(.selecting-cell) {
+  background-color: var(--selected-color);
+  color: var(--background-color);
+}
+.karma-fields .table .td.selecting-cell {
+  background-color: white;
+}
+.karma-fields .table .td .modal-btn {
+  cursor: cell;
+}
+.karma-fields .clipboard:focus + .table .td.active-row .modal-btn {
+  cursor: pointer;
+}
+
+.karma-fields .table .td.modified {
+  color: black;
+}
+.karma-fields .table .td > div {
+  display: flex;
+  width: 100%;
+}
+
+.karma-field-table.table-loading .table {
+  /* opacity: 0.333;
+  filter: grayscale(1); */
+}
+
+.karma-field-table .table .td.loading {
+  /* opacity: 0.333;
+  filter: grayscale(1); */
+  /* color: var(--disabled-color); */
+}
+
+.karma-field-table .table ::selection {
+  background-color: var(--background-color);
+}
+
+
+
+/* Table Grid Header
+--------------------------------------*/
+
+.karma-fields .table .th a {
+  color: inherit;
+  /* padding: 0 0 0 var(--gap-width); */
+  /* font-size: 1em;
+  line-height: 1.08em; */
+
+  display: flex;
+  align-items: center;
+}
+.karma-fields .table .th a:first-child {
+  flex-grow: 1;
+}
+.karma-fields .table .th a:last-child {
+  /* padding: 0 var(--gap-width); */
+}
+.karma-fields .table .th a.header-cell-order {
+  cursor: pointer;
+}
+.karma-fields .table .th a.header-cell-order .dashicons {
+  /* font-size: 1.5em; */
+}
+.karma-fields .table .th a.header-cell-order .dashicons-sort,
+.karma-fields .table .th a.header-cell-order .dashicons-leftright {
+  opacity: 0.3;
+}
+.karma-fields .table .th a.header-cell-order:hover .dashicons-sort,
+.karma-fields .table .th a.header-cell-order:hover .dashicons-leftright {
+  opacity: 1;
+}
+.karma-fields .table .th a.header-cell-order .dashicons-leftright {
+  transform: rotate(90deg);
+}
+
+
+
+/* Table Medias
+--------------------------------------*/
+
+.karma-field-table figure {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.karma-field-table figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  -webkit-user-drag: none;
+}
+
+.karma-field-table ul.media-table {
+  display: flex;
+  gap: var(--gap-width);
+  flex-wrap: wrap;
+  align-self: flex-start;
+  align-items: flex-start;
+  margin: 0;
+  padding: 2em 0;
+  position: relative; /* needed for children offset calculation */
+
+  flex-grow: 1;
+  width: 100%;
+  /* min-height: 100%; */  /* -> for droping files */
+}
+.karma-field-table ul.media-table li {
+  margin: 0;
+  transition: transform 200ms;
+}
+.karma-field-table ul.media-table li.exit {
+  order: -1;
+}
+.karma-field-table ul.media-table:not(.has-selection) li.exit {
+  /* cursor: pointer; */
+}
+.karma-field-table ul.media-table:not(.has-selection) li.exit .frame {
+  /* background-color: var(--selected-color); */
+}
+.karma-field-table ul.media-table.has-selection li.exit .frame figure::before {
+  /* color: var(--disabled-color); */
+}
+.karma-field-table ul.media-table li.exit:hover .frame {
+  /* background-color: white; */
+}
+.karma-field-table ul.media-table li.exit .frame figure::before {
+
+}
+.karma-field-table ul.media-table li.exit:hover .frame figure::before {
+  /* color: #a5a5a5; */
+}
+
+.karma-field-table ul.media-table li.uploading .frame figure::before {
+  animation: 666ms linear 0s infinite alternate blink;
+}
+
+.karma-field-table .media-table .frame {
+  position: relative;
+  user-select: none;
+  /* background-color: #f1f1f1; */
+  width: 10em;
+  height: 12em;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.karma-field-table .media-table .selected .frame {
+  background-color: var(--disabled-color);
+}
+.karma-field-table .clipboard:focus + .media-table .selected .frame,
+.karma-field-table .media-table .selecting .frame {
+  background-color: var(--selected-color);
+}
+.karma-field-table .media-table .selecting .frame figure,
+.karma-field-table .clipboard:focus + .media-table .selected .frame figure {
+  filter: saturate(0.5) opacity(0.5);
+}
+.karma-field-table .media-table.loading .frame figure {
+  filter: saturate(0) opacity(0.2);
+}
+.karma-field-table .media-table .frame.loading figure {
+  visibility: hidden;
+}
+
+.karma-field-table .media-table.dragging {
+  z-index: 9999999;
+}
+.karma-field-table .media-table.dragging li {
+  transition: none;
+}
+.karma-field-table .media-table li.selected {
+  cursor: grab;
+}
+.karma-field-table .media-table li.drag {
+  z-index: 99999999;
+  cursor: grabbing;
+  opacity: 0.8;
+}
+.karma-field-table .media-table li.media-dropzone  {
+  transition: background-color 100ms;
+}
+.karma-field-table .media-table li.media-dropzone.drop-active:not(.drag) {
+  background-color: white;
+}
+.karma-field-table .media-table li.media-dropzone .frame figure::before {
+  transition: transform 100ms;
+}
+.karma-field-table .media-table li.media-dropzone.drop-active:not(.drag) .frame figure::before {
+  background-color: white;
+  transform: scale(1.2);
+}
+
+.karma-field-table .media-table .frame .file-caption {
+  display: flex;
+  align-items: center;
+  min-height: 2em;
+}
+.karma-field-table .media-table .frame .filename {
+  padding: 0 var(--gap-width);
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+}
+.karma-field-table .media-table .frame.active .file-caption {
+  background-color: var(--disabled-color);
+  color: var(--background-color);
+}
+.karma-field-table .media-table .selecting .frame .file-caption,
+.karma-field-table .clipboard:focus + .media-table .selected .frame .file-caption {
+  background-color: var(--selected-color);
+  color: var(--background-color);
+}
+
+.karma-field-table .media-table figure {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Folder */
+.karma-field-table .media-table figure.dashicons-category {
+  /* border: 1px solid #484848; */
+}
+.karma-field-table .media-table figure.dashicons::before {
+  font-size: 6em;
+  color: #a5a5a5;
+}
+.karma-field-table .media-table figure.dashicons-category::before {
+  /* color: #7da4c5; */
+}
+
+
+/* Breadcrumb */
+ul.karma-breadcrumb {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+}
+ul.karma-breadcrumb li {
+  margin: 0;
+}
+ul.karma-breadcrumb li:not(:last-child)::after {
+  content: ">";
+  margin: 0 0.5em;
+}
+ul.karma-breadcrumb li a {
+  cursor: pointer;
+}
+ul.karma-breadcrumb li a.active {
+  color: var(--link-active-color);
+}
+ul.karma-breadcrumb li a:hover {
+  /* text-decoration: underline; */
+  color: var(--link-hover-color);
+}
+
+/* Media description */
+.karma-field-table .media-description .karma-field-frame {
+  max-width: 100%;
+}
+.karma-field-table .media-description .karma-field-frame img,
+.karma-field-table .media-description .karma-field-frame video {
+  max-width: 100%;
+}
+.karma-field-table .media-description .filename .value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* Buttons
+--------------------------------------*/
+
+.karma-field-frame.karma-field-button {
+  min-width: 2em;
+  flex-shrink: 0;
+}
+
+button.karma-button {
+  color: var(--frame-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5em;
+  min-width: 2.5em;
+  padding: 0;
+  background-color: var(--background-color);
+  box-shadow: none;
+  text-shadow: none;
+  border-radius: 3px;
+  font-size: 1em;
+  line-height: 1.08em;
+  position: relative;
+  border: 1px solid var(--frame-border-color);
+  cursor: pointer;
+}
+button.karma-button .text {
+  padding: 0 var(--gap-width);
+}
+button.karma-button .dashicons {
+  padding: 0 0.625em;
+  line-height: 1em;
+  font-size: 1.2em;
+  height: auto;
+  width: auto;
+  transition: none;
+}
+button.karma-button.primary {
+  background-color: var(--frame-border-color);
+  border-color: var(--frame-border-color);
+  color: var(--background-color);
+  box-shadow: none;
+}
+button.karma-button.active,
+button.karma-button:hover,
+button.karma-button:focus {
+  box-shadow: none;
+  outline: none;
+}
+button.karma-button:hover:not(.loading,.editing),
+button.karma-button.active:not(.loading,.editing),
+button.karma-button:active:not(.loading,.editing) {
+  background-color: white;
+}
+
+button.karma-button:active {
+  border: 1px solid #bbbcc0;
+  color: #bbbcc0;
+}
+
+button.karma-button.primary:hover:not(.loading,.editing),
+button.karma-button.primary.active:not(.loading,.editing),
+button.karma-button.primary:active:not(.loading,.editing),
+button.karma-button.primary:focus:not(.loading,.editing) {
+  background-color: white;
+  color: var(--frame-border-color);
+  box-shadow: none;
+}
+
+button.karma-button[disabled] {
+  color: var(--disabled-color) !important;
+  background-color: var(--background-color) !important;
+  border: 1px solid var(--disabled-color) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  cursor: default;
+}
+.primary[disabled] {
+  background-color: var(--background-color) !important;
+  color: #f1f1f1 !important;
+  border: 1px solid var(--disabled-color) !important;
+}
+
+button.karma-button.loading::after,
+button.karma-button.editing::after {
+  /* content: "..."; */
+}
+
+button.karma-button.primary.loading,
+button.karma-button.primary.editing {
+  background-color: var(--background-color);
+  color: var(--disabled-color);
+  border-color: var(--disabled-color);
+}
+
+button.karma-button.loading .button-content,
+button.karma-button.loading span,
+button.karma-button.editing span {
+  /* visibility: hidden; */
+}
+
+.karma-field-table .grid button.karma-button {
+  height: auto;
+  border: none;
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+
+/* Upload button
+----------------------------------- */
+
+.karma-fields .karma-upload {
+  border: 1px solid var(--frame-border-color);
+  height: 2.5em;
+  min-width: 2.5em;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.karma-fields .karma-upload label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5em;
+  min-width: 2.5em;
+  border-radius: 3px;
+  font-size: 1em;
+  line-height: 1.08em;
+  border: 1px solid var(--frame-frame-border);
+  cursor: pointer;
+  font-weight: normal;
+  padding: 0 var(--gap-width);
+  color: var(--frame-frame-border);
+  margin: 0;
+}
+.karma-fields .karma-upload label:hover {
+  background-color: white;
+}
+.karma-fields .karma-upload label:active {
+  border: 1px solid #bbbcc0;
+  color: #bbbcc0;
+}
+
+
+
+
+
+/* Gallery Field
+------------------------------------------------------- */
+.karma-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-width);
+}
+.karma-gallery.single {
+  align-items: flex-start;
+}
+.karma-gallery .gallery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  outline: 1px solid #3f3f3f;
+  min-height: 9em;
+  min-width: 9em;
+  position: relative;
+}
+.karma-gallery .gallery.focus:not(.has-selected-images)  {
+  background-color: white;
+}
+.karma-gallery .gallery .frame {
+  display: flex;
+  width: 9em;
+  height: 9em;
+}
+.karma-gallery .gallery .frame.loading {
+  opacity: 0.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.karma-gallery .gallery .frame.loading::after {
+  font-family: dashicons;
+  font-size: 5em;
+  content: "\f128";
+
+  animation: 1s linear 0s infinite alternate blink;
+}
+@keyframes blink {
+  from {opacity: 0.2;} to {opacity:1;}
+}
+.karma-gallery .gallery .frame.loading figure {
+  display: none;
+}
+.karma-gallery .gallery.dragging {
+  z-index: 9999999;
+}
+.karma-gallery .gallery.dragging .frame:not(.drag) {
+  transition: transform 200ms;
+}
+.karma-gallery .gallery .frame.selected {
+  cursor: grab;
+}
+.karma-gallery .gallery .frame.drag {
+  z-index: 99999999;
+  cursor: grabbing;
+}
+.karma-gallery .gallery .frame figure {
+  margin: 0;
+  pointer-events: none;
+  user-select: none;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.karma-gallery .gallery .frame figure.dashicons::before {
+  font-size: 6em;
+  color: #a5a5a5;
+}
+.karma-gallery .gallery .frame figure.dashicons-upload::before {
+  animation: 1333ms cubic-bezier(0.37, 0, 0.63, 1) 0s infinite blink2;
+}
+@keyframes blink2 {
+  0% {opacity: 0.4;}
+  50% {opacity: 0.1;}
+  100% {opacity: 0.4;}
+}
+.karma-gallery .gallery .frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.karma-gallery .gallery .frame.selecting,
+.karma-gallery .gallery .frame.selected {
+  background-color: var(--selected-color);
+}
+
+.karma-gallery .gallery .frame.selected img,
+.karma-gallery .gallery .frame.selecting img {
+  filter: saturate(0.5) brightness(0.5);
+}
+.karma-gallery .controls {
+  flex-shrink: 0;
+  flex-grow: 1;
+  display: flex;
+  /* padding: var(--gap-width) 0; */
+}
+.karma-gallery .controls .footer-content {
+  display: flex;
+}
+
+
+
+/* Tags
+--------------------------------------*/
+.karma-tags {
+  display: flex;
+  gap: var(--gap-width);
+  flex-wrap: wrap;
+}
+.karma-tags ul {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-width);
+
+  position: relative;
+}
+.karma-tags ul li {
+  border: 1px solid black;
+  border-radius: 1.25em;
+  padding: 0 var(--gap-width);
+  min-height: 2.5em;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-width);
+}
+.karma-tags ul li.selecting,
+.karma-tags ul li.selected {
+  background-color: var(--selected-color);
+  color: var(--background-color);
+}
+.karma-tags ul li a.close {
+  cursor: pointer;
+}
+.karma-tags ul li:not(.selecting,.selected) a.close {
+  display: none;
+}
+.karma-tags ul li span {
+  user-select: none;
+}
+
+
+/* Text
+--------------------------------------*/
+
+.karma-field-frame.ellipsis {
+  overflow: hidden;
+}
+.karma-field-frame.ellipsis .text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.karma-field-table .table .text {
+  padding: 0 var(--gap-width);
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.karma-field-table .table .text:focus {
+  background-color: white;
+}
+
+/* Tag links
+--------------------------------------*/
+.karma-field-table .table ul.tag-links {
+  flex-direction: column;
+  margin: 0;
+  padding: var(--gap-width);
+  align-items: flex-start;
+  justify-content: center;
+}
+ul.tag-links li {
+  /* margin-right: 0.4em; */
+}
+ul.tag-links li:not(:last-child)::after {
+  /* content: ", "; */
+}
+.karma-field-table .table ul.tag-links a {
+  /* color: var(--selected-color); */
+  color: inherit;
+  text-decoration: underline;
+}
+.karma-field-table .table .selected ul.tag-links a,
+.karma-field-table .table .selecting ul.tag-links a {
+  /* color: white; */
+}
+
+
+/* TinyMCE Field
+--------------------------------------*/
+
+.karma-field.tinymce .editor-content {
+  padding: 1px 10px;
+  box-sizing: border-box;
+  border: 1px solid #7d8993;
+
+  min-height: 150px;
+}
+.karma-field.tinymce .editor-content.mce-edit-focus {
+  outline: 2px solid #7d8993;
+  outline-offset: -2px;
+}
+
+
+
+
+/* Group
+--------------------------------------*/
+
+.karma-fields label {
+  font-weight: bold;
+}
+
+.karma-field-group label {
+  display: block;
+}
+
+.karma-field-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+.karma-field-container.display-flex {
+  flex-direction: row;
+}
+.karma-field-container.display-block {
+  flex-wrap: nowrap;
+}
+.karma-field-container.display-table>.karma-field-frame {
+  flex-direction: row;
+  gap: var(--gap-width);
+  align-items: baseline;
+  justify-content: flex-end;
+}
+
+.karma-field-group {
+  min-width: 260px;
+  flex: 1 1 0;
+  cursor: default; /* when containing array is selected and cursor set to grab */
+}
+
+
+
+/* Separator
+--------------------------------------*/
+.karma-field-separator {
+  flex-grow: 1;
+}
+
+
+/* Array
+--------------------------------------*/
+
+.karma-field-array {
+  flex-grow: 1;
+}
+.karma-fields .array {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-width);
+}
+
+
+.karma-fields .array .array-body {
+  display: grid;
+  grid-gap: 1px;
+  background-color: var(--disabled-color);
+  /* border: 1px solid var(--disabled-color); */
+  /* border-radius: 2px; */
+  min-height: 2em;
+
+  grid-auto-flow: row dense;
+
+  position: relative;
+
+  padding: 1px;
+}
+.karma-fields .array .array-footer {
+  flex-shrink: 0;
+  flex-grow: 1;
+  display: flex;
+  /* padding: var(--gap-width) 0; */
+}
+.karma-fields .array .array-footer .array-footer-content {
+  display: flex;
+}
+
+.karma-fields .array .array-body.empty {
+  display: none;
+}
+.karma-fields .array .th {
+  padding: 5px;
+  font-weight: bold;
+}
+.karma-fields .array .th,
+.karma-fields .array .td {
+  box-sizing: border-box;
+  background-color: white;
+  display: flex;
+  background-color: var(--background-color);
+  transition: transform 100ms;
+  padding: var(--gap-width);
+}
+.karma-fields .array .td.drag {
+  z-index: 99999;
+}
+.karma-fields .array .td.array-index {
+  align-items: flex-start;
+  padding: 1em;
+  min-width: 3em;
+  font-weight: bold;
+}
+.karma-fields .array .td.array-index.grabbing {
+  cursor: grabbing;
+}
+.karma-fields .array .td.array-delete {
+  padding: 1em;
+  align-items: flex-start;
+}
+
+.karma-fields .array .drag {
+  outline: 1px solid var(--disabled-color);
+  transition: none;
+}
+
+.karma-fields .array.dragging {
+  user-select: none;
+}
+
+.karma-fields .array.has-selection .td.selected {
+  cursor: grab;
+}
+.karma-fields .array .td.selected,
+.karma-fields .array .td.selecting,
+.karma-fields .array .td.selected .td,
+.karma-fields .array .td.selecting .td,
+.karma-fields .array .td.selected .th,
+.karma-fields .array .td.selecting .th {
+  background-color: white;
+}
+
+.array .karma-field-frame {
+  min-width: 0;
+}
+
+
+
+
+/* Checkbox
+--------------------------------------*/
+
+.karma-field.checkboxes ul {
+  margin: 2px 0;
+}
+.karma-field.checkboxes ul li,
+.karma-field.checkbox {
+  display: flex;
+  align-items: flex-end;
+}
+.karma-field.checkboxes ul li label,
+.karma-field.checkbox label {
+  font-size: inherit;
+  font-weight: inherit;
+}
+.karma-field .karma-field-checkbox input {
+  margin: 0;
+}
+.karma-field .checkbox-container {
+  display: flex;
+}
+.karma-field .checkbox-container label {
+  margin: 0 0.4em;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1.08em;
+  user-select: none;
+}
+
+
+.karma-field-table .table input[type=checkbox] {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  justify-content: center;
+  border: none;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  background-color: transparent;
+}
+.karma-field-table .table input[type=checkbox]:focus {
+  background-color: white;
+}
+.karma-field-table .table input[type=checkbox]:checked::before {
+  display: block;
+  float: none;
+}
+.karma-fields input[type=checkbox].selected {
+  background-color: white;
+}
+.karma-fields input[type=checkbox]:focus {
+  background-color: white;
+  border-color: var(--disabled-color);
+  box-shadow: none;
+  outline: none;
+}
+
+.karma-field-frame.karma-field-checkbox {
+  grid-template-columns: auto auto auto 1fr;
+  grid-column-gap: 5px;
+}
+
+
+
+/* Dropdown
+--------------------------------------*/
+
+.karma-fields select.karma-field {
+  border-color: var(--frame-frame-border);
+  color: inherit;
+  max-width: 100%;
+  font-size: 1em;
+  min-height: 2.5em;
+  background-color: transparent;
+  padding: 0 2.0em 0 var(--gap-width);
+  /* padding: 0 0.5em 0 0.5em; */
+  margin: 0;
+  box-shadow: none;
+
+  border: none;
+  outline: 1px solid black;
+}
+
+.karma-fields select.karma-field.active:not(.loading,.editing) {
+  background-color: white;
+}
+
+.karma-field-table .table select.karma-field {
+  border: none;
+  margin: 0;
+  border-radius: 0;
+  width: 100%;
+}
+
+
+
+
+/* Input
+--------------------------------------*/
+
+.karma-fields input.text-input,
+.karma-fields textarea {
+  box-shadow: none;
+  box-sizing: border-box;
+  border-color: var(--frame-border-color);
+  border-radius: 0;
+  min-height: 2.5em;
+  max-width: none;
+  font-size: 1em;
+  padding: 0 var(--gap-width);
+  background-color: transparent;
+}
+.karma-fields textarea {
+  padding: var(--gap-width) var(--gap-width);
+}
+.karma-fields .modified input.text-input:not(:focus),
+.karma-fields .modified textarea:not(:focus) {
+  color: black;
+}
+.karma-fields input.text-input:focus,
+.karma-fields textarea:focus {
+  outline: none;
+  background-color: white;
+
+  /* flex-grow: 1; */
+  box-shadow: none;
+  box-sizing: border-box;
+}
+.karma-fields input.text-input:disabled,
+.karma-fields textarea:disabled {
+  border-color: var(--disabled-color);
+}
+.karma-fields  input[type=number] {
+  height: auto;
+}
+.karma-field-input input {
+  margin: 0;
+}
+.karma-fields input[type=number]::-webkit-inner-spin-button {
+  appearance: none;
+}
+.karma-fields input:read-only,
+.karma-fields textarea:read-only {
+  color: #a0a0a0;
+}
+.karma-field-input-datalist {
+  display: flex;
+}
+
+/* Grid + Table Input */
+
+.karma-fields .karma-field-input input.text-input,
+.karma-fields .karma-field-input textarea {
+  flex-grow: 0;
+}
+
+/* Table Input */
+
+.karma-fields .table input.text-input,
+.karma-fields .table textarea {
+  border: none;
+  margin: 0;
+  min-width: 0;
+  width: 100%;
+  min-height: 3em;
+}
+.karma-fields .clipboard:focus + .table .selected input.text-input,
+.karma-fields .clipboard:focus + .table .selected textarea {
+  color: var(--background-color);
+}
+.karma-fields .table textarea {
+  line-height: 1.1em;
+  min-height: 4em;
+}
+
+/* Input Datalist */
+
+.karma-field-input-datalist {
+  display: flex;
+  flex-grow: 1;
+}
+
+/* Clipboard textarea */
+textarea.clipboard {
+  position: fixed;
+  /* width: 1px;
+  height: 0; */
+  padding: 0;
+  border: none;
+  /* opacity: 0.01; */
+  bottom: 0;
+
+  font-size: 1px;
+  width: 1em;
+  height: 1em;
+
+  order: 999;
+
+}
+
+
+/* bulk edit */
+.karma-fields input.multi:focus,
+.karma-fields textarea.multi:focus {
+  background-color: var(--selected-color);
+}
+
+
+/* Input Date
+--------------------------------------*/
+
+.karma-field-date.selected input {
+  background-color: #ffffff;
+}
+.karma-field-date {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.karma-field-date .date-popup-container {
+	/* position: absolute;
+	z-index: 100;
+  top: 100%; */
+}
+.karma-field-date .calendar {
+	position: absolute;
+	bottom: 2px;
+	z-index: 100;
+	width: 100%;
+  min-width: 196px;
+  max-width: 280px;
+	user-select: none;
+  box-shadow: 0 0 8px rgb(0 0 0 / 30%);
+  background: white;
+}
+.karma-field-date .date-popup .calendar {
+  /* padding-bottom: 10px; */
+}
+.karma-field-date .date-popup-container.open-down .calendar {
+	top: 100%;
+	bottom: auto;
+}
+.karma-field-date .date-popup-container.open-left .calendar {
+	right: 0;
+}
+
+/* calendar */
+.karma-field-date .calendar-nav {
+	display: flex;
+  height: 28px;
+}
+.karma-field-date .calendar-nav li.calendar-arrow {
+  align-items: stretch;
+  justify-content: stretch;
+}
+.karma-field-date .calendar-nav .current-month {
+  flex-grow: 1;
+}
+.karma-field-date .calendar-body {
+	display: flex;
+  flex-direction: column;
+}
+.karma-field-date ul {
+	display: flex;
+  margin: 0;
+  height: 28px;
+}
+.karma-field-date ul li {
+	display: flex;
+  justify-content: center;
+  align-items: center;
+	width: 14.2857%; /* 1/7 */
+  margin: 0;
+}
+.karma-field-date ul li a {
+	display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+.karma-field-date ul.calendar-days-title li {
+  font-weight: bolder;
+  font-size: 0.875em;
+  line-height: 1.08em;
+}
+.karma-field-date ul.calendar-days-content {
+  cursor: pointer;
+}
+.karma-field-date ul.calendar-days-content li {
+  justify-content: stretch;
+  align-items: stretch;
+}
+.karma-field-date ul li.offset {
+	cursor: default;
+}
+.karma-field-date ul li.offset a {
+	visibility: hidden;
+}
+.karma-field-date .calendar-arrow:hover,
+.karma-field-date ul li:hover,
+.karma-field-date ul li.today {
+}
+.karma-field-date ul li.today a {
+	text-decoration: underline;
+}
+.karma-field-date ul li:active a,
+.karma-field-date ul li.active a {
+  color: white;
+  background-color: #2271b1;
+}
+.karma-field-date ul li:not(.active).today,
+.karma-field-date ul li:not(.active):hover {
+}
+
+
+
+/* Tiny MCE
+--------------------------------------*/
+
+.karma-field-tinymce label {
+  z-index: 3;
+}
+.karma-tinymce {
+  position: relative;
+}
+.karma-tinymce .editor-header {
+  position: absolute;
+  width: 100%;
+  height: calc(100% + 1px);
+}
+.karma-tinymce .editor-body {
+  padding: 2.6em var(--gap-width) 0;
+  border: 1px solid var(--frame-border-color);
+  border-top: none;
+  min-height: 8em;
+  border-radius: 0;
+}
+.karma-tinymce .editor-body:focus {
+  background-color: white;
+}
+
+/* TOOLBAR */
+.karma-tinymce .editor-header .toolbar {
+  position: sticky;
+  top: calc(-1 * var(--gap-width));
+  background-color: var(--background-color);
+  z-index: 1;
+  /* padding: var(--gap-width); */
+  padding: 0;
+  border: 1px solid var(--frame-border-color);
+}
+.karma-tinymce .editor-header .toolbar .karma-field-container {
+  gap: 1px;
+}
+.karma-tinymce .editor-header .toolbar .karma-field-frame {
+  border-right: 1px solid #0c0c0c;
+  overflow: hidden;
+}
+.karma-tinymce .editor-header .toolbar button,
+.karma-tinymce .editor-header .toolbar select {
+  border: none;
+  outline: none !important;
+  border-radius: 0;
+}
+.karma-tinymce .editor-header .toolbar select:hover {
+  background-color: white;
+}
+
+/* .selected .karma-tinymce .editor-header .toolbar {
+  background-color: white;
+}
+.karma-tinymce.theme-white .editor-header .toolbar {
+  background-color: white;
+}
+.karma-tinymce.theme-white button.karma-button:not(.primary).active,
+.karma-tinymce.theme-white button.karma-button:not(.primary):hover,
+.karma-tinymce.theme-white button.karma-button:not(.primary):focus {
+  background-color: var(--background-color);
+} */
+
+
+/* Links */
+.karma-tinymce .editor-body a[href='#'] {
+  color: black;
+  text-decoration-style: dashed;
+}
+.karma-tinymce .karma-tinymce-popover {
+  border: 1px solid var(--frame-border-color);
+  padding: 0.7692em;
+  position: absolute;
+  background-color: white;
+  top: 0;
+  left: 100px;
+  z-index: 1;
+
+  transition: transform 150ms;
+  transform-origin: top left;
+  transform: scale(0);
+}
+.karma-tinymce .karma-tinymce-popover.active {
+  transform: scale(1);
+}
+
+/* UL/OL */
+.karma-tinymce ul,
+.karma-tinymce ol {
+  padding: 0 2em;
+}
+.karma-tinymce ol {
+  margin-left: 0;
+}
+
+/* Table */
+.karma-tinymce table {
+  border-collapse: collapse;
+}
+.karma-tinymce table td {
+  border: 1px solid var(--frame-border-color);
+}
+
+/* Heading */
+.karma-tinymce .editor-body h1,
+.karma-tinymce .editor-body h2,
+#poststuff .karma-tinymce .editor-body h2, /* wtf? */
+.karma-tinymce .editor-body h3,
+.karma-tinymce .editor-body h4,
+.karma-tinymce .editor-body h5,
+.karma-tinymce .editor-body h6 {
+  font-weight: 600;
+  padding: 0;
+  margin: 1em 0;
+  line-height: 1.2;
+}
+.karma-tinymce .editor-body h1 {
+  font-size: 2.5em;
+}
+.karma-tinymce .editor-body h2,
+#poststuff .karma-tinymce .editor-body h2 { /* wtf? */
+  font-size: 2em;
+}
+.karma-tinymce .editor-body h3 {
+  font-size: 1.5em;
+}
+.karma-tinymce .editor-body h4 {
+  font-size: 1.25em;
+}
+.karma-tinymce .editor-body h5 {
+  font-size: 1.125em;
+}
+.karma-tinymce .editor-body h6 {
+  font-size: 1em;
+}
+
+/* Image */
+.karma-tinymce img {
+  display: block;
+}
+.karma-tinymce img.alignleft {
+  margin-right: 2em;
+}
+.karma-tinymce img.alignright {
+  margin-left: 2em;
+}
+.karma-tinymce img.aligncenter {
+  margin: 0 auto;
+}
