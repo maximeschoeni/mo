@@ -645,44 +645,59 @@ class Screen {
                                 }
                               },
                               {
-                                class: "content",
-                                update: content => {
-                                  content.children = [
-                                    {
-                                      class: "notes",
-                                      children: [
-                                        {
-                                          class: "sections",
-                                          children: (item.medias || []).filter(media => media.text).map(media => {
-                                            return {
-                                              class: "text",
-                                              update: text => {
-                                                const mediaImageId = media.image && media.image[0] || "";
-                                                const key = `text${this.getSuffix()}`;
-                                                text.element.innerHTML = media[key];
-                                                if (media === currentMedia && text.element.offsetTop !== content.element.scrollTop) {
-                                                  // content.element.scrollTo(0, text.element.offsetTop);
-                                                  TinyAnimate.animate(content.element.scrollTop, text.element.offsetTop, 200, value => {
-                                                    content.element.scrollTo(0, value);
-                                                  }, "easeInOutSine");
-                                                }
-                                              }
-                                            }
-                                          })
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      class: "text",
-                                      update: content => {
-                                        content.element.innerHTML = item["note"+this.getSuffix()];
+                                class: "content-wrap",
+                                children: [
+                                  {
+                                    class: "gradient-top"
+                                  },
+                                  {
+                                    class: "content",
+                                    update: content => {
+                                      content.element.parentNode.classList.toggle("scrolled", content.element.scrollTop > 0);
+                                      content.element.onscroll = event => {
+                                        content.element.parentNode.classList.toggle("scrolled", content.element.scrollTop > 0);
                                       }
-                                    },
-                                    {
-                                      class: "placeholder"
+                                      content.children = [
+                                        {
+                                          class: "notes",
+                                          children: [
+                                            {
+                                              class: "sections",
+                                              children: (item.medias || []).filter(media => media.text).map(media => {
+                                                return {
+                                                  class: "text",
+                                                  update: text => {
+                                                    const mediaImageId = media.image && media.image[0] || "";
+                                                    const key = `text${this.getSuffix()}`;
+                                                    text.element.innerHTML = media[key];
+                                                    if (media === currentMedia && text.element.offsetTop !== content.element.scrollTop) {
+                                                      // content.element.scrollTo(0, text.element.offsetTop);
+                                                      TinyAnimate.animate(content.element.scrollTop, text.element.offsetTop, 200, value => {
+                                                        content.element.scrollTo(0, value);
+                                                      }, "easeInOutSine");
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          class: "text",
+                                          update: content => {
+                                            content.element.innerHTML = item["note"+this.getSuffix()];
+                                          }
+                                        },
+                                        {
+                                          class: "placeholder"
+                                        }
+                                      ];
                                     }
-                                  ];
-                                }
+                                  },
+                                  {
+                                    class: "gradient-bottom"
+                                  }
+                                ]
                               }
                             ]
                           }

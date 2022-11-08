@@ -347,7 +347,11 @@ exports.files = class {
 
     const file = await this.get(fileId);
     const extension = path.extname(file.name);
-    const dimensions = sizeOf(ROOT+"/uploads/" + file.name);
+
+    const content = await fs.readFile(ROOT+"/uploads/" + file.name);
+    const dimensions = sizeOf(content);
+
+    // const dimensions = sizeOf(ROOT+"/uploads/" + file.name);
 
     // if (size.width && size.width < dimensions.width || size.height && size.height < dimensions.height) {
 
@@ -382,11 +386,15 @@ exports.files = class {
 
     const handle = await fs.open(ROOT+"/temp/" + body.name, "a");
 
-    await handle.write(file.data, 0);
+    const buff = await handle.write(file.data, 0);
+
+
 
     await handle.close();
 
     if (index + 1 >= total) {
+
+      // console.log(buff);
 
       // let name = await this.findPathname(body.name, body.parent || "0");
       let name = sanitize(body.name);
@@ -426,7 +434,17 @@ exports.files = class {
 
       if (type === "image/jpeg" || type === "image/png") {
 
-        const dimensions = sizeOf(ROOT+"/uploads/" + name);
+        // fs.readFile(filePath, (err, buf) => {
+        //   if (err) ...
+        //   const result = sizeOf(buf);
+        //   console.log(`dim: ${result.width} x ${result.height}`);
+        // });
+
+        const content = await fs.readFile(ROOT+"/uploads/" + name);
+
+        // const dimensions = sizeOf(ROOT+"/uploads/" + name);
+
+        const dimensions = sizeOf(content);
 
         await this.update({
           width: [dimensions.width],
