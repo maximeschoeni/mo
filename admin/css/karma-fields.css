@@ -759,7 +759,7 @@ button.karma-button .text {
   padding: 0 var(--gap-width);
 }
 button.karma-button .dashicons {
-  padding: 0 0.625em;
+  padding: 0 0.5em;
   line-height: 1em;
   font-size: 1.2em;
   height: auto;
@@ -1194,7 +1194,7 @@ ul.tag-links li:not(:last-child)::after {
 }
 .karma-fields .array .td.array-index {
   align-items: flex-start;
-  padding: 1em;
+  padding: var(--gap-width);
   min-width: 3em;
   font-weight: bold;
 }
@@ -1202,7 +1202,7 @@ ul.tag-links li:not(:last-child)::after {
   cursor: grabbing;
 }
 .karma-fields .array .td.array-delete {
-  padding: 1em;
+  padding: var(--gap-width);
   align-items: flex-start;
 }
 

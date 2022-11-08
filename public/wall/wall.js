@@ -16,6 +16,7 @@ class Wall {
     };
 
     this.cache = {};
+    this.options = {};
 
   }
 
@@ -23,6 +24,19 @@ class Wall {
     if (!this.cache[query]) {
       this.cache[query] = await fetch("/query/"+query).then(response => response.json());
     }
+    return this.cache[query];
+  }
+
+  async getOptions() {
+
+    const query = `options/carousel`;
+
+    if (!this.cache[query]) {
+
+      this.cache[query] = await fetch(`/get/${query}`).then(response => response.json());
+
+    }
+
     return this.cache[query];
   }
 
@@ -39,26 +53,52 @@ class Wall {
 
   async getMedias() {
 
-    const files = await this.fetchImages("files");
-    const medias = [];
+    const items = await this.fetchImages("items") || [];
 
-    for (let file of files) {
+    const fileIds = items.reduce((ids, item) => [...ids, ...item.medias.filter(media => media.image && media.image.length).map(media => media.image[0])], []);
 
-      const medium = file.sizes && file.sizes.find(size => size.key === "medium") || file;
-      const src = "/uploads/"+medium.filename;
-      const [mediaType] = file.type.split("/");
+    if (fileIds.length) {
 
-      medias.push({
-        src: src,
-        width: file.width,
-        height: file.height,
-        id: file.id,
-        type: mediaType
-      });
+      const files = await this.fetchImages(`files?ids=${fileIds.join(",")}`);
+
+      const medias = [];
+
+      for (let file of files) {
+
+        // const medium = file.sizes && file.sizes.find(size => size.key === "medium") || file;
+        const src = "/uploads/"+file.filename;
+        const [mediaType] = file.type.split("/");
+        let image;
+
+        if (mediaType === "image") {
+          image = await new Promise(resolve => {
+            const image = new Image(file.width, file.height);
+            image.src = src;
+            image.onload = event => {
+              resolve(image);
+            };
+          });
+        }
+
+
+        medias.push({
+          src: src,
+          width: file.width,
+          height: file.height,
+          id: file.id,
+          type: mediaType,
+          image: image
+        });
+
+      }
+
+      return medias;
 
     }
 
-    return medias;
+
+
+    return [];
 
   }
 
@@ -385,6 +425,7 @@ class Wall {
       class: "wall",
       init: async wall => {
         this.medias = await this.getMedias();
+
         this.thumbs = await this.getThumbs();
         // this.items = this.createItems(this.shuffleArray(this.thumbs));
         this.items = this.createItems(this.thumbs);
@@ -518,65 +559,6 @@ class Wall {
                         const file = media;
                         const isPortrait = Number(file.width)/Number(file.height) < box.width/box.height;
 
-                        // const file = media;
-                        // // const box = {
-                        // //   x: 0,
-                        // //   y: 0,
-                        // //   width: window.innerWidth,
-                        // //   height: window.innerHeight
-                        // // };
-                        // const isPortrait = Number(file.width)/Number(file.height) < box.width/box.height;
-                        // const zoom = 3;
-                        //
-                        // // console.log(box, isPortrait, file);
-                        //
-                        // if (this.eye.data.zoom) {
-                        //
-                        //   let x = this.eye.data.zoomX;
-                        //   let y = this.eye.data.zoomY;
-                        //
-                        //
-                        //   let originX = 100*x;
-                        //   let originY = 100*y;
-                        //
-                        //   if (isPortrait) {
-                        //     // originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/(file.height*box.width) - 1)/(zoom - 1);
-                        //     originY = 50 + (x-0.5)*100*(file.width*box.height*zoom/file.height - box.width)/(box.width*zoom - box.width);
-                        //   } else {
-                        //     originY = 50 + (y-0.5)*100*(file.height*box.width*zoom/file.width - box.height)/(box.height*zoom - box.height);
-                        //   }
-                        //
-                        //   console.log(box, file, isPortrait, originX, originY);
-                        //
-                        //   node.element.style.transformOrigin = `${originX}% ${originY}%`;
-                        //   node.element.style.transform = `scale(${zoom})`;
-                        //
-                        // } else {
-                        //
-                        //   node.element.style.transform = `scale(1)`;
-                        //
-                        // }
-
-                        // const updateZoom = (x, y) => {
-                        //
-                        //   // x = Math.max(Math.min(1, x), 0);
-                        //   // y = Math.max(Math.min(1, y), 0);
-                        //
-                        //   let originX = 100*x;
-                        //   let originY = 100*y;
-                        //
-                        //   if (isPortrait) {
-                        //     // originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/(file.height*box.width) - 1)/(zoom - 1);
-                        //     originY = 50 + (x-0.5)*100*(file.width*box.height*zoom/file.height - box.width)/(box.width*zoom - box.width);
-                        //   } else {
-                        //     originY = 50 + (y-0.5)*100*(file.height*box.width*zoom/file.width - box.height)/(box.height*zoom - box.height);
-                        //   }
-                        //
-                        //   node.element.style.transformOrigin = `${originX}% ${originY}%`;
-                        //   node.element.style.transform = `scale(${zoom})`;
-                        // }
-
-
                         node.children = [{
                           tag: "img",
                           update: img => {
@@ -587,17 +569,7 @@ class Wall {
                               img.element.classList.toggle("portrait", isPortrait);
                             }
 
-
-                            // const box = {
-                            //   x: 0,
-                            //   y: 0,
-                            //   width: window.innerWidth,
-                            //   height: window.innerHeight
-                            // };
-
-                            const zoom = 3;
-
-                            // console.log(box, isPortrait, file);
+                            const zoom = 2;
 
                             if (this.eye && this.eye.data && this.eye.data.zoom) {
 

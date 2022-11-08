@@ -7,6 +7,15 @@ class Screen {
 
     this.screenId = location.hash.slice(1) || "1";
 
+    this.cache = {};
+
+  }
+
+  async fetch(query) {
+    if (!this.cache[query]) {
+      this.cache[query] = await fetch("/query/"+query).then(response => response.json());
+    }
+    return this.cache[query];
   }
 
 
@@ -52,11 +61,12 @@ class Screen {
       init: async screen => {
         this.render = screen.render;
         this.screensaving = true;
-
-        this.items = await fetch("/query/items").then(response => response.json());
-        this.files = await fetch("/query/files").then(response => response.json());
+        // this.items = await fetch("/query/items").then(response => response.json());
+        this.items = await this.fetch("items");
+        const fileIds = this.items.reduce((ids, item) => [...ids, ...item.medias.filter(media => media.image && media.image.length).map(media => media.image[0])], []);
+        // this.files = await fetch("/query/files").then(response => response.json());
+        this.files = await this.fetch(`files?ids=${fileIds.join(",")}`);
         this.filesDirectory = Object.fromEntries(this.files.map(file => [file.id, file]));
-
       },
       children: [
         {
@@ -287,7 +297,7 @@ class Screen {
                                                   let originX = 100*x;
                                                   let originY = 100*y;
 
-                                                  const zoom = 5;
+                                                  const zoom = 2;
 
                                                   if (isPortrait) {
                                                     originX = 50 + (x-0.5)*100*(file.width*box.height*zoom/(file.height*box.width) - 1)/(zoom - 1);

@@ -79,11 +79,20 @@ exports.items = class {
 
       case "name":
       case "title":
-      default:
         rows.sort((a, b) => {
           const value1 = a[orderby] || "";
           const value2 = b[orderby] || "";
           return value1.localeCompare(value2);
+        });
+        break;
+
+      default:
+        rows.sort((a, b) => {
+          const value1 = a.order || 0;
+          const value2 = b.order || 0;
+          if (value1 < value2) return -1;
+          else if (value1 > value2) return 1;
+          return 0;
         });
         break;
 
@@ -112,9 +121,7 @@ exports.items = class {
       rows = rows.slice(offset, offset + ppp);
     }
 
-    if (orderby) {
-      this.sort(rows, orderby);
-    }
+    this.sort(rows, orderby);
 
     if (order === "desc") {
       rows.reverse();
@@ -167,6 +174,11 @@ exports.items = class {
             case "content":
               // -> as string
               row[key] = body[key][0].toString();
+              break;
+
+            case "order":
+              // -> as number
+              row[key] = Number(body[key][0] || 0);
               break;
 
             case "medias":

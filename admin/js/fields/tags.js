@@ -26,6 +26,8 @@ KarmaFieldsAlpha.field.tags = class extends KarmaFieldsAlpha.field {
 
     // const {index: index, length: length} = this.selection || {index: this.resource.insertAt || 99999, length: 0};
 
+    const {index, length} = this.selection || {index: 9999999, length: 0};
+
     const key = this.getKey();
 
     await this.parent.request("fetch", {
@@ -51,7 +53,7 @@ KarmaFieldsAlpha.field.tags = class extends KarmaFieldsAlpha.field {
       },
       ids: selectedIds,
       callback: async inputIds => {
-        await this.insert(inputIds);
+        await this.insert(inputIds, index, length);
       }
     }, key);
 

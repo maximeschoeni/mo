@@ -252,9 +252,13 @@ KarmaFieldsAlpha.field.layout = class extends KarmaFieldsAlpha.field {
 
         const table = this.getTable();
 
-        if (table && table.get) {
+        if (table && table.query) {
 
-          return table.get(content.id);
+          const [result] = await table.query({
+            ids: [content.id]
+          });
+
+          return result;
 
         }
 
@@ -833,8 +837,6 @@ KarmaFieldsAlpha.field.layout = class extends KarmaFieldsAlpha.field {
 
         const table = this.getTable();
 
-        // debugger;
-
         if (table && table.getIds && table.selectionBuffer) {
 
           const selection = table.selectionBuffer.get();
@@ -862,7 +864,7 @@ KarmaFieldsAlpha.field.layout = class extends KarmaFieldsAlpha.field {
 
             if (callback) {
 
-              await callback(inputIds);
+              await callback.call(originTable, inputIds);
 
               this.buffer.remove("transfer-callback", transfer.params.table);
 

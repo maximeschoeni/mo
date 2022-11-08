@@ -38,6 +38,9 @@
 .dashicons-media-default::before {content: "\f498";}
 .dashicons-format-image::before {content: "\f128";}
 
+.dashicons-no-alt::before {content: "\f335";}
+
+
 :focus-visible {
   outline: none;
 }
@@ -71,4 +74,8 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.karma-fields select.karma-field {
+  padding: 0 0 0 0.5em;
 }

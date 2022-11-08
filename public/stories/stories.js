@@ -24,6 +24,10 @@ class Stories {
     "3": "Bronze"
   }
 
+  static player = new VideoPlayer();
+
+  static svgCache = {};
+
   // static getCountryFile(story) {
   //   const id = story.country && story.country[0];
   //   if (id) {
@@ -46,6 +50,13 @@ class Stories {
   //   return "";
   // }
 
+  static async fetchSvg(name) {
+    if (!this.svgCache[name]) {
+      this.svgCache[name] = fetch(`images/${name}`).then(response => response.text());
+    }
+    return this.svgCache[name];
+  }
+
   static screensaverStop() {
     this.screensaving = false;
     if (this.screensaverTimer) {
@@ -54,7 +65,7 @@ class Stories {
     this.screensaverTimer = setTimeout(() => {
       this.screensaving = true;
       this.render();
-    }, 60*1000);
+    }, 60*60*1000);
   }
 
   static translate(word) {
@@ -68,6 +79,46 @@ class Stories {
     }
     return object[key] || "";
   }
+
+  // static async groupGames(story) {
+  //   const items = story.games || [];
+  //   const object = items.reduce((games, item) => {
+  //     if (item.game && item.game[0]) {
+  //       const gameId = item.game[0];
+  //       const game = this.games.find(game => game.id === gameId);
+  //       games[gameId] ||= {medals: [], ...game};
+  //       if (item.medal) {
+  //         games[gameId].medals.push(item);
+  //       }
+  //     }
+  //     return games;
+  //   }, {});
+  //
+  //   const games = Object.values(object);
+  //
+  //   games.forEach(game => {
+  //     game.medals.sort((a, b) => {
+  //       if (a.medal < b.medal) return -1;
+  //       else if (a.medal > b.medal) return 1;
+  //       else return 0;
+  //     });
+  //     game.medalGroups = game.medals.reduce((object, medal) => {
+  //       object[medal.medal] ||= {medal: medal.medal, num: 0, disciplines: []};
+  //       object[medal.medal].num++;
+  //       // object[medal.medal].disciplines.push(medal.discipline);
+  //       object[medal.medal].disciplines.push(this.translateObject(medal, "discipline"));
+  //       return object;
+  //     }, {});
+  //   });
+  //
+  //   games.sort((a, b) => {
+  //     if (a.year < b.year) return -1;
+  //     else if (a.year > b.year) return 1;
+  //     else return 0;
+  //   });
+  //
+  //   return games;
+  // }
 
   static async groupGames(story) {
     const items = story.games || [];
@@ -87,15 +138,19 @@ class Stories {
 
     games.forEach(game => {
       game.medals.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        else if (a.name > b.name) return 1;
+
         if (a.medal < b.medal) return -1;
         else if (a.medal > b.medal) return 1;
         else return 0;
       });
       game.medalGroups = game.medals.reduce((object, medal) => {
-        object[medal.medal] ||= {medal: medal.medal, num: 0, disciplines: []};
-        object[medal.medal].num++;
+        object[medal.name || ""] ||= {name: medal.name || "", medals: {}};
+        object[medal.name || ""].medals[medal.medal] ||= {medal: medal.medal, num: 0, disciplines: []};
+        object[medal.name || ""].medals[medal.medal].num++;
         // object[medal.medal].disciplines.push(medal.discipline);
-        object[medal.medal].disciplines.push(this.translateObject(medal, "discipline"));
+        object[medal.name || ""].medals[medal.medal].disciplines.push(this.translateObject(medal, "discipline"));
         return object;
       }, {});
     });
@@ -133,13 +188,24 @@ class Stories {
           this.date1 = date1;
           this.date2 = date2;
 
-          this.stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
+          // this.stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
 
-          if (this.stories.length < 13) {
+          // if (this.stories.length < 13) {
+          //
+          //   this.stories = [0,1,2,3,4,5,6,7,8,9,10,11,12].map(index => this.stories[index%this.stories.length]);
+          //
+          // }
 
-            this.stories = [0,1,2,3,4,5,6,7,8,9,10,11,12].map(index => this.stories[index%this.stories.length]);
+          const stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
+          this.stories = [];
+
+          while (this.stories.length < 13) {
+
+            this.stories = [...this.stories, ...stories];
 
           }
+
+
 
           console.log(this.stories);
 
@@ -309,6 +375,7 @@ class Stories {
                         update: language => {
                           language.element.textContent = this.language === "en" ? "Français" : "English";
                           language.element.onclick = event => {
+                            this.player.stop();
                             this.language = this.language === "en" ? "fr" : "en";
                             this.renderContent();
 
@@ -333,7 +400,7 @@ class Stories {
                               class: "slide",
                               update: slide => {
                                 const medias = story.medias || [];
-                                let currentMedia = 0;
+                                this.currentMedia = 0;
 
 
                                 let x = index - this.nextSlide;
@@ -368,10 +435,11 @@ class Stories {
                                     {
                                       class: "main-frame",
                                       update: main => {
-                                        const media = medias[currentMedia];
+                                        const media = medias[this.currentMedia];
                                         const fileId = media.file && media.file[0];
                                         const file = fileId && this.filesDirectory[fileId];
-                                        main.element.classList.toggle("video-media", Boolean(file && file.type.startsWith("video")));
+                                        const isVideo = file && file.type.startsWith("video");
+                                        main.element.classList.toggle("video-media", Boolean(isVideo));
 
                                         main.children = [
                                           {
@@ -396,7 +464,7 @@ class Stories {
                                                           update: async div => {
                                                             // div.element.innerHTML = media.body || "";
                                                             div.element.innerHTML = this.translateObject(media, "body");
-                                                            div.element.classList.toggle("active", currentMedia === mediaIndex);
+                                                            div.element.classList.toggle("active", this.currentMedia === mediaIndex);
                                                           }
                                                         }
                                                       })
@@ -524,7 +592,7 @@ class Stories {
                                                                     tag: "img",
                                                                     init: img => {
                                                                       img.element.draggable = false;
-                                                                      img.element.src = "/images/Olympic_Rings_black.svg";
+                                                                      img.element.src = "images/Olympic_Rings_black.svg";
                                                                     }
                                                                   }
                                                                 },
@@ -576,11 +644,38 @@ class Stories {
                                                                             },
                                                                             {
                                                                               class: "disciplines",
-                                                                              update: div => {
-                                                                                // div.element.innerHTML = game.medals.map(medal => medal.discipline || "").join(", ");
-                                                                                div.element.innerHTML = Object.values(game.medalGroups).map(group => {
-                                                                                  return `${group.num} ${this.translate(this.medals[group.medal])} - ${group.disciplines.join(", ")}`
-                                                                                }).join("; ");
+                                                                              tag: "ul",
+                                                                              update: ul => {
+                                                                                // div.element.innerHTML = Object.values(game.medalGroups).map(group => {
+                                                                                //   return `${group.num} ${this.translate(this.medals[group.medal])} - ${group.disciplines.join(", ")}`
+                                                                                // }).join("; ");
+
+                                                                                ul.children = Object.values(game.medalGroups).map(nameGroup => {
+                                                                                  return {
+                                                                                    tag: "li",
+                                                                                    children: [
+                                                                                      {
+                                                                                        class: "name",
+                                                                                        update: name => {
+                                                                                          name.element.innerHTML = nameGroup.name || "";
+                                                                                          name.element.classList.toggle("hidden", !nameGroup.name);
+                                                                                        }
+                                                                                      },
+                                                                                      {
+                                                                                        tag: "ul",
+                                                                                        children: Object.values(nameGroup.medals).map((group, index, array) => {
+                                                                                          return {
+                                                                                            tag: "li",
+                                                                                            update: li => {
+                                                                                              const num = (group.num > 1 || array.length > 1) && group.num || "";
+                                                                                              li.element.innerHTML = `${num} ${this.translate(this.medals[group.medal])} - ${group.disciplines.join(", ")}`;
+                                                                                            }
+                                                                                          };
+                                                                                        })
+                                                                                      }
+                                                                                    ]
+                                                                                  }
+                                                                                });
                                                                               }
                                                                             }
                                                                           ]
@@ -606,7 +701,8 @@ class Stories {
                                                         //
                                                         // },
                                                         init: async button => {
-                                                          button.element.innerHTML = await fetch("/images/arrowClose.svg").then(response => response.text());
+                                                          // button.element.innerHTML = await fetch("images/arrowClose.svg").then(response => response.text());
+                                                          button.element.innerHTML = await this.fetchSvg("arrowClose.svg");
                                                           button.element.onclick = event => {
                                                             story.showInfo = !story.showInfo;
                                                             frame.render();
@@ -625,11 +721,12 @@ class Stories {
                                               return {
                                                 class: "media",
                                                 update: async div => {
-                                                  div.element.classList.toggle("active", currentMedia === mediaIndex);
+
+                                                  div.element.classList.toggle("active", this.currentMedia === mediaIndex);
+
                                                   const fileId = media.file && media.file[0];
                                                   const file = fileId && this.filesDirectory[fileId];
 
-                                                  // const file = this.files.find(file => media.file && media.file.includes(file.id));
                                                   if (file && file.type.startsWith("image")) {
                                                     div.children = [
                                                       {
@@ -655,22 +752,124 @@ class Stories {
                                                       }
                                                     ];
                                                   } else if (file && file.type.startsWith("video")) {
-                                                    div.child = {
-                                                      tag: "video",
-                                                      init: video => {
-                                                        video.element.controls = true;
-                                                      },
-                                                      child: {
-                                                        tag: "source",
-                                                        update: source => {
-                                                          if (!source.element.src.endsWith(file.filename)) {
-                                                            source.element.type = file.type;
-                                                            source.element.src = "/uploads/" + file.filename;
-                                                          }
+                                                    div.children = [
+                                                      {
+                                                        class: "video-container",
+                                                        update: container => {
+                                                          container.children = [
+                                                            {
+                                                              tag: "video",
+                                                              init: video => {
+                                                                // video.element.loop = true;
+                                                                video.element.controls = false;
 
+                                                                video.element.onended = event => {
+                                                                  this.player.unload();
+                                                                  this.currentMedia = 0;
+                                                                  main.render();
+                                                                }
+                                                              },
+                                                              update: video => {
+
+                                                                video.element.onclick = event => {
+                                                                  this.player.toggle();
+                                                                  main.render();
+                                                                };
+
+                                                                video.child = {
+                                                                  tag: "source",
+                                                                  update: async source => {
+                                                                    if (!source.element.src.endsWith(file.filename)) {
+                                                                      source.element.type = file.type;
+                                                                      source.element.src = "/uploads/" + file.filename;
+                                                                    }
+                                                                  }
+                                                                };
+                                                              },
+                                                              complete: video => {
+                                                                if (this.currentMedia === mediaIndex) {
+                                                                  return this.player.load(video.element);
+                                                                }
+                                                              }
+                                                            },
+                                                            {
+                                                              class: "video-timeline",
+                                                              child: {
+                                                                class: "line",
+                                                                update: line => {
+                                                                  if (this.currentMedia === mediaIndex) {
+                                                                    this.player.onframe = line.render;
+                                                                    line.element.style.transform = `scaleX(${this.player.progress})`;
+                                                                  }
+                                                                }
+                                                              },
+                                                              init: timeline => {
+                                                                const start = clientX => {
+                                                                  update(clientX);
+                                                                }
+                                                                const update = clientX => {
+                                                                  const box = timeline.element.getBoundingClientRect();
+                                                                  const progress = (clientX - box.left)/box.width;
+                                                                  this.player.set(progress);
+                                                                  timeline.render();
+                                                                }
+                                                                const end = clientX => {
+                                                                  update(clientX);
+                                                                }
+                                                                if ('ontouchstart' in window) {
+                                                                  const ontouchmove = event => {
+                                                                    update(event.touches[0].clientX);
+                                                                  }
+                                                                  const ontouchend = event => {
+                                                                    end(event.touches[0].clientX);
+                                                                    document.removeEventListener("touchmove", ontouchmove);
+                                                                    document.removeEventListener("touchend", ontouchend);
+                                                                  }
+                                                                  timeline.element.ontouchstart = event => {
+                                                                    start(event.touches[0].clientX);
+                                                                    document.addEventListener("touchmove", ontouchmove);
+                                                                    document.addEventListener("touchend", ontouchend);
+                                                                  }
+                                                                } else {
+                                                                  const onmousemove = event => {
+                                                                    update(event.clientX);
+                                                                  }
+                                                                  const onmouseup = event => {
+                                                                    end(event.clientX);
+                                                                    document.removeEventListener("mousemove", onmousemove);
+                                                                    document.removeEventListener("mouseup", onmouseup);
+                                                                  }
+                                                                  timeline.element.onmousedown = event => {
+                                                                    start(event.clientX);
+                                                                    document.addEventListener("mousemove", onmousemove);
+                                                                    document.addEventListener("mouseup", onmouseup);
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          ];
+                                                        }
+                                                      },
+                                                      {
+                                                        class: "video-button",
+                                                        init: async button => {
+                                                          button.element.onclick = event => {
+                                                            event.preventDefault();
+                                                            this.player.toggle();
+                                                            button.render();
+                                                          };
+                                                        },
+                                                        update: async button => {
+                                                          if (this.currentMedia === mediaIndex) {
+                                                            if (this.player.isPlaying) {
+                                                              button.element.innerHTML = await this.fetchSvg("pause.svg");
+                                                            } else {
+                                                              button.element.innerHTML = await this.fetchSvg("play.svg");
+                                                            }
+                                                          }
                                                         }
                                                       }
-                                                    };
+                                                    ];
                                                   }
                                                 }
                                               }
@@ -698,26 +897,50 @@ class Stories {
                                                       }
                                                     };
                                                   } else if (file && file.type.startsWith("video")) {
-                                                    thumb.child = {
-                                                      tag: "video",
-                                                      child: {
-                                                        tag: "source",
-                                                        init: source => {
-                                                          source.element.type = file.type;
-                                                          source.element.src = "/uploads/" + file.filename;
+                                                    thumb.children = [
+                                                      {
+                                                        tag: "video",
+                                                        init: video => {
+                                                          video.child = {
+                                                            tag: "source",
+                                                            init: source => {
+                                                              source.element.type = file.type;
+                                                              source.element.src = "/uploads/" + file.filename;
+                                                            }
+                                                          }
+                                                        },
+                                                        complete: async video => {
+                                                          const player = new VideoPlayer();
+                                                          await player.load(video.element);
+                                                          player.set(0.5);
+                                                        }
+                                                      },
+                                                      {
+                                                        class: "play-icon",
+                                                        init: async button => {
+                                                          button.element.innerHTML = await this.fetchSvg("play.svg");
                                                         }
                                                       }
-                                                    };
+                                                    ];
                                                   }
                                                 },
                                                 update: thumb => {
-                                                  thumb.element.classList.toggle("active", currentMedia === mediaIndex);
-                                                  thumb.element.onclick = event => {
-                                                    currentMedia = mediaIndex;
-                                                    // const file = this.files.find(file => media.file && media.file.includes(file.id));
-                                                    // main.element.classList.toggle("video-media", file.type.startsWith("video"));
-                                                    main.render();
+                                                  thumb.element.classList.toggle("active", this.currentMedia === mediaIndex);
+                                                  thumb.element.onclick = async event => {
+                                                    if (this.currentMedia !== mediaIndex) {
+                                                      this.currentMedia = mediaIndex;
+
+                                                      this.player.unload(); // -> player.video = null
+
+                                                      await main.render(); // -> load video
+
+                                                      if (this.player.video) {
+                                                        this.player.play();
+                                                        await main.render(); // -> render controls
+                                                      }
+                                                    }
                                                   }
+
                                                 }
                                               }
                                             })
@@ -737,10 +960,12 @@ class Stories {
                       {
                         class: "left-nav",
                         init: async nav => {
-                          nav.element.innerHTML = await fetch("/images/arrowL.svg").then(response => response.text());
+                          // nav.element.innerHTML = await fetch("images/arrowL.svg").then(response => response.text());
+                          nav.element.innerHTML = await this.fetchSvg("arrowL.svg");
                         },
                         update: nav => {
                           nav.element.onclick = event => {
+                            this.player.stop();
                             this.nextSlide--;
                             this.renderContent();
                           }
@@ -755,10 +980,12 @@ class Stories {
                       {
                         class: "right-nav",
                         init: async nav => {
-                          nav.element.innerHTML = await fetch("/images/arrowR.svg").then(response => response.text());
+                          // nav.element.innerHTML = await fetch("images/arrowR.svg").then(response => response.text());
+                          nav.element.innerHTML = await this.fetchSvg("arrowR.svg");
                         },
                         update: nav => {
                           nav.element.onclick = event => {
+                            this.player.stop();
                             this.nextSlide++;
                             this.renderContent();
                           }
@@ -825,6 +1052,7 @@ class Stories {
                             thumb.element.classList.toggle("current", x === 0);
 
                             thumb.element.onclick = event => {
+                              this.player.stop();
                               this.nextSlide = index;
                               this.renderContent();
                             }

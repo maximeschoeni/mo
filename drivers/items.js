@@ -30,13 +30,21 @@ exports.items = class {
 
 
 
-    return rows.filter(row => {
+    rows = rows.filter(row => {
 
       if (row.trash) {
         return false;
       }
 
       return true;
+    });
+
+    rows.sort((a, b) => {
+      const value1 = a.order || 0;
+      const value2 = b.order || 0;
+      if (value1 < value2) return -1;
+      else if (value1 > value2) return 1;
+      return 0;
     });
 
     return rows;

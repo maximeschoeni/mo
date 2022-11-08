@@ -10,13 +10,22 @@ KarmaFieldsAlpha.field.layout.directoryDropdown = class extends KarmaFieldsAlpha
       let media = await this.parent.request("queryid", {id: parent});
       // let media = await mediaTable.interface.get(parent);
 
-      ancestors.unshift({
-        id: parent,
-        name: media.name || ""
-        // active: id === parent
-      });
+      if (media) {
 
-      parent = media && media.parent;
+        ancestors.unshift({
+          id: parent,
+          name: media.name || ""
+          // active: id === parent
+        });
+
+        parent = media.parent;
+
+      } else {
+
+        parent = null;
+
+      }
+
 
     }
 

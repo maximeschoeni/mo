@@ -55,9 +55,11 @@
     {
       "id":"carousel",
       "header": {
-        "title": "Carousel",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Carousel"
+          },
           "count",
           "pagination"
         ]
@@ -66,7 +68,8 @@
         "width": "40em"
       },
       "body": {
-        "type": "collection",
+        "type": "arrangement",
+        "orderby": "order",
         "driver": "items",
         "params": {
           "ppp": 200
@@ -92,20 +95,20 @@
             {
               "type": "input",
               "key": "jeux",
-              "label": "jeux",
+              "label": "Title",
               "translatable" : true
             },
             {
               "type": "array",
               "key": "medias",
-              "label": "medias",
+              "label": "Medias",
               "children": [
                 {
                   "type": "file",
                   "key": "image",
                   "table": "files",
                   "width": "auto",
-                  "folder": "carousel"
+                  "folderId": "2226"
                 },
                 {
                   "type": "textarea",
@@ -176,9 +179,11 @@
     {
       "id": "users",
       "header": {
-        "title": "Users",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Users"
+          },
           "count",
           "pagination"
         ]
@@ -220,9 +225,11 @@
     {
       "id": "files",
       "header": {
-        "title": "Media Library",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Media Library"
+          },
           "count",
           "pagination"
         ]
@@ -317,9 +324,11 @@
     {
       "id": "stories",
       "header": {
-        "title": "Stories",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Stories"
+          },
           "count",
           "pagination"
         ]
@@ -409,12 +418,14 @@
                 {
                   "type": "input",
                   "key": "firstname",
-                  "label": "Firstame"
+                  "label": "Firstame",
+                  "translatable": true
                 },
                 {
                   "type": "input",
                   "key": "lastname",
-                  "label": "Lastname"
+                  "label": "Lastname",
+                  "translatable": true
                 }
               ]
             },
@@ -467,8 +478,15 @@
                     {"id": "2", "name": "Silver"},
                     {"id": "3", "name": "Bronze"}
                   ],
-                  "width": "20%"
-                }
+                  "width": "15%"
+                },
+                {
+                  "type": "input",
+                  "key": "name",
+                  "label": "Name",
+                  "width": "15%"
+                },
+                "delete"
               ]
             },
             {
@@ -481,7 +499,7 @@
                   "max": 1,
                   "key": "file",
                   "table": "files",
-                  "folder": "stories",
+                  "folderId": "2225",
                   "driver": "files",
                   "joins": [],
                   "width": "auto"
@@ -509,7 +527,8 @@
                       "translatable": true
                     }
                   ]
-                }
+                },
+                "delete"
               ]
             }
           ]
@@ -587,9 +606,11 @@
     {
       "id": "sports",
       "header": {
-        "title": "Sports",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Sports"
+          },
           "count",
           "pagination"
         ]
@@ -659,9 +680,11 @@
     {
       "id": "countries",
       "header": {
-        "title": "Countries",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Countries"
+          },
           "count",
           "pagination"
         ]
@@ -703,13 +726,7 @@
               "key": "image",
               "max": 1,
               "table": "files",
-              "folder": "countries",
-              "driver": "files",
-              "joins": [],
-              "query": {
-                "driver": "files",
-                "joins": []
-              }
+              "folderId": "223"
             }
           ]
         }
@@ -743,9 +760,11 @@
     {
       "id": "games",
       "header": {
-        "title": "Games",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Games"
+          },
           "count",
           "pagination"
         ]
@@ -819,9 +838,11 @@
     {
       "id": "gameGroups",
       "header": {
-        "title": "Game Groups",
         "children": [
-          "title",
+          {
+            "type": "title",
+            "value": "Game Groups"
+          },
           "count",
           "pagination"
         ]
@@ -1003,6 +1024,50 @@
       },
 
 
+      "controls": {
+        "children": [
+          "save",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["request", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "",
+            "text": "fr",
+            "active": ["=", ["request", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo"
+        ]
+      }
+
+    },
+    {
+      "id": "carousel-options",
+      "type": "table",
+      "header": {
+        "children": [
+          {
+            "type": "title",
+            "value": "Carousel Options"
+          }
+        ]
+      },
+      "body": {
+        "driver": "options",
+        "params": {
+          "id": "carousel"
+        },
+        "type": "table",
+        "children": [
+        ]
+      },
       "controls": {
         "children": [
           "save",

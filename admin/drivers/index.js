@@ -150,13 +150,24 @@ exports.adminDrivers = class {
   }
 
   static async logout(req, res) {
-    const driver = new users();
-    if (await driver.check(req.cookies)) {
-      await driver.logout(req.body.data);
-      res.json(true);
-    } else {
-      res.json(false);
-    }
+    // const driver = new users();
+    // if (await driver.check(req.cookies)) {
+    //   await driver.logout(req.cookies);
+    //   res
+    //     .clearCookie("name")
+    //     .clearCookie("token")
+    //     .json(true);
+    // } else {
+    //   res
+    //     .clearCookie("name")
+    //     .clearCookie("token")
+    //     .json(false);
+    // }
+
+    res
+      .clearCookie("name")
+      .clearCookie("token")
+      .json(true);
   }
 
 }

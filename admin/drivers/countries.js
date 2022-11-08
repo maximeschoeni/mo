@@ -93,18 +93,9 @@ exports.countries = class {
 
   async sort(rows, orderby) {
 
-    switch (orderby) {
-
-      case "name":
-      default:
-        rows.sort((a, b) => {
-          const value1 = a[orderby] || "";
-          const value2 = b[orderby] || "";
-          return value1.localeCompare(value2);
-        });
-        break;
-
-    }
+    rows.sort((a, b) => {
+      return (a.name || "").localeCompare(b.name || "");
+    });
 
     return rows;
   }
@@ -126,9 +117,7 @@ exports.countries = class {
       rows = rows.slice(offset, offset + ppp);
     }
 
-    if (orderby) {
-      this.sort(rows, orderby);
-    }
+    this.sort(rows, orderby);
 
     if (order === "desc") {
       rows.reverse();

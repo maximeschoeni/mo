@@ -119,7 +119,8 @@ exports.users = class {
       }
 
 
-      await db.write(data);
+      // await db.write(data);
+      db.save();
 
     }
 
@@ -144,7 +145,9 @@ exports.users = class {
       ...body
     });
 
-    await db.write(data);
+    // await db.write(data);
+
+    db.save();
 
     return id.toString();
   }
@@ -166,13 +169,19 @@ exports.users = class {
 
         if (hash === row.password) {
 
-          row.token = await new Promise((resolve, reject) => {
-            crypto.randomBytes(48, (err, buffer) => {
-              resolve(buffer.toString('hex'));
-            });
-          });
+          if (!row.token) {
 
-          await db.write(data);
+            row.token = await new Promise((resolve, reject) => {
+              crypto.randomBytes(48, (err, buffer) => {
+                resolve(buffer.toString('hex'));
+              });
+            });
+
+            // await db.write(data);
+
+            db.save();
+
+          }
 
           return row.token;
 
@@ -195,17 +204,20 @@ exports.users = class {
 
   }
 
-  async logout(body) {
+  async logout(cookies) {
+
+    // not used !
 
     const data = await db.read();
 
-    const row = data.users && data.users.content && data.users.content.find(row => row.name === body.name && !row.trash);
+    const row = data.users && data.users.content && data.users.content.find(row => row.name === cookies.name && !row.trash);
 
     if (row) {
 
       delete row.token;
 
-      await db.write(data);
+      // await db.write(data);
+      db.save();
 
     }
 

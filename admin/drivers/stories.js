@@ -4,6 +4,7 @@ const {db} = require(ROOT+"/db.js");
 
 const {sports} = require(ROOT+"/admin/drivers/sports");
 const {countries} = require(ROOT+"/admin/drivers/countries");
+const {gameGroups} = require(ROOT+"/admin/drivers/game-groups");
 
 exports.stories = class {
 
@@ -167,6 +168,15 @@ exports.stories = class {
         break;
       }
 
+      case "group":
+      case "gameGroup": {
+        const driver = new gameGroups();
+        const results = await driver.query({});
+        const object = Object.fromEntries(results.map(item => [item.id, item.name]));
+        rows.sort((a, b) => ((object[a.gameGroup] || {}).name || "").localeCompare((object[b.gameGroup] || {}).name || ""));
+        break;
+      }
+
       // case "country":
       // case "sport": {
       //   const data = await db.read();
@@ -184,10 +194,13 @@ exports.stories = class {
           const value2 = b[orderby] || "";
           return value1.localeCompare(value2);
         });
+        break;
       }
 
       default:
-
+        rows.sort((a, b) => {
+          return (a.lastname || "").localeCompare(b.lastname || "");
+        });
         break;
 
 
@@ -217,9 +230,7 @@ exports.stories = class {
       rows = rows.slice(offset, offset + ppp);
     }
 
-    if (orderby) {
-      await this.sort(rows, orderby);
-    }
+    await this.sort(rows, orderby);
 
     if (order === "desc") {
       rows.reverse();
@@ -243,54 +254,142 @@ exports.stories = class {
 
   async update(body, id) {
 
+    // const data = await db.read();
+    //
+    // const row = data.stories && data.stories.content && data.stories.content.find(row => row.id === id);
+    //
+    // if (row) {
+    //
+    //   for (let key in body) {
+    //
+    //     switch (key) {
+    //
+    //       case "trash":
+    //         // -> as boolean
+    //         row.trash = Boolean(Number(body[key].toString()));
+    //         break;
+    //
+    //       case "id":
+    //         break;
+    //
+    //       case "firstname":
+    //       case "lastname":
+    //       case "title":
+    //       case "title-en":
+    //       case "nicknames":
+    //       case "nicknames-en":
+    //       case "season":
+    //       case "gameGroup":
+    //         // -> as string
+    //         row[key] = body[key][0].toString();
+    //         break;
+    //
+    //       case "country":
+    //       case "sport":
+    //       case "games":
+    //       case "medias":
+    //         // -> as array
+    //         row[key] = body[key];
+    //         break;
+    //
+    //     }
+    //
+    //   }
+    //
+    //   await db.write(data);
+    //
+    // }
+
+
+    // await db.requestRow("stories", id, async row => {
+    //
+    //   if (row) {
+    //
+    //     for (let key in body) {
+    //
+    //       switch (key) {
+    //
+    //         case "trash":
+    //           // -> as boolean
+    //           row.trash = Boolean(Number(body[key].toString()));
+    //           break;
+    //
+    //         case "id":
+    //           break;
+    //
+    //         case "firstname":
+    //         case "lastname":
+    //         case "title":
+    //         case "title-en":
+    //         case "nicknames":
+    //         case "nicknames-en":
+    //         case "season":
+    //         case "gameGroup":
+    //           // -> as string
+    //           row[key] = body[key][0].toString();
+    //           break;
+    //
+    //         case "country":
+    //         case "sport":
+    //         case "games":
+    //         case "medias":
+    //           // -> as array
+    //           row[key] = body[key];
+    //           break;
+    //
+    //       }
+    //
+    //     }
+    //
+    //   }
+    //
+    // });
+
     const data = await db.read();
 
     const row = data.stories && data.stories.content && data.stories.content.find(row => row.id === id);
 
     if (row) {
 
-      // for (let id in body) {
+      for (let key in body) {
 
-        // const row = data.items.content.find(row => row.id === id) || {};
+        switch (key) {
 
-        for (let key in body) {
+          case "trash":
+            // -> as boolean
+            row.trash = Boolean(Number(body[key].toString()));
+            break;
 
-          switch (key) {
+          case "id":
+            break;
 
-            case "trash":
-              // -> as boolean
-              row.trash = Boolean(Number(body[key].toString()));
-              break;
+          case "firstname":
+          case "lastname":
+          case "firstname-en":
+          case "lastname-en":
+          case "title":
+          case "title-en":
+          case "nicknames":
+          case "nicknames-en":
+          case "season":
+          case "gameGroup":
+            // -> as string
+            row[key] = body[key][0].toString();
+            break;
 
-            case "id":
-              break;
-
-            case "firstname":
-            case "lastname":
-            case "title":
-            case "title-en":
-            case "nicknames":
-            case "nicknames-en":
-            case "season":
-            case "gameGroup":
-              // -> as string
-              row[key] = body[key][0].toString();
-              break;
-
-            case "country":
-            case "sport":
-            case "games":
-            case "medias":
-              // -> as array
-              row[key] = body[key];
-              break;
-
-          }
+          case "country":
+          case "sport":
+          case "games":
+          case "medias":
+            // -> as array
+            row[key] = body[key];
+            break;
 
         }
 
+      }
 
-      await db.write(data);
+      db.save();
 
     }
 
@@ -315,7 +414,8 @@ exports.stories = class {
       ...body
     });
 
-    await db.write(data);
+    // await db.write(data);
+    db.save();
 
     return id;
   }

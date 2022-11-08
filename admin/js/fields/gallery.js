@@ -84,8 +84,7 @@ KarmaFieldsAlpha.field.gallery = class extends KarmaFieldsAlpha.field {
 
     } else {
 
-      // const index = this.selection && this.selection.index;
-      // const length = this.selection && this.selection.length;
+      const {index, length} = this.selection || {index: 9999999, length: 0};
 
       const table = await this.request("table", {id: this.resource.table || "medias"});
 
@@ -102,6 +101,10 @@ KarmaFieldsAlpha.field.gallery = class extends KarmaFieldsAlpha.field {
           parentId = results[0].id;
 
         }
+
+      } else if (this.resource.folderId) {
+
+        parentId = this.resource.folderId;
 
       }
 
@@ -127,7 +130,7 @@ KarmaFieldsAlpha.field.gallery = class extends KarmaFieldsAlpha.field {
         },
         ids: selectedIds,
         callback: async inputIds => {
-          await this.insert(inputIds, 9999999, 0);
+          await this.insert(inputIds, index, length);
         }
       }, key);
 
@@ -700,7 +703,7 @@ KarmaFieldsAlpha.field.gallery = class extends KarmaFieldsAlpha.field {
         // const ids = array.map(id => id.toString()).slice(0, this.getMax());
 
         const key = this.getKey();
-        const state = await this.parent.request("state", {}, key);
+        const state = await this.parent.request("state", {}, key) || {};
         const ids = KarmaFieldsAlpha.Type.toArray(state.value).filter(id => id).map(id => id.toString()).slice(0, this.getMax());
 
         let table;

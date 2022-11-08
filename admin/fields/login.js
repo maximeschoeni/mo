@@ -56,8 +56,8 @@ KarmaFieldsAlpha.field.login = class extends KarmaFieldsAlpha.field.form {
 
         await KarmaFieldsAlpha.Gateway.post(`logout`);
 
-        this.eraseCookie("name");
-        this.eraseCookie("token");
+        // this.eraseCookie("name");
+        // this.eraseCookie("token");
 
         // this.setCookie("name", "");
         // this.setCookie("token", "");
@@ -94,7 +94,7 @@ KarmaFieldsAlpha.field.login = class extends KarmaFieldsAlpha.field.form {
   }
 
   eraseCookie(name) {
-    document.cookie = `${name}=; Max-Age=0; path=/; domain=${location.hostname}`;
+    document.cookie = `${name}=; Max-Age=0; path=/; domain=${location.hostname};Expires=Thu, 01 Jan 1970 00:00:01 GMT`;
   }
 
 

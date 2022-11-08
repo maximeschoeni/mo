@@ -178,13 +178,21 @@ KarmaFieldsAlpha.field.input = class extends KarmaFieldsAlpha.field {
 
 				input.element.oninput = async event => {
 
-					console.log(input.element.value);
+					if (this.resource.throttle) {
 
-					this.throttle(async () => {
+						this.throttle(async () => {
+							input.element.classList.add("editing");
+							await this.set(input.element.value.normalize());
+							input.element.classList.remove("editing");
+						}, this.resource.throttle);
+
+					} else {
+
 						input.element.classList.add("editing");
 						await this.set(input.element.value.normalize());
 						input.element.classList.remove("editing");
-					});
+
+					}
 
 				}
 
