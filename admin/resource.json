@@ -43,6 +43,10 @@
             ]
           },
           {
+            "title": "Torches",
+            "hash": "table=torches"
+          },
+          {
             "title": "Logout",
             "action": "logout"
           }
@@ -1091,6 +1095,197 @@
         ]
       }
 
+    },
+    {
+      "id": "torches",
+      "header": {
+        "children": [
+          {
+            "type": "title",
+            "value": "Torches"
+          },
+          "count",
+          "pagination"
+        ]
+      },
+      "modal": {},
+      "body": {
+        "driver": "torches",
+        "type": "collection",
+        "params": {
+          "ppp": 200,
+          "orderby": "game",
+          "order": "desc"
+        },
+        "children": [
+          {
+            "label": "",
+            "type": "tableIndex"
+          },
+          {
+            "label": "Name",
+            "sortable": true,
+            "orderby": "name",
+            "type": "handle",
+            "value": ["query", "games", "", [], "string", ["get", "string", "game"], "name"],
+            "width": "1fr"
+          }
+        ],
+        "modal": {
+          "children": [
+            {
+              "type": "tags",
+              "key": "game",
+              "label": "Game",
+              "table": "games",
+              "max": 1
+            },
+            {
+              "label": "Image",
+              "key": "image",
+              "type": "files",
+              "table": "files",
+              "max": 1
+            },
+            {
+              "type": "array",
+              "label": "Relay",
+              "key": "relay",
+              "children": [
+                {
+                  "type": "group",
+                  "children": [
+                    {
+                      "type": "input",
+                      "key": "title",
+                      "translatable": true
+                    },
+                    {
+                      "type": "group",
+                      "display": "flex",
+                      "children": [
+                        {
+                          "key": "medias",
+                          "type": "files",
+                          "table": "files",
+                          "max": 1,
+                          "style": "min-width: 0; flex-shrink: 0"
+                        },
+                        {
+                          "type": "textarea",
+                          "key": "content",
+                          "height": "12em",
+                          "translatable": true,
+                          "style": "min-width: 0; flex-grow: 1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "label": "Design",
+              "key": "design",
+              "children": [
+                {
+                  "type": "group",
+                  "children": [
+                    {
+                      "type": "input",
+                      "key": "title",
+                      "translatable": true
+                    },
+                    {
+                      "type": "group",
+                      "display": "flex",
+                      "children": [
+                        {
+                          "key": "medias",
+                          "type": "files",
+                          "table": "files",
+                          "max": 1,
+                          "style": "min-width: 0; flex-shrink: 0"
+                        },
+                        {
+                          "type": "textarea",
+                          "key": "content",
+                          "height": "12em",
+                          "translatable": true,
+                          "style": "min-width: 0; flex-grow: 1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "label": "Do You Know",
+              "key": "doyouknow",
+              "children": [
+                {
+                  "type": "group",
+                  "children": [
+                    {
+                      "type": "input",
+                      "key": "title",
+                      "translatable": true
+                    },
+                    {
+                      "type": "group",
+                      "display": "flex",
+                      "children": [
+                        {
+                          "key": "medias",
+                          "type": "files",
+                          "table": "files",
+                          "max": 1,
+                          "style": "min-width: 0; flex-shrink: 0"
+                        },
+                        {
+                          "type": "textarea",
+                          "key": "content",
+                          "height": "12em",
+                          "translatable": true,
+                          "style": "min-width: 0; flex-grow: 1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "controls": {
+        "children": [
+          "save",
+          "add",
+          "delete",
+          "separator",
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "en",
+            "text": "en",
+            "active": ["=", ["request", "language", "string"], "en"]
+          },
+          {
+            "type": "button",
+            "action": "switch-language",
+            "value": "",
+            "text": "fr",
+            "active": ["=", ["request", "language", "string"], "fr"]
+          },
+          "undo",
+          "redo",
+          "insert"
+        ]
+      }
     }
   ]
 }

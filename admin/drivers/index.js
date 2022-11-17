@@ -7,7 +7,7 @@ const {games} = require(ROOT+"/admin/drivers/games");
 const {sports} = require(ROOT+"/admin/drivers/sports");
 const {countries} = require(ROOT+"/admin/drivers/countries");
 const {gameGroups} = require(ROOT+"/admin/drivers/game-groups");
-
+const {torches} = require(ROOT+"/admin/drivers/torches");
 
 // module.exports = {
 //   files: files,
@@ -45,6 +45,9 @@ function getDriver(driver) {
 
     case "gameGroups":
       return new gameGroups();
+
+    case "torches":
+      return new torches();
 
 
     default:

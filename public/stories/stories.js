@@ -177,6 +177,9 @@ class Stories {
 
         this.gameGroups = await fetch(`/query/gameGroups`).then(response => response.json());
 
+        const screensaverFileIds = this.gameGroups.reduce((ids, group) => [...ids, ...group.images], []);
+
+
         const [season, date1, date2] = location.hash.slice(1).split("-");
         const seasonId = season === "summer" ? "1" : "2";
 
@@ -197,6 +200,20 @@ class Stories {
           // }
 
           const stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
+
+
+
+
+          const fileIds = stories.reduce((ids, story) => [...ids, ...story.medias.filter(media => media.file && media.file.length).map(media => media.file[0])], []);
+
+          const countryFileIds = stories.reduce((ids, story) => new Set([...ids, ...story.country]), new Set());
+
+          this.files = await fetch(`/query/files?ids=${[...fileIds, ...countryFileIds, ...screensaverFileIds].join(",")}`).then(response => response.json());
+
+          this.filesDirectory = Object.fromEntries(this.files.filter(file => file && file.id).map(file => [file.id, file]));
+
+
+
           this.stories = [];
 
           while (this.stories.length < 13) {
@@ -207,13 +224,7 @@ class Stories {
 
 
 
-          console.log(this.stories);
 
-          this.files = await fetch(`/query/files`).then(response => response.json());
-
-          this.filesDirectory = Object.fromEntries(this.files.map(file => [file.id, file]));
-
-          console.log(this.files);
 
           this.games = await fetch(`/query/games`).then(response => response.json());
 
