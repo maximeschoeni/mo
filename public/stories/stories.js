@@ -177,7 +177,7 @@ class Stories {
 
         this.gameGroups = await fetch(`/query/gameGroups`).then(response => response.json());
 
-        const screensaverFileIds = this.gameGroups.reduce((ids, group) => [...ids, ...group.images], []);
+        const screensaverFileIds = this.gameGroups.reduce((ids, group) => [...ids, ...(group.images || [])], []);
 
 
         const [season, date1, date2] = location.hash.slice(1).split("-");
@@ -204,9 +204,9 @@ class Stories {
 
 
 
-          const fileIds = stories.reduce((ids, story) => [...ids, ...story.medias.filter(media => media.file && media.file.length).map(media => media.file[0])], []);
+          const fileIds = stories.reduce((ids, story) => [...ids, ...(story.medias || []).filter(media => media.file && media.file.length).map(media => media.file[0])], []);
 
-          const countryFileIds = stories.reduce((ids, story) => new Set([...ids, ...story.country]), new Set());
+          const countryFileIds = stories.reduce((ids, story) => new Set([...ids, ...(story.country || [])]), new Set());
 
           this.files = await fetch(`/query/files?ids=${[...fileIds, ...countryFileIds, ...screensaverFileIds].join(",")}`).then(response => response.json());
 
@@ -216,7 +216,7 @@ class Stories {
 
           this.stories = [];
 
-          while (this.stories.length < 13) {
+          while (stories.length && this.stories.length < 13) {
 
             this.stories = [...this.stories, ...stories];
 
