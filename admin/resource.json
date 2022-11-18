@@ -778,7 +778,8 @@
         "driver": "games",
         "type": "collection",
         "params": {
-          "ppp": 200
+          "ppp": 200,
+          "orderby": "year"
         },
         "children": [
           {

@@ -24,11 +24,18 @@ exports.files = class extends items {
       }
     }
 
+    // if (query.ids) {
+    //   const ids = query.ids.split(",");
+    //   rows = rows.filter(row => ids.includes(row.id));
+    //   rows = ids.map(id => rows.find(row => row.id === id));
+    // }
+
     if (query.ids) {
-      const ids = query.ids.split(",");
-      rows = rows.filter(row => ids.includes(row.id));
-      rows = ids.map(id => rows.find(row => row.id === id));
+      const directory = Object.fromEntries(rows.map(row => [row.id, row]));
+      rows = query.ids.split(",").map(id => directory[id]);
     }
+
+
 
     if (query.parent) {
       rows = rows.filter(row => row.parent === query.parent);
