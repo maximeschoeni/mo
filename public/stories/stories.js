@@ -171,13 +171,11 @@ class Stories {
       init: async div => {
         this.render = div.render;
 
-        addEventListener("popstate", event => {
-          div.render(true);
-        });
+
 
         this.gameGroups = await fetch(`/query/gameGroups`).then(response => response.json());
 
-        const screensaverFileIds = this.gameGroups.reduce((ids, group) => [...ids, ...(group.images || [])], []);
+        // const screensaverFileIds = this.gameGroups.reduce((ids, group) => [...ids, ...(group.images || [])], []);
 
 
         const [season, date1, date2] = location.hash.slice(1).split("-");
@@ -190,6 +188,9 @@ class Stories {
           div.element.classList.add(season);
           this.date1 = date1;
           this.date2 = date2;
+
+          const screensaverFileIds = this.gameGroup.images || [];
+
 
           // this.stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
 
@@ -1133,3 +1134,7 @@ class Stories {
 
 
 }
+
+addEventListener("popstate", event => {
+  Stories.render(true);
+});
