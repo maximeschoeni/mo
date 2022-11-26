@@ -49,10 +49,12 @@ exports.torches = class {
         const games = data.games && data.games.content || [];
         const directory = Object.fromEntries(games.map(game => [game.id, game]));
         rows.sort((a, b) => {
-          if (directory[a.game].year < directory[b.game].year) return -1;
-          else if (directory[a.game].year > directory[b.game].year) return 1;
-          else if (directory[a.game].city < directory[b.game].city) return -1;
-          else if (directory[a.game].city > directory[b.game].city) return 1;
+          const gameA = directory[a.game] || {};
+          const gameB = directory[b.game] || {};
+          if (gameA.year < gameB.year) return -1;
+          else if (gameA.year > gameB.year) return 1;
+          else if (gameA.city < gameB.city) return -1;
+          else if (gameA.city > gameB.city) return 1;
           else return 0;
         });
         break;
@@ -70,8 +72,10 @@ exports.torches = class {
 
     let rows = data.torches && data.torches.content || [];
 
-    this.sort(rows, orderby, data);
     rows = this.filter(rows, filters, data);
+    
+    this.sort(rows, orderby, data);
+
 
     if (ppp) {
       const offset = (Number(page || 1) - 1)*Number(ppp);

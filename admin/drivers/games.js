@@ -187,6 +187,7 @@ exports.games = class {
 
           case "year":
           case "city":
+          case "city-en":
           case "season":
             // -> as string
             row[key] = body[key][0].toString();

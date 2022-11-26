@@ -207,12 +207,12 @@ class Stories {
 
           const fileIds = stories.reduce((ids, story) => [...ids, ...(story.medias || []).filter(media => media.file && media.file.length).map(media => media.file[0])], []);
 
-          const countryFileIds = stories.reduce((ids, story) => new Set([...ids, ...(story.country || [])]), new Set());
+          // const countryFileIds = stories.reduce((ids, story) => new Set([...ids, ...(story.country || [])]), new Set());
+          // const countryFileIds = [];
 
-          this.files = await fetch(`/query/files?ids=${[...fileIds, ...countryFileIds, ...screensaverFileIds].join(",")}`).then(response => response.json());
-
-          this.filesDirectory = Object.fromEntries(this.files.filter(file => file && file.id).map(file => [file.id, file]));
-
+          // this.files = await fetch(`/query/files?ids=${[...fileIds, ...countryFileIds, ...screensaverFileIds].join(",")}`).then(response => response.json());
+          //
+          // this.filesDirectory = Object.fromEntries(this.files.filter(file => file && file.id).map(file => [file.id, file]));
 
 
           this.stories = [];
@@ -229,18 +229,28 @@ class Stories {
 
           this.games = await fetch(`/query/games`).then(response => response.json());
 
-          console.log(this.games);
+
 
           this.sports = await fetch(`/query/sports`).then(response => response.json());
 
-          console.log(this.sports);
+          this.sportsDirectory = Object.fromEntries(this.sports.map(sport => [sport.id, sport]));
+
 
           this.countries = await fetch(`/query/countries`).then(response => response.json());
 
-          console.log(this.countries);
+          this.countriesDirectory = Object.fromEntries(this.countries.map(country => [country.id, country]));
+
+          // console.log(this.countries);
+
+          // const countryFileIds = this.countries.map((ids, story) => new Set([...ids, ...(story.country || [])]), new Set());
+
 
           this.options = await fetch(`/get/options/stories`).then(response => response.json());
 
+
+          this.files = await fetch(`/query/files`).then(response => response.json());
+
+          this.filesDirectory = Object.fromEntries(this.files.filter(file => file && file.id).map(file => [file.id, file]));
 
         }
 
@@ -383,15 +393,16 @@ class Stories {
                     },
                     {
                       class: "language",
+                      update: language => {
+                        language.element.onclick = event => {
+                          this.player.stop();
+                          this.language = this.language === "en" ? "fr" : "en";
+                          this.renderContent();
+                        }
+                      },
                       child: {
                         update: language => {
                           language.element.textContent = this.language === "en" ? "Français" : "English";
-                          language.element.onclick = event => {
-                            this.player.stop();
-                            this.language = this.language === "en" ? "fr" : "en";
-                            this.renderContent();
-
-                          }
                         }
                       }
                     }
@@ -516,6 +527,7 @@ class Stories {
                                                               const country = countryId && this.countries.find(country => country.id === countryId);
                                                               const fileId = country && country.image;
                                                               const file = fileId && this.filesDirectory[fileId];
+
                                                               if (file) {
                                                                 img.element.src = "/uploads/" + file.filename;
                                                               }
@@ -549,8 +561,8 @@ class Stories {
                                                           children: [
                                                             {
                                                               class: "label",
-                                                              init: label => {
-                                                                label.element.textContent = "Sport";
+                                                              update: label => {
+                                                                label.element.textContent = this.translate("Sport");
                                                               }
                                                             },
                                                             {
@@ -560,9 +572,14 @@ class Stories {
                                                                 // value.element.textContent = sport && sport.name || "";
                                                                 // value.element.textContent = this.getSport(story);
 
-                                                                const sportId = story.sport && story.sport[0];
-                                                                const sport = sportId && this.sports.find(sport => sport.id === sportId);
-                                                                value.element.textContent = sport && this.translateObject(sport, "name") || "";
+
+
+                                                                // const sportId = story.sport && story.sport[0];
+                                                                // const sport = sportId && this.sports.find(sport => sport.id === sportId);
+                                                                // value.element.textContent = sport && this.translateObject(sport, "name") || "";
+
+
+                                                                value.element.textContent = (story.sport || []).map(sportId => this.sportsDirectory[sportId]).filter(sport => sport).map(sport => this.translateObject(sport, "name")).join(", ");
                                                               }
                                                             }
                                                           ]
@@ -650,8 +667,8 @@ class Stories {
                                                                             },
                                                                             {
                                                                               class: "game",
-                                                                              init: div => {
-                                                                                div.element.innerHTML = `${game.city}, ${game.year}`;
+                                                                              update: div => {
+                                                                                div.element.innerHTML = `${this.translateObject(game, "city")}, ${game.year}`;
                                                                               }
                                                                             },
                                                                             {
@@ -755,6 +772,9 @@ class Stories {
                                                       },
                                                       {
                                                         class: "caption",
+                                                        update: caption => {
+                                                          caption.element.classList.toggle("hidden", !media.caption);
+                                                        },
                                                         child: {
                                                           update: caption => {
                                                             // caption.element.innerHTML = media.caption;

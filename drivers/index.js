@@ -7,6 +7,7 @@ const {games} = require(ROOT+"/drivers/games");
 const {sports} = require(ROOT+"/drivers/sports");
 const {countries} = require(ROOT+"/drivers/countries");
 const {gameGroups} = require(ROOT+"/drivers/game-groups");
+const {torches} = require(ROOT+"/drivers/torches");
 
 
 function getDriver(driver) {
@@ -36,6 +37,9 @@ function getDriver(driver) {
 
     case "gameGroups":
       return new gameGroups();
+
+    case "torches":
+      return new torches();
 
     default:
       console.error("Missing driver: ", driver);

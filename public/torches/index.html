@@ -6,8 +6,9 @@
     <link href="style.css" rel="stylesheet">
     <script src="../js/build-v7.7.js"></script>
     <script src="../js/TinyAnimate.js"></script>
-    <script src="../js/swipe-v2.js"></script>
+    <script src="../js/pointer-trap.js"></script>
     <script src="../js/media-player-v4.js"></script>
+    <script src="player.js"></script>
     <script src="torches.js"></script>
 
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
@@ -17,7 +18,10 @@
   <body>
     <div id="container"></div>
     <script>
+      // const upload_url = "/upload/";
+      const upload_url = "https://tom.sigma6.ch/uploads/";
       {
+
         build(Torches.build(), document.getElementById("container"));
       }
     </script>
