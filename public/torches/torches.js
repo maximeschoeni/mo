@@ -43,13 +43,6 @@ class Torches {
 
   static getFileURL(filename) {
     return "/uploads/" + filename;
-    // return upload_url + filename;
-    // if (filename.endsWith(".mp4")) {
-    //   return "/uploads/microtechnique.mp4";
-    // } else {
-    //   return "/uploads/Montreal1976-medium.png";
-    // }
-
   }
 
 
@@ -74,8 +67,6 @@ class Torches {
           ...(torch.design || []).reduce((ids, design) => [...ids, ...(design.medias || [])], []),
           ...(torch.doyouknow || []).reduce((ids, doyouknow) => [...ids, ...(doyouknow.medias || [])], [])
         ]), new Set());
-
-        // this.torches = [...this.torches, ...this.torches, ...this.torches, ...this.torches, ...this.torches, ...this.torches, ...this.torches, ...this.torches];
 
         this.files = await fetch(`/query/files?ids=${[...torchFileIds].join(",")}`).then(response => response.json());
 
@@ -185,12 +176,6 @@ class Torches {
             class: "content",
             update: content => {
               this.renderContent = content.render;
-              // content.element.onmousedown = event => {
-              //   this.screensaverStop();
-              // };
-              // content.element.ontouchdown = event => {
-              //   this.screensaverStop();
-              // };
             },
             children: [
               {
@@ -251,15 +236,6 @@ class Torches {
                             },
                             {
                               tag: "ul",
-                              // init: ul => {
-                              //   new PointerTrap(ul.element);
-                              //   ul.element.oncatch = trap => {
-                              //     const box = ul.element.getBoundingClientRect();
-                              //   	const x = trap.x - box.left;
-                              //     this.x = x/box.width;
-                              //     body.render();
-                              //   }
-                              // },
                               children: this.torches.map(torche => {
                                 return {
                                   tag: "li",
@@ -283,14 +259,6 @@ class Torches {
                                 };
                               })
                             }
-
-                            // {
-                            //   class: "screen",
-                            //   update: screen => {
-                            //     const x = this.x*(miniature.element.clientWidth - screen.element.clientWidth);
-                            //     screen.element.style.transform = `translateX(${x}px)`;
-                            //   }
-                            // }
                           ];
                         }
                       }
@@ -306,26 +274,6 @@ class Torches {
                         }
                         stage.element.onrelease = (trap, event) => {
                           event.preventDefault();
-                          // event.stopPropagation();
-
-                          // let speed = -trap.tDeltaX/(stage.element.firstChild.clientWidth - stage.element.clientWidth)*0.1;
-                          // const slide = () => {
-                          //   if (Math.abs(speed) > 0.0001) {
-                          //     this.x += speed;
-                          //     if (this.x < 0) {
-                          //       this.x = 0;
-                          //     } else if (this.x > 1) {
-                          //       this.x = 1;
-                          //     } else {
-                          //       requestAnimationFrame(() => {
-                          //         speed = speed*0.95;
-                          //         slide();
-                          //         body.render();
-                          //       });
-                          //     }
-                          //   }
-                          // };
-                          // slide();
                         }
                       },
                       update: stage => {
@@ -378,7 +326,6 @@ class Torches {
                                       if (file) {
                                         const medium = file.sizes.find(size => size.key === "medium");
                                         if (medium) {
-                                          // img.element.src = upload_url + medium.filename;
                                           img.element.src = this.getFileURL(medium.filename);
                                         }
                                         img.element.style.width = `${file.width*0.007}em`;
@@ -392,7 +339,6 @@ class Torches {
                                         class: "city",
                                         update: city => {
                                           const game = this.gamesDirectory[torche.game] || {};
-                                          // city.element.innerHTML = game.city || "";
                                           city.element.innerHTML = this.translateObject(game, "city");
                                         }
                                       },
@@ -437,8 +383,13 @@ class Torches {
                         content.children = [
                           {
                             class: "close",
+                            child: {
+                              class: "x",
+                              init: x => {
+                                x.element.textContent = "X";
+                              }
+                            },
                             update: async close => {
-                              close.element.innerHTML = await this.fetchSvg("arrowClose.svg");
                               close.element.onpointerdown = event => {
                                 this.player.unload();
                                 this.currentTorch = null;
@@ -460,7 +411,6 @@ class Torches {
                                     update: city => {
                                       if (this.currentTorch) {
                                         const game = this.gamesDirectory[this.currentTorch.game] || {};
-                                        // city.element.innerHTML = game.city || "";
                                         city.element.innerHTML = this.translateObject(game, "city");
                                       }
                                     }
@@ -480,9 +430,6 @@ class Torches {
                                 class: "page-body",
                                 update: body => {
                                   if (this.currentTorch) {
-                                    // const section = this.currentTorch[this.currentSection || "relay"];
-                                    // const media = section && section[this.currentMedia || 0];
-
                                     body.children = ["relay", "design", "doyouknow"].filter(sectionItem => this.currentTorch[sectionItem]).map(sectionItem => {
                                       return {
                                         class: "section",
@@ -558,20 +505,12 @@ class Torches {
                                                             {
                                                               tag: "video",
                                                               init: video => {
-                                                                // video.element.loop = true;
                                                                 video.element.controls = false;
-
-                                                                // video.element.onended = event => {
-                                                                //   this.player.unload();
-                                                                //   this.currentMedia = 0;
-                                                                //   main.render();
-                                                                // }
                                                               },
                                                               update: video => {
 
                                                                 video.element.onclick = event => {
                                                                   this.player.toggle();
-                                                                  // container.render();
                                                                 };
 
                                                                 video.child = {
@@ -586,10 +525,6 @@ class Torches {
                                                                 };
                                                               },
                                                               complete: async video => {
-                                                                // if (this.currentMedia === mediaIndex) {
-                                                                //   return this.player.load(video.element);
-                                                                // }
-
                                                                 if ((this.currentSection || "relay") === sectionItem && (this.currentMedia || 0) === index) {
                                                                   await this.player.load(video.element);
                                                                   this.player.play();
@@ -608,18 +543,12 @@ class Torches {
                                                                 }
                                                               },
                                                               init: timeline => {
-                                                                // const start = clientX => {
-                                                                //   update(clientX);
-                                                                // }
                                                                 const update = clientX => {
                                                                   const box = timeline.element.getBoundingClientRect();
                                                                   const progress = (clientX - box.left)/box.width;
                                                                   this.player.set(progress);
                                                                   timeline.render();
                                                                 }
-                                                                // const end = clientX => {
-                                                                //   update(clientX);
-                                                                // }
                                                                 new PointerTrap(timeline.element);
                                                                 timeline.element.onstart = trap => {
                                                                   update(trap.x);
@@ -627,37 +556,6 @@ class Torches {
                                                                 timeline.element.oncatch = trap => {
                                                                   update(trap.x);
                                                                 }
-
-
-                                                                // if ('ontouchstart' in window) {
-                                                                //   const ontouchmove = event => {
-                                                                //     update(event.touches[0].clientX);
-                                                                //   }
-                                                                //   const ontouchend = event => {
-                                                                //     end(event.touches[0].clientX);
-                                                                //     document.removeEventListener("touchmove", ontouchmove);
-                                                                //     document.removeEventListener("touchend", ontouchend);
-                                                                //   }
-                                                                //   timeline.element.ontouchstart = event => {
-                                                                //     start(event.touches[0].clientX);
-                                                                //     document.addEventListener("touchmove", ontouchmove);
-                                                                //     document.addEventListener("touchend", ontouchend);
-                                                                //   }
-                                                                // } else {
-                                                                //   const onmousemove = event => {
-                                                                //     update(event.clientX);
-                                                                //   }
-                                                                //   const onmouseup = event => {
-                                                                //     end(event.clientX);
-                                                                //     document.removeEventListener("mousemove", onmousemove);
-                                                                //     document.removeEventListener("mouseup", onmouseup);
-                                                                //   }
-                                                                //   timeline.element.onmousedown = event => {
-                                                                //     start(event.clientX);
-                                                                //     document.addEventListener("mousemove", onmousemove);
-                                                                //     document.addEventListener("mouseup", onmouseup);
-                                                                //   }
-                                                                // }
                                                               }
                                                             }
                                                           ];

@@ -17,12 +17,10 @@
 
 class PointerTrap {
 
-	constructor(element) {
+	constructor(element, threshold = 5) {
 
 		this.element = element;
-
-		this.slideThreshold = 0.8;
-		this.pointMax = 5;
+		this.threshold = threshold;
 
 		// if ("ontouchstart" in window) {
 		//
@@ -106,9 +104,15 @@ class PointerTrap {
 		this.originX = x;
 		this.originY = y;
 
+		this.maxDX = 0;
+		this.maxDY = 0;
+		this.minDX = 0;
+		this.minDY = 0;
+
 		this.time = Date.now();
 		this.tX = x;
 		this.tY = y;
+
 
 		if (this.element.onstart) {
 			this.element.onstart(this, event);
@@ -131,12 +135,19 @@ class PointerTrap {
 		this.deltaY = y - this.y;
 		this.x = x;
 		this.y = y;
+		this.diffX = x - this.originX;
+		this.diffY = y - this.originY;
 		this.maxDX = Math.max(this.diffX, this.maxDX || 0);
 		this.maxDY = Math.max(this.diffY, this.maxDY || 0);
 		this.minDX = Math.min(this.diffX, this.minDX || 0);
 		this.minDY = Math.min(this.diffY, this.minDY || 0);
-		this.diffX = x - this.originX;
-		this.diffY = y - this.originY;
+
+		const box = this.element.getBoundingClientRect();
+
+		this.map = {
+			x: (x - box.left)/box.width,
+			y: (y - box.top)/box.height
+		};
 
 
 		if (this.element.oncatch) {
@@ -147,19 +158,12 @@ class PointerTrap {
 	release(event, x, y) {
 		this.move(event, x, y);
 
-		if (this.maxDX > -this.minDX && this.maxDX > this.maxDY && this.maxDX > -this.minDY && this.diffX > this.maxDX*this.slideThreshold) {
-			this.swipeRight = true;
-		} else if (this.minDX < -this.maxDX && this.minDX < this.minDY && this.minDX < -this.maxDY && this.deltaX < 0 && this.diffX < this.minDX*this.slideThreshold) {
-			this.swipeLeft = true;
-		} else if (this.maxDY > -this.minDY && this.maxDY > this.maxDX && this.maxDY > -this.minDX && this.deltaY > 0 && this.diffY > this.maxDY*this.slideThreshold) {
-			this.swipeDown = true;
-		} else if (this.minDY < -this.maxDY && this.minDY < this.minDX && this.minDY < -this.maxDX && this.deltaY < 0 && this.diffY < this.minDY*this.slideThreshold) {
-			this.swipeUp = true;
-		} else if (this.maxDX < this.pointMax && this.minDX > -this.pointMax && this.maxDY < this.pointMax && this.minDY > -this.pointMax) {
-			this.click = true;
-		} else if (this.onCancel) {
-			this.swipeFail = true;
-		}
+		this.swipeRight = (this.maxDX > -this.minDX && this.maxDX > this.maxDY && this.maxDX > -this.minDY && this.diffX > this.maxDX-this.threshold);
+		this.swipeLeft = (this.minDX < -this.maxDX && this.minDX < this.minDY && this.minDX < -this.maxDY && this.diffX < this.minDX+this.threshold);
+		this.swipeDown = (this.maxDY > -this.minDY && this.maxDY > this.maxDX && this.maxDY > -this.minDX && this.diffY > this.maxDY-this.threshold);
+		this.swipeUp = (this.minDY < -this.maxDY && this.minDY < this.minDX && this.minDY < -this.maxDX && this.diffY < this.minDY+this.threshold);
+		this.click = (this.maxDX < this.threshold && this.minDX > -this.threshold && this.maxDY < this.threshold && this.minDY > -this.threshold);
+		this.swipeFail = !this.swipeRight && !this.swipeLeft && !this.swipeDown && !this.swipeUp && !this.click;
 
 		if (this.element.onrelease) {
 			this.element.onrelease(this, event);

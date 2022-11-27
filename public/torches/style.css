@@ -287,6 +287,13 @@ ul {
   width: 0.3em;
   height: 0.3em;
 }
+.popup .close .x {
+  font-size: 0.47em;
+  font-weight: 500;
+  line-height: 0.8em;
+  color: white;
+}
+
 
 /* Popup Page
 ----------------------------------------- */

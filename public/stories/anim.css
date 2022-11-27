@@ -1,0 +1,239 @@
+.footer-animation .line:nth-child(1) {
+  background: linear-gradient(90deg, hsla(84, 100%, 50%, 0) 0%, hsla(84, 100%, 50%, 0.2) 10%, hsla(84, 100%, 50%, 0) 100%);
+  height: 0.2724551148937876em;
+  width: 9.6em;
+  top: 0.30573893816794223em;
+  animation: 3000ms linear -1212ms infinite running slide1;
+}
+@keyframes slide1 {
+  from {transform: translateX(301.69959781458954%);}
+  to {transform: translateX(-198.30040218541046%);}
+}
+
+.footer-animation .line:nth-child(2) {
+  background: linear-gradient(90deg, hsla(77, 100%, 50%, 0) 0%, hsla(77, 100%, 50%, 0.2) 10%, hsla(77, 100%, 50%, 0) 100%);
+  height: 0.263046509761797em;
+  width: 9.6em;
+  top: 1.1661197906127787em;
+  animation: 3000ms linear -1975ms infinite running slide2;
+}
+@keyframes slide2 {
+  from {transform: translateX(385.43219680223854%);}
+  to {transform: translateX(-114.56780319776149%);}
+}
+
+.footer-animation .line:nth-child(3) {
+  background: linear-gradient(90deg, hsla(93, 100%, 50%, 0) 0%, hsla(93, 100%, 50%, 0.2) 10%, hsla(93, 100%, 50%, 0) 100%);
+  height: 0.05471045416215854em;
+  width: 9.6em;
+  top: 1.2072944949348792em;
+  animation: 3000ms linear -2136ms infinite running slide3;
+}
+@keyframes slide3 {
+  from {transform: translateX(237.26618919138457%);}
+  to {transform: translateX(-262.73381080861543%);}
+}
+
+.footer-animation .line:nth-child(4) {
+  background: linear-gradient(90deg, hsla(143, 100%, 50%, 0) 0%, hsla(143, 100%, 50%, 0.2) 10%, hsla(143, 100%, 50%, 0) 100%);
+  height: 0.08805840543716421em;
+  width: 9.6em;
+  top: 0.8243674061325331em;
+  animation: 3000ms linear -1651ms infinite running slide4;
+}
+@keyframes slide4 {
+  from {transform: translateX(305.8313432787846%);}
+  to {transform: translateX(-194.16865672121543%);}
+}
+
+.footer-animation .line:nth-child(5) {
+  background: linear-gradient(90deg, hsla(297, 100%, 50%, 0) 0%, hsla(297, 100%, 50%, 0.2) 10%, hsla(297, 100%, 50%, 0) 100%);
+  height: 0.2779108418383975em;
+  width: 9.6em;
+  top: 0.8016828156671463em;
+  animation: 3000ms linear -2349ms infinite running slide5;
+}
+@keyframes slide5 {
+  from {transform: translateX(395.16951531323747%);}
+  to {transform: translateX(-104.83048468676253%);}
+}
+
+.footer-animation .line:nth-child(6) {
+  background: linear-gradient(90deg, hsla(181, 100%, 50%, 0) 0%, hsla(181, 100%, 50%, 0.2) 10%, hsla(181, 100%, 50%, 0) 100%);
+  height: 0.1830092062834675em;
+  width: 9.6em;
+  top: 0.3500607843354055em;
+  animation: 3000ms linear -1179ms infinite running slide6;
+}
+@keyframes slide6 {
+  from {transform: translateX(339.4730484768958%);}
+  to {transform: translateX(-160.52695152310417%);}
+}
+
+.footer-animation .line:nth-child(7) {
+  background: linear-gradient(90deg, hsla(163, 100%, 50%, 0) 0%, hsla(163, 100%, 50%, 0.2) 10%, hsla(163, 100%, 50%, 0) 100%);
+  height: 0.1264385538744891em;
+  width: 9.6em;
+  top: 0.1338778364218066em;
+  animation: 3000ms linear -201ms infinite running slide7;
+}
+@keyframes slide7 {
+  from {transform: translateX(222.96190408877465%);}
+  to {transform: translateX(-277.03809591122535%);}
+}
+
+.footer-animation .line:nth-child(8) {
+  background: linear-gradient(90deg, hsla(42, 100%, 50%, 0) 0%, hsla(42, 100%, 50%, 0.2) 10%, hsla(42, 100%, 50%, 0) 100%);
+  height: 0.24254288376612487em;
+  width: 9.6em;
+  top: 1.1373493845020433em;
+  animation: 3000ms linear -1165ms infinite running slide8;
+}
+@keyframes slide8 {
+  from {transform: translateX(349.95124199952886%);}
+  to {transform: translateX(-150.04875800047114%);}
+}
+
+.footer-animation .line:nth-child(9) {
+  background: linear-gradient(90deg, hsla(222, 100%, 50%, 0) 0%, hsla(222, 100%, 50%, 0.2) 10%, hsla(222, 100%, 50%, 0) 100%);
+  height: 0.16450031351537492em;
+  width: 9.6em;
+  top: 0.15762856009646517em;
+  animation: 3000ms linear -2414ms infinite running slide9;
+}
+@keyframes slide9 {
+  from {transform: translateX(250.713166089878%);}
+  to {transform: translateX(-249.286833910122%);}
+}
+
+.footer-animation .line:nth-child(10) {
+  background: linear-gradient(90deg, hsla(24, 100%, 50%, 0) 0%, hsla(24, 100%, 50%, 0.2) 10%, hsla(24, 100%, 50%, 0) 100%);
+  height: 0.2882477215554059em;
+  width: 9.6em;
+  top: 0.5526176917784289em;
+  animation: 3000ms linear -1635ms infinite running slide10;
+}
+@keyframes slide10 {
+  from {transform: translateX(300.55072719465284%);}
+  to {transform: translateX(-199.4492728053472%);}
+}
+
+.footer-animation .line:nth-child(11) {
+  background: linear-gradient(90deg, hsla(227, 100%, 50%, 0) 0%, hsla(227, 100%, 50%, 0.2) 10%, hsla(227, 100%, 50%, 0) 100%);
+  height: 0.14826521150516508em;
+  width: 9.6em;
+  top: 0.2536357520921467em;
+  animation: 3000ms linear -2875ms infinite running slide11;
+}
+@keyframes slide11 {
+  from {transform: translateX(358.23517187068694%);}
+  to {transform: translateX(-141.76482812931303%);}
+}
+
+.footer-animation .line:nth-child(12) {
+  background: linear-gradient(90deg, hsla(108, 100%, 50%, 0) 0%, hsla(108, 100%, 50%, 0.2) 10%, hsla(108, 100%, 50%, 0) 100%);
+  height: 0.11056298579014252em;
+  width: 9.6em;
+  top: 0.8743329924696668em;
+  animation: 3000ms linear -316ms infinite running slide12;
+}
+@keyframes slide12 {
+  from {transform: translateX(340.3716057540512%);}
+  to {transform: translateX(-159.62839424594878%);}
+}
+
+.footer-animation .line:nth-child(13) {
+  background: linear-gradient(90deg, hsla(326, 100%, 50%, 0) 0%, hsla(326, 100%, 50%, 0.2) 10%, hsla(326, 100%, 50%, 0) 100%);
+  height: 0.2744381499627022em;
+  width: 9.6em;
+  top: 0.45991650673143747em;
+  animation: 3000ms linear -1307ms infinite running slide13;
+}
+@keyframes slide13 {
+  from {transform: translateX(236.24595509261013%);}
+  to {transform: translateX(-263.75404490738987%);}
+}
+
+.footer-animation .line:nth-child(14) {
+  background: linear-gradient(90deg, hsla(93, 100%, 50%, 0) 0%, hsla(93, 100%, 50%, 0.2) 10%, hsla(93, 100%, 50%, 0) 100%);
+  height: 0.18459450424088025em;
+  width: 9.6em;
+  top: 0.021136051836587236em;
+  animation: 3000ms linear -1217ms infinite running slide14;
+}
+@keyframes slide14 {
+  from {transform: translateX(360.7969206104266%);}
+  to {transform: translateX(-139.20307938957342%);}
+}
+
+.footer-animation .line:nth-child(15) {
+  background: linear-gradient(90deg, hsla(137, 100%, 50%, 0) 0%, hsla(137, 100%, 50%, 0.2) 10%, hsla(137, 100%, 50%, 0) 100%);
+  height: 0.25665214424396604em;
+  width: 9.6em;
+  top: 0.7711898377955652em;
+  animation: 3000ms linear -2485ms infinite running slide15;
+}
+@keyframes slide15 {
+  from {transform: translateX(267.0198449148521%);}
+  to {transform: translateX(-232.98015508514789%);}
+}
+
+.footer-animation .line:nth-child(16) {
+  background: linear-gradient(90deg, hsla(140, 100%, 50%, 0) 0%, hsla(140, 100%, 50%, 0.2) 10%, hsla(140, 100%, 50%, 0) 100%);
+  height: 0.17786691331850557em;
+  width: 9.6em;
+  top: 0.48113437863747915em;
+  animation: 3000ms linear -581ms infinite running slide16;
+}
+@keyframes slide16 {
+  from {transform: translateX(217.64391938377256%);}
+  to {transform: translateX(-282.3560806162274%);}
+}
+
+.footer-animation .line:nth-child(17) {
+  background: linear-gradient(90deg, hsla(79, 100%, 50%, 0) 0%, hsla(79, 100%, 50%, 0.2) 10%, hsla(79, 100%, 50%, 0) 100%);
+  height: 0.21704782151437074em;
+  width: 9.6em;
+  top: 0.8531716595493798em;
+  animation: 3000ms linear -1462ms infinite running slide17;
+}
+@keyframes slide17 {
+  from {transform: translateX(215.04503973051908%);}
+  to {transform: translateX(-284.9549602694809%);}
+}
+
+.footer-animation .line:nth-child(18) {
+  background: linear-gradient(90deg, hsla(272, 100%, 50%, 0) 0%, hsla(272, 100%, 50%, 0.2) 10%, hsla(272, 100%, 50%, 0) 100%);
+  height: 0.2479018829072498em;
+  width: 9.6em;
+  top: 0.5774446814801375em;
+  animation: 3000ms linear -2200ms infinite running slide18;
+}
+@keyframes slide18 {
+  from {transform: translateX(241.1451937652451%);}
+  to {transform: translateX(-258.8548062347549%);}
+}
+
+.footer-animation .line:nth-child(19) {
+  background: linear-gradient(90deg, hsla(62, 100%, 50%, 0) 0%, hsla(62, 100%, 50%, 0.2) 10%, hsla(62, 100%, 50%, 0) 100%);
+  height: 0.2265171740456552em;
+  width: 9.6em;
+  top: 0.519342915441136em;
+  animation: 3000ms linear -1990ms infinite running slide19;
+}
+@keyframes slide19 {
+  from {transform: translateX(323.8043308687025%);}
+  to {transform: translateX(-176.1956691312975%);}
+}
+
+.footer-animation .line:nth-child(20) {
+  background: linear-gradient(90deg, hsla(161, 100%, 50%, 0) 0%, hsla(161, 100%, 50%, 0.2) 10%, hsla(161, 100%, 50%, 0) 100%);
+  height: 0.10300089765114269em;
+  width: 9.6em;
+  top: 0.7244922968754709em;
+  animation: 3000ms linear -1755ms infinite running slide20;
+}
+@keyframes slide20 {
+  from {transform: translateX(330.9867743876108%);}
+  to {transform: translateX(-169.01322561238916%);}
+}

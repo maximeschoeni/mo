@@ -28,28 +28,6 @@ class Stories {
 
   static svgCache = {};
 
-  // static getCountryFile(story) {
-  //   const id = story.country && story.country[0];
-  //   if (id) {
-  //     return this.filesDirectory[id]
-  //   }
-  // }
-
-  // static getSport(story) {
-  //   // const sportId = story.sport && story.sport[0];
-  //   // if (sportId) {
-  //   //   return fetch(`/get/sports/${sportId}`).then(response => response.json());
-  //   // }
-  //
-  //   const sportId = story.sport && story.sport[0];
-  //   const sport = sportId && this.sports.find(sport => sport.id === sportId);
-  //   if (sport) {
-  //     return this.translateObject(sport, "name");
-  //   }
-  //
-  //   return "";
-  // }
-
   static async fetchSvg(name) {
     if (!this.svgCache[name]) {
       this.svgCache[name] = fetch(`images/${name}`).then(response => response.text());
@@ -79,46 +57,6 @@ class Stories {
     }
     return object[key] || "";
   }
-
-  // static async groupGames(story) {
-  //   const items = story.games || [];
-  //   const object = items.reduce((games, item) => {
-  //     if (item.game && item.game[0]) {
-  //       const gameId = item.game[0];
-  //       const game = this.games.find(game => game.id === gameId);
-  //       games[gameId] ||= {medals: [], ...game};
-  //       if (item.medal) {
-  //         games[gameId].medals.push(item);
-  //       }
-  //     }
-  //     return games;
-  //   }, {});
-  //
-  //   const games = Object.values(object);
-  //
-  //   games.forEach(game => {
-  //     game.medals.sort((a, b) => {
-  //       if (a.medal < b.medal) return -1;
-  //       else if (a.medal > b.medal) return 1;
-  //       else return 0;
-  //     });
-  //     game.medalGroups = game.medals.reduce((object, medal) => {
-  //       object[medal.medal] ||= {medal: medal.medal, num: 0, disciplines: []};
-  //       object[medal.medal].num++;
-  //       // object[medal.medal].disciplines.push(medal.discipline);
-  //       object[medal.medal].disciplines.push(this.translateObject(medal, "discipline"));
-  //       return object;
-  //     }, {});
-  //   });
-  //
-  //   games.sort((a, b) => {
-  //     if (a.year < b.year) return -1;
-  //     else if (a.year > b.year) return 1;
-  //     else return 0;
-  //   });
-  //
-  //   return games;
-  // }
 
   static async groupGames(story) {
     const items = story.games || [];
@@ -189,31 +127,7 @@ class Stories {
           this.date1 = date1;
           this.date2 = date2;
 
-          const screensaverFileIds = this.gameGroup.images || [];
-
-
-          // this.stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
-
-          // if (this.stories.length < 13) {
-          //
-          //   this.stories = [0,1,2,3,4,5,6,7,8,9,10,11,12].map(index => this.stories[index%this.stories.length]);
-          //
-          // }
-
           const stories = await fetch(`/query/stories?gameGroup=${this.gameGroup.id}`).then(response => response.json());
-
-
-
-
-          const fileIds = stories.reduce((ids, story) => [...ids, ...(story.medias || []).filter(media => media.file && media.file.length).map(media => media.file[0])], []);
-
-          // const countryFileIds = stories.reduce((ids, story) => new Set([...ids, ...(story.country || [])]), new Set());
-          // const countryFileIds = [];
-
-          // this.files = await fetch(`/query/files?ids=${[...fileIds, ...countryFileIds, ...screensaverFileIds].join(",")}`).then(response => response.json());
-          //
-          // this.filesDirectory = Object.fromEntries(this.files.filter(file => file && file.id).map(file => [file.id, file]));
-
 
           this.stories = [];
 
@@ -223,13 +137,7 @@ class Stories {
 
           }
 
-
-
-
-
           this.games = await fetch(`/query/games`).then(response => response.json());
-
-
 
           this.sports = await fetch(`/query/sports`).then(response => response.json());
 
@@ -240,13 +148,7 @@ class Stories {
 
           this.countriesDirectory = Object.fromEntries(this.countries.map(country => [country.id, country]));
 
-          // console.log(this.countries);
-
-          // const countryFileIds = this.countries.map((ids, story) => new Set([...ids, ...(story.country || [])]), new Set());
-
-
           this.options = await fetch(`/get/options/stories`).then(response => response.json());
-
 
           this.files = await fetch(`/query/files`).then(response => response.json());
 
@@ -267,7 +169,7 @@ class Stories {
                 const files = fileIds.map(fileId => this.filesDirectory[fileId]);
 
                 screensaver.element.classList.toggle("show", Boolean(this.screensaving));
-                screensaver.element.onclick = event => {
+                screensaver.element.onpointerdown = event => {
                   // this.screensaving = false;
                   event.preventDefault();
                   this.screensaverStop();
@@ -394,7 +296,7 @@ class Stories {
                     {
                       class: "language",
                       update: language => {
-                        language.element.onclick = event => {
+                        language.element.onpointerdown = event => {
                           this.player.stop();
                           this.language = this.language === "en" ? "fr" : "en";
                           this.renderContent();
@@ -435,10 +337,6 @@ class Stories {
                                   x -= this.stories.length;
                                 }
 
-                                // const n = this.stories.length;
-                                // let x = ((index - this.nextSlide)%n + n)%n;
-
-                                // slide.element.style.transform = `translate(${x*100}%, 0)`;
                                 slide.element.style.opacity = x === 0 ? "1" : "0";
                                 slide.element.style.zIndex = x === 0 ? "1" : "0";
 
@@ -497,7 +395,7 @@ class Stories {
                                                       child: {
                                                         class: "toggle-button",
                                                         init: button => {
-                                                          button.element.onclick = event => {
+                                                          button.element.onpointerdown = event => {
                                                             story.showInfo = !story.showInfo;
                                                             frame.render();
                                                           }
@@ -519,25 +417,23 @@ class Stories {
                                                       children: [
                                                         {
                                                           class: "country",
-                                                          child: {
-                                                            tag: "img",
-                                                            init: async img => {
-                                                              img.element.draggable = false;
-                                                              const countryId = story.country && story.country[0];
-                                                              const country = countryId && this.countries.find(country => country.id === countryId);
-                                                              const fileId = country && country.image;
-                                                              const file = fileId && this.filesDirectory[fileId];
-
-                                                              if (file) {
-                                                                img.element.src = "/uploads/" + file.filename;
+                                                          children: (story.country || []).map(countryId => this.countriesDirectory[countryId]).filter(country => country).map(country => {
+                                                            return {
+                                                              tag: "img",
+                                                              init: async img => {
+                                                                img.element.draggable = false;
+                                                                const file = country.image && this.filesDirectory[country.image];
+                                                                if (file) {
+                                                                  img.element.src = "/uploads/" + file.filename;
+                                                                }
                                                               }
-                                                            }
-                                                          }
+                                                            };
+                                                          })
                                                         },
                                                         {
                                                           class: "toggle-button",
                                                           init: button => {
-                                                            button.element.onclick = event => {
+                                                            button.element.onpointerdown = event => {
                                                               story.showInfo = !story.showInfo;
                                                               frame.render();
                                                             }
@@ -568,17 +464,6 @@ class Stories {
                                                             {
                                                               class: "value",
                                                               update: async value => {
-                                                                // const sport = await this.getSport(story);
-                                                                // value.element.textContent = sport && sport.name || "";
-                                                                // value.element.textContent = this.getSport(story);
-
-
-
-                                                                // const sportId = story.sport && story.sport[0];
-                                                                // const sport = sportId && this.sports.find(sport => sport.id === sportId);
-                                                                // value.element.textContent = sport && this.translateObject(sport, "name") || "";
-
-
                                                                 value.element.textContent = (story.sport || []).map(sportId => this.sportsDirectory[sportId]).filter(sport => sport).map(sport => this.translateObject(sport, "name")).join(", ");
                                                               }
                                                             }
@@ -593,14 +478,12 @@ class Stories {
                                                             {
                                                               class: "label",
                                                               update: label => {
-                                                                // label.element.textContent = "Nicknames";
                                                                 label.element.textContent = this.translate("Nicknames");
                                                               }
                                                             },
                                                             {
                                                               class: "value",
                                                               update: value => {
-                                                                // value.element.textContent = story.nicknames || "";
                                                                 value.element.innerHTML = this.translateObject(story, "nicknames");
                                                               }
                                                             }
@@ -614,9 +497,6 @@ class Stories {
                                                               children: [
                                                                 {
                                                                   class: "logo",
-                                                                  // init: async logo => {
-                                                                  //   logo.element.innerHTML = await fetch("/images/logo.svg").then(response => response.text());
-                                                                  // }
                                                                   child: {
                                                                     tag: "img",
                                                                     init: img => {
@@ -628,7 +508,6 @@ class Stories {
                                                                 {
                                                                   class: "jeux",
                                                                   update: div => {
-                                                                    // div.element.textContent = "jeux";
                                                                     div.element.textContent = this.translate("games");
                                                                   }
                                                                 }
@@ -675,10 +554,6 @@ class Stories {
                                                                               class: "disciplines",
                                                                               tag: "ul",
                                                                               update: ul => {
-                                                                                // div.element.innerHTML = Object.values(game.medalGroups).map(group => {
-                                                                                //   return `${group.num} ${this.translate(this.medals[group.medal])} - ${group.disciplines.join(", ")}`
-                                                                                // }).join("; ");
-
                                                                                 ul.children = Object.values(game.medalGroups).map(nameGroup => {
                                                                                   return {
                                                                                     tag: "li",
@@ -726,13 +601,9 @@ class Stories {
                                                       class: "info-flip",
                                                       child: {
                                                         class: "toggle-button",
-                                                        // child: {
-                                                        //
-                                                        // },
                                                         init: async button => {
-                                                          // button.element.innerHTML = await fetch("images/arrowClose.svg").then(response => response.text());
                                                           button.element.innerHTML = await this.fetchSvg("arrowClose.svg");
-                                                          button.element.onclick = event => {
+                                                          button.element.onpointerdown = event => {
                                                             story.showInfo = !story.showInfo;
                                                             frame.render();
                                                           }
@@ -792,7 +663,6 @@ class Stories {
                                                             {
                                                               tag: "video",
                                                               init: video => {
-                                                                // video.element.loop = true;
                                                                 video.element.controls = false;
 
                                                                 video.element.onended = event => {
@@ -803,7 +673,7 @@ class Stories {
                                                               },
                                                               update: video => {
 
-                                                                video.element.onclick = event => {
+                                                                video.element.onpointerdown = event => {
                                                                   this.player.toggle();
                                                                   main.render();
                                                                 };
@@ -885,7 +755,7 @@ class Stories {
                                                       {
                                                         class: "video-button",
                                                         init: async button => {
-                                                          button.element.onclick = event => {
+                                                          button.element.onpointerdown = event => {
                                                             event.preventDefault();
                                                             this.player.toggle();
                                                             button.render();
@@ -958,7 +828,7 @@ class Stories {
                                                 },
                                                 update: thumb => {
                                                   thumb.element.classList.toggle("active", this.currentMedia === mediaIndex);
-                                                  thumb.element.onclick = async event => {
+                                                  thumb.element.onpointerdown = async event => {
                                                     if (this.currentMedia !== mediaIndex) {
                                                       this.currentMedia = mediaIndex;
 
@@ -996,7 +866,7 @@ class Stories {
                           nav.element.innerHTML = await this.fetchSvg("arrowL.svg");
                         },
                         update: nav => {
-                          nav.element.onclick = event => {
+                          nav.element.onpointerdown = event => {
                             this.player.stop();
                             this.nextSlide--;
                             this.renderContent();
@@ -1012,11 +882,10 @@ class Stories {
                       {
                         class: "right-nav",
                         init: async nav => {
-                          // nav.element.innerHTML = await fetch("images/arrowR.svg").then(response => response.text());
                           nav.element.innerHTML = await this.fetchSvg("arrowR.svg");
                         },
                         update: nav => {
-                          nav.element.onclick = event => {
+                          nav.element.onpointerdown = event => {
                             this.player.stop();
                             this.nextSlide++;
                             this.renderContent();
@@ -1034,87 +903,80 @@ class Stories {
                 },
                 {
                   class: "pagination",
-                  // child: {
-                  //   class: "pagination",
-                    update: pagination => {
-                      pagination.children = this.stories.map((story, index) => {
-                        return {
-                          class: "pagination-thumb",
-                          update: thumb => {
+                  update: pagination => {
+                    pagination.children = this.stories.map((story, index) => {
+                      return {
+                        class: "pagination-thumb",
+                        update: thumb => {
 
-                            // const n = this.stories.length;
-                            //
-                            // let x = ((index - this.nextSlide)%n + n)%n - 6;
+                          let x = index - this.nextSlide;
 
-                            let x = index - this.nextSlide;
+                          while (x < -6) {
+                            x += this.stories.length;
+                          }
+                          while (x > this.stories.length - 7) {
+                            x -= this.stories.length;
+                          }
 
-                            while (x < -6) {
-                              x += this.stories.length;
-                            }
-                            while (x > this.stories.length - 7) {
-                              x -= this.stories.length;
-                            }
+                          thumb.element.classList.toggle("index-0", x === -6);
+                          thumb.element.classList.toggle("index-1", x === -5);
+                          thumb.element.classList.toggle("index-2", x === -4);
+                          thumb.element.classList.toggle("index-3", x === -3);
+                          thumb.element.classList.toggle("index-4", x === -2);
+                          thumb.element.classList.toggle("index-5", x === -1);
+                          thumb.element.classList.toggle("index-6", x === 0);
+                          thumb.element.classList.toggle("index-7", x === 1);
+                          thumb.element.classList.toggle("index-8", x === 2);
+                          thumb.element.classList.toggle("index-9", x === 3);
+                          thumb.element.classList.toggle("index-10", x === 4);
+                          thumb.element.classList.toggle("index-11", x === 5);
+                          thumb.element.classList.toggle("index-12", x === 6);
 
-                            // thumb.element.classList.toggle("index-0", x === -4 || x === -5 || x === -6);
-                            // thumb.element.classList.toggle("index-1", x === -3);
-                            // thumb.element.classList.toggle("index-2", x === -2);
-                            // thumb.element.classList.toggle("index-3", x === -1);
-                            // thumb.element.classList.toggle("index-4", x === 0);
-                            // thumb.element.classList.toggle("index-5", x === 1);
-                            // thumb.element.classList.toggle("index-6", x === 2);
-                            // thumb.element.classList.toggle("index-7", x === 3);
-                            // thumb.element.classList.toggle("index-8", x === 4 || x === 5 || x === 6);
+                          // thumb.element.style.transform = `translate(${50+x*10}%, 0)`;
+                          thumb.element.classList.toggle("hidden", x > 6);
+                          thumb.element.classList.toggle("current", x === 0);
 
-                            thumb.element.classList.toggle("index-0", x === -6);
-                            thumb.element.classList.toggle("index-1", x === -5);
-                            thumb.element.classList.toggle("index-2", x === -4);
-                            thumb.element.classList.toggle("index-3", x === -3);
-                            thumb.element.classList.toggle("index-4", x === -2);
-                            thumb.element.classList.toggle("index-5", x === -1);
-                            thumb.element.classList.toggle("index-6", x === 0);
-                            thumb.element.classList.toggle("index-7", x === 1);
-                            thumb.element.classList.toggle("index-8", x === 2);
-                            thumb.element.classList.toggle("index-9", x === 3);
-                            thumb.element.classList.toggle("index-10", x === 4);
-                            thumb.element.classList.toggle("index-11", x === 5);
-                            thumb.element.classList.toggle("index-12", x === 6);
+                          thumb.element.onpointerdown = event => {
+                            this.player.stop();
+                            this.nextSlide = index;
+                            this.renderContent();
+                          }
 
-                            // thumb.element.style.transform = `translate(${50+x*10}%, 0)`;
-                            thumb.element.classList.toggle("hidden", x > 6);
-                            thumb.element.classList.toggle("current", x === 0);
+                          if (x <= 4) {
+                            thumb.child = {
+                              tag: "img",
+                              init: img => {
+                                img.element.draggable = false;
 
-                            thumb.element.onclick = event => {
-                              this.player.stop();
-                              this.nextSlide = index;
-                              this.renderContent();
-                            }
+                                const media = story.medias && story.medias[0];
+                                if (media) {
 
-                            if (x <= 4) {
-                              thumb.child = {
-                                tag: "img",
-                                init: img => {
-                                  img.element.draggable = false;
+                                  const fileId = media.file && media.file[0];
+                                  const file = fileId && this.filesDirectory[fileId];
 
-                                  const media = story.medias && story.medias[0];
-                                  if (media) {
-                                    // const file = this.files.find(file => media.file && media.file.includes(file.id));
-
-                                    const fileId = media.file && media.file[0];
-                                    const file = fileId && this.filesDirectory[fileId];
-
-                                    if (file) {
-                                      img.element.src = "/uploads/" + file.filename;
-                                    }
+                                  if (file) {
+                                    img.element.src = "/uploads/" + file.filename;
                                   }
                                 }
                               }
                             }
                           }
-
                         }
+
+                      }
+                    });
+                  }
+                },
+                {
+                  class: "footer-animation",
+                  update: animation => {
+                    animation.children = [];
+                    for (let i = 0; i < 20; i++) {
+                      animation.children.push({
+                        class: "line"
                       });
                     }
-                  // }
+                  }
                 }
               ]
             }
@@ -1136,10 +998,6 @@ class Stories {
                         2: "winter"
                       };
                       a.element.href = `#${seasons[group.season]}-${group.date1}-${group.date2}`;
-                      // a.element.onclick = event => {
-                      //   location.href = a.element.href;
-                      //   stories.render(true);
-                      // }
                     }
                   }
                 }

@@ -61,10 +61,8 @@ class Screen {
       init: async screen => {
         this.render = screen.render;
         this.screensaving = true;
-        // this.items = await fetch("/query/items").then(response => response.json());
         this.items = await this.fetch("items");
         const fileIds = this.items.reduce((ids, item) => [...ids, ...item.medias.filter(media => media.image && media.image.length).map(media => media.image[0])], []);
-        // this.files = await fetch("/query/files").then(response => response.json());
         this.files = await this.fetch(`files?ids=${fileIds.join(",")}`);
         this.filesDirectory = Object.fromEntries(this.files.map(file => [file.id, file]));
       },
@@ -73,7 +71,7 @@ class Screen {
           class: "screensaver",
           init: screensaver => {
             screensaver.element.innerHTML = "Screen Saver";
-            screensaver.element.onclick = event => {
+            screensaver.element.onpointerdown = event => {
               this.stopScreensaver();
             }
           },
@@ -99,68 +97,33 @@ class Screen {
               const ry = -x*5;
               const opacity = Math.max(0, 1-Math.abs(x)*0.25);
 
-              slide.element.style.display = diff > 4 ? "none": "flex";
+              // slide.element.style.display = diff > 4 ? "none": "block";
+
+              slide.element.classList.toggle("hidden", diff > 4);
 
               slide.element.style.filter = "brightness("+opacity.toFixed(4)+")" ;
               slide.element.style.transform = "translate3D("+tx.toFixed(4)+"em, "+ty.toFixed(4)+"em, "+tz.toFixed(4)+"em) rotateY("+ry.toFixed(4)+"deg)";
 
             };
 
-            let swipe = registerSwipe(slideshow.element);
-            swipe.registerMouse();
-            swipe.registerTouch();
+            new PointerTrap(slideshow.element);
 
-            swipe.onMoveX = () => {
-              this.stopScreensaver();
+            slideshow.element.oncatch = (trap, event) => {
               if (this.currentSlide) return;
-              slideshow.element.classList.add("rolling");
-              this.player.shift(-swipe.diffX/slideshow.element.clientWidth);
-            };
-            swipe.onSlideRight = () => {
+              event.preventDefault();
               this.stopScreensaver();
-              if (this.currentSlide) return;
-              this.player.prev();
-              slideshow.element.classList.add("rolling");
-            };
-            swipe.onSlideLeft = () => {
-              this.stopScreensaver();
-              if (this.currentSlide) return;
-              this.player.next();
-              slideshow.element.classList.add("rolling");
-
-            }
-            swipe.onCancel = () => {
-              this.player.cancel();
-              this.stopScreensaver();
+              this.player.shift(-trap.diffX/slideshow.element.clientWidth);
             }
 
-
-            swipe.onClick = (event) => {
-              this.stopScreensaver();
+            slideshow.element.onrelease = (trap, event) => {
               if (this.currentSlide) return;
-              const slide = this.player.getCurrent();
-              const img = slide.element.querySelector("img");
-              const box = img.getBoundingClientRect();
-              const media = slide.item.medias && slide.item.medias.find(media => media.image && media.image[0]);
-              if (swipe.x >= box.left && swipe.x <= box.right && swipe.y >= box.top && swipe.y <= box.bottom) {
-                slideshow.element.classList.remove("rolling");
-                this.onPop({
-                  screenId: this.screenId,
-                  // mediaId: slide.id
-                  mediaId: media.image[0]
-                });
-                this.currentSlide = slide;
-                // slideshow.render();
-                this.renderPopup();
-              } else if (swipe.x < box.left) {
+              event.preventDefault();
+
+              if (trap.swipeRight || trap.click && trap.map.x < 0.5) {
                 this.player.prev();
-                slideshow.element.classList.add("rolling");
-              } else if (swipe.x > box.right) {
+              } else if (trap.swipeLeft || trap.click && trap.map.x >= 0.5) {
                 this.player.next();
-                slideshow.element.classList.add("rolling");
               }
-
-
             }
 
             slideshow.children = [
@@ -169,43 +132,83 @@ class Screen {
                 children: this.items.map((item, index) => {
                   return {
                     class: "slide",
-                    init: slide => {
+                    init: async slide => {
                       this.player.addSlide({
                         element: slide.element,
                         render: slide.render,
                         id: item.id,
                         item: item
                       });
-                    },
-                    update: slide => {
-                      // const active = Boolean(this.currentSlide && this.currentSlide.id === item.id);
-                      // slide.element.classList.toggle("active", active);
-                      slide.child = {
-                        tag: "figure",
-                        class: "image",
-                        child: {
-                          tag: "img",
-                          init: img => {
-                            img.element.draggable = false;
-                          },
-                          update: async img => {
-                            // const file = await fetch("/get/files/"+item.images[0]).then(response => response.json());
-                            const medias = item.medias || [];
-                            const media = medias.find(media => media.image && media.image.length);
-                            const fileId = media && media.image[0];
-                            const file = this.filesDirectory[fileId];
-                            const medium = file && file.sizes.find(size => size.key === "medium");
 
-                            if (medium && !img.element.src.endsWith(medium.filename)) {
-                              const src = "/uploads/" + medium.filename;
-                              img.element.src = src;
-                              img.element.width = file.width;
-                              img.element.height = file.height;
-                              img.element.classList.toggle("portrait", file.width/file.height < 1);
+                      const canvasWidth = 1920;
+                      const canvasHeight = 1080;
+
+                      const medias = item.medias || [];
+                      const media = medias.find(media => media.image && media.image.length);
+                      const fileId = media && media.image[0];
+                      const file = this.filesDirectory[fileId];
+                      const medium = file && file.sizes.find(size => size.key === "medium");
+
+                      const image = new Image(file.width, file.height);
+                      image.src = "/uploads/" + medium.filename;
+
+                      await new Promise(resolve => {
+                        image.onload = event => resolve();
+                      });
+
+                      const portrait = file.width/file.height < (canvasWidth*60/100)/canvasHeight;
+
+                      let width;
+                      let height;
+
+                      if (portrait) {
+                        height = canvasHeight;
+                        width = height*file.width/file.height;
+                      } else {
+                        width = canvasWidth*60/100;
+                        height = width*file.height/file.width;
+                      }
+                      let left = (canvasWidth - width)/2;
+                      let top = (canvasHeight - height)/2;
+
+                      slide.children = [
+                        {
+                          tag: "canvas",
+                          init: canvas => {
+                            canvas.element.width = canvasWidth;
+                            canvas.element.height = canvasHeight;
+                            const ctx = canvas.element.getContext("2d");
+                            ctx.shadowColor = "black";
+                            ctx.shadowBlur = 256;
+                            ctx.drawImage(image, left, top, width, height);
+                          }
+                        },
+                        {
+                          class: "gabarit",
+                          init: gabarit => {
+                            gabarit.element.style.top = `${100*top/canvasHeight}%`;
+                            gabarit.element.style.left = `${100*left/canvasWidth}%`;
+                            gabarit.element.style.width = `${100*width/canvasWidth}%`;
+                            gabarit.element.style.height = `${100*height/canvasHeight}%`;
+                          },
+                          update: gabarit => {
+                            new PointerTrap(gabarit.element);
+                            gabarit.element.onrelease = (trap, event) => {
+                              const currentSlide = this.player.getCurrent();
+                              if (trap.click && currentSlide && currentSlide.item === item) {
+                                event.preventDefault();
+                                this.onPop({
+                                  screenId: this.screenId,
+                                  mediaId: fileId
+                                });
+                                this.currentSlide = currentSlide;
+                                this.renderPopup();
+                              }
                             }
                           }
                         }
-                      };
+                      ];
+
                     }
                   };
                 })
@@ -230,10 +233,7 @@ class Screen {
 
             if (this.currentSlide) {
               const item = this.currentSlide.item;
-              // let mediaId = item.images[0];
               let currentMedia = item.medias && item.medias.find(media => media.image && media.image[0]);
-              // let mediaId
-              // let currentSection;
 
               popup.element.style.display = "block";
               popup.children = [{
@@ -271,8 +271,6 @@ class Screen {
                                                 img.element.draggable = false;
                                               },
                                               update: async img => {
-                                                // const file = await fetch("/get/files/"+media.image[0]).then(response => response.json());
-
                                                 const box = figure.element.getBoundingClientRect();
                                                 const isPortrait = Number(file.width)/Number(file.height) < box.width/box.height;
 
@@ -425,8 +423,6 @@ class Screen {
                             gallery.element.classList.toggle("hidden", medias.length <= 1);
 
                             if (medias.length > 1) {
-                              // gallery.children = item.images.map(fileId => {
-
 
                               gallery.children = medias.filter(media => media.image && media.image.length).map(media => {
                                 const fileId = media.image[0];
@@ -435,7 +431,6 @@ class Screen {
                                   class: "frame",
                                   update: async frame => {
                                     frame.element.classList.toggle("active", currentFileId === fileId);
-                                    // const file = await fetch("/get/files/"+fileId).then(response => response.json());
 
                                     frame.children = [
                                       {
@@ -455,21 +450,12 @@ class Screen {
                                                 const src = "/uploads/"+medium.filename;
                                                 if (!img.element.src.endsWith(src)) {
                                                   img.element.src = src;
-                                                  img.element.onclick = event => {
-                                                    // if (mediaId === fileId) {
-                                                    //   mediaId = item.images[0];
-                                                    //   this.onPop({
-                                                    //     screenId: this.screenId,
-                                                    //     mediaId: mediaId
-                                                    //   });
-                                                    // } else {
+                                                  img.element.onpointerdown = event => {
                                                       currentMedia = media;
-                                                      // currentSection = fileId;
                                                       this.onPop({
                                                         screenId: this.screenId,
                                                         mediaId: file.id
                                                       });
-                                                    // }
                                                     content.render();
                                                   }
                                                 }
@@ -494,47 +480,14 @@ class Screen {
                                                     video.element.src = src;
                                                     video.element.type = file.type;
                                                   }
-                                                },
-                                                // update: video => {
-                                                //
-                                                //   // video.element.src = "/uploads/"+file.filename;
-                                                //   // video.element.type = file.type;
-                                                //
-                                                //   // video.element.controls = true;
-                                                //   // video.element.onplay = event => {
-                                                //   //   this.onPop({
-                                                //   //     screenId: this.screenId,
-                                                //   //     mediaId: fileId,
-                                                //   //     currentTime: video.element.currentTime
-                                                //   //   });
-                                                //   // };
-                                                //   // video.element.onpause = event => {
-                                                //   //   const slide = this.player.getCurrent();
-                                                //   //   this.onPop({
-                                                //   //     screenId: this.screenId,
-                                                //   //     mediaId: fileId,
-                                                //   //     currentTime: video.element.currentTime,
-                                                //   //     playing: false
-                                                //   //   });
-                                                //   // };
-                                                // }
-                                                // child: {
-                                                //   tag: "source",
-                                                //   init: source => {
-                                                //     source.element.src = "/uploads/"+file.filename;
-                                                //     source.element.type = file.type;
-                                                //   }
-                                                // }
+                                                }
                                               },
                                               {
                                                 class: "video-play",
                                                 update: button => {
-                                                  button.element.onclick = event => {
+                                                  button.element.onpointerdown = event => {
                                                     event.preventDefault();
-                                                    // this.fullscreenItem = file;
-                                                    // this.renderOverlay();
                                                     currentMedia = media;
-                                                    // currentSection = fileId;
                                                     this.onPop({
                                                       screenId: this.screenId,
                                                       mediaId: file.id,
@@ -579,7 +532,7 @@ class Screen {
                               {
                                 class: "button language",
                                 update: button => {
-                                  button.element.onclick = event => {
+                                  button.element.onpointerdown = event => {
                                     this.language = this.language === "en" ? "fr" : "en";
                                     details.render();
                                   }
@@ -594,15 +547,13 @@ class Screen {
                               {
                                 class: "button close",
                                 init: button => {
-                                  button.element.onclick = async event => {
+                                  button.element.onpointerdown = async event => {
                                     this.stopScreensaver();
 
                                     this.popupActive = false;
                                     await popup.render();
 
                                     // wait for animation...
-
-
 
                                     setTimeout(() => {
                                       this.currentSlide = null;
@@ -612,13 +563,6 @@ class Screen {
                                       this.onPop({ // -> depop
                                         screenId: this.screenId
                                       });
-
-                                      // setTimeout(async () => {
-                                      //
-                                      // }, 1000)
-
-
-
 
                                     }, 200);
                                   }
