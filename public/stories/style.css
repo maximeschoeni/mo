@@ -52,6 +52,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   font-size: 5.208334vw; /* 1920px -> 100px */
+  line-height: 1.2em;
+
 
   /* background-color: black; */
 
@@ -107,6 +109,7 @@ body {
 }
 .header .title .small {
   font-size: 0.5em;
+  line-height: 1.2em;
   font-weight: 300;
   color: var(--title-dark);
 }
@@ -126,6 +129,7 @@ body {
 }
 .header .language div {
   font-size: 0.3em;
+  line-height: 1.2em;
 }
 
 /* Body
@@ -194,6 +198,7 @@ body {
   width: 100%;
   bottom: 0;
   font-size: 0.4em;
+  line-height: 1.2em;
   width: 100%;
   color: var(--text-dark);
   text-align: center;
@@ -536,6 +541,7 @@ body {
 }
 .body .main-frame .info-frame .face .info-body .games .jeux {
   font-size: 0.3em;
+  line-height: 1.2em;
   color: var(--background-light);
 }
 .body .main-frame .info-frame .face .info-body .games .games-body {
@@ -919,15 +925,18 @@ body {
 .screensaver .text .title {
   color: var(--screensaver-light);
   font-size: 0.5em;
+  line-height: 1.2em;
 }
 .screensaver .text .dates {
   color: var(--screensaver-dark);
   font-size: 1em;
+  line-height: 1.2em;
   font-weight: 400;
 }
 .screensaver .text .screensaverline {
   color: var(--screensaver-light);
   font-size: 0.75em;
+  line-height: 1.2em;
   margin: 1em 0;
 }
 
