@@ -1051,6 +1051,12 @@
             "key": "screensaverline",
             "label": "ScreenSaver Line",
             "translatable": true
+          },
+          {
+            "type": "input",
+            "key": "screensavertimeout",
+            "label": "ScreenSaver Timeout (in seconds)",
+            "placeholder": "3600"
           }
         ]
       },

@@ -37,13 +37,14 @@ class Stories {
 
   static screensaverStop() {
     this.screensaving = false;
+    const timeout = Number(this.options && this.options.screensavertimeout && this.options.screensavertimeout[0] || 3600);
     if (this.screensaverTimer) {
       clearTimeout(this.screensaverTimer);
     }
     this.screensaverTimer = setTimeout(() => {
       this.screensaving = true;
       this.render();
-    }, 60*60*1000);
+    }, timeout*1000);
   }
 
   static translate(word) {
