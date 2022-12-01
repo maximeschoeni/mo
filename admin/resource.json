@@ -37,18 +37,6 @@
                 "hash": "table=gameGroups"
               },
               {
-                "title": "Games",
-                "hash": "table=games"
-              },
-              {
-                "title": "Sports",
-                "hash": "table=sports"
-              },
-              {
-                "title": "Countries",
-                "hash": "table=countries"
-              },
-              {
                 "title": "Options",
                 "hash": "table=stories-options"
               }
@@ -63,6 +51,18 @@
                 "hash": "table=torches-options"
               }
             ]
+          },
+          {
+            "title": "Games",
+            "hash": "table=games"
+          },
+          {
+            "title": "Sports",
+            "hash": "table=sports"
+          },
+          {
+            "title": "Countries",
+            "hash": "table=countries"
           },
           {
             "title": "Options Générales",
