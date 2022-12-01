@@ -25,6 +25,13 @@ KarmaFieldsAlpha.field.layout = class extends KarmaFieldsAlpha.field.layout {
         return KarmaFieldsAlpha.Nav.get("language") || "fr";
       }
 
+      case "regen-all": {
+
+        console.log("regen-all");
+        break;
+
+      }
+
       default:
         return super.request(subject, content, ...path);
 

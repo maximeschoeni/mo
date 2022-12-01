@@ -23,7 +23,6 @@ KarmaFieldsAlpha.field.button = class extends KarmaFieldsAlpha.field.text {
 					button.element.classList.add("primary");
 				}
 
-
 				button.element.onclick = async event => {
 					event.preventDefault(); // -> prevent submitting form in post-edit
 

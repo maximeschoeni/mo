@@ -164,6 +164,45 @@ class Wall {
     return array;
   }
 
+
+
+  createTileCanvas(image, width, height) {
+    const canvas = document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0, width, height);
+
+    const gradientW = 2;
+
+    const gradient = ctx.createLinearGradient(0, 0, gradientW, 0);
+    gradient.addColorStop(0, "black");
+    gradient.addColorStop(1, "transparent");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, gradientW, height);
+
+    const rightG = ctx.createLinearGradient(width-gradientW, 0,width, 0);
+    rightG.addColorStop(0, "transparent");
+    rightG.addColorStop(1, "black");
+    ctx.fillStyle = rightG;
+    ctx.fillRect(width-gradientW, 0, gradientW, height);
+
+    const topG = ctx.createLinearGradient(0, 0, 0, gradientW);
+    topG.addColorStop(0, "black");
+    topG.addColorStop(1, "transparent");
+    ctx.fillStyle = topG;
+    ctx.fillRect(0, 0, width, gradientW);
+
+    const bottomG = ctx.createLinearGradient(0, height-gradientW, 0, height);
+    bottomG.addColorStop(0, "transparent");
+    bottomG.addColorStop(1, "black");
+    ctx.fillStyle = bottomG;
+    ctx.fillRect(0, height-gradientW, width, gradientW);
+
+    return canvas;
+  }
+
   createItems(medias) {
 
 
@@ -229,7 +268,8 @@ class Wall {
             width: width,
             imageWidth: imageWidth,
             x: x + margin,
-            row: row
+            row: row,
+            canvas: this.createTileCanvas(image.image, width, row.imageHeight)
           };
           items.push(item);
 
@@ -349,16 +389,9 @@ class Wall {
 
   pop(msg) {
     if (msg.screenId === this.screenId) {
-      // if (msg.mediaId && msg.mediaId !== this.popupId) {
       if (msg.mediaId) {
-        // const origin = {
-        //   x: Math.random(),
-        //   y: Math.random()
-        // };
         this.eye = {
           state: this.eye.state || 0,
-          // originX: Math.random(),
-          // originY: Math.random(),
           originX: 0.5,
           originY: 2,
           destX: 0.5,
@@ -367,28 +400,6 @@ class Wall {
           data: msg,
           id: msg.mediaId
         };
-
-
-        // if (this.eye.state === 1) {
-        //   this.eye = {
-        //     origin: origin,
-        //     dest: {x: 0.5, y: 0.5},
-        //     next: 1
-        //     // x: window.innerWidth*0.27,
-        //     // y: window.innerHeight*0.28,
-        //   };
-        // } else {
-        //   this.eye = {
-        //     origin: origin,
-        //     dest: {x: 0.5, y: 0.5},
-        //     next: 0
-        //     // x: window.innerWidth*0.27,
-        //     // y: window.innerHeight*0.28,
-        //   };
-        // }
-        // this.popupId = msg.mediaId;
-        // this.popupData = msg;
-        // this.eye = {x: window.innerWidth*0.27, y: window.innerHeight*0.28};
       } else {
         this.eye = {
           state: this.eye.state || 0,
@@ -398,22 +409,7 @@ class Wall {
           destY: 0.5,
           next: 0
         };
-        // this.eye = null;
-        // this.popupId = null;
-        // this.popupData = {};
       }
-      // if (this.eye.next !== this.eye.state) {
-      //   TinyAnimate.animate(this.eye.state, this.eye.next, 400, value => {
-      //     this.eye.x = this.eye.originX + value*(this.eye.destX-this.eye.originX);
-      //     this.eye.y = this.eye.originY + value*(this.eye.destY-this.eye.originY);
-      //     this.eye.state = value;
-      //     const x = (this.eye.x*100).toFixed(4);
-      //     const y = (this.eye.y*100).toFixed(4);
-      //     popup.element.style.transform = `translate3d(${x}%, ${y}%, 0)`;
-      //   }, "easeInOutSine");
-      // }
-
-
       this.renderPopups();
     }
   }
@@ -432,95 +428,128 @@ class Wall {
 
       },
       children: [
-        // {
-        //   tag: "canvas",
-        //   init: wall => {
-        //     const onFrame = () => {
-        //       wall.render();
-        //       requestAnimationFrame(onFrame);
-        //     }
-        //
-        //     requestAnimationFrame(onFrame);
-        //   },
-        //   update: wall => {
-        //
-        //     const canvas = wall.element;
-        //
-        //     canvas.width = window.innerWidth;
-        //     canvas.height = window.innerHeight;
-        //
-        //     const ctx = canvas.getContext("2d");
-        //
-        //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //
-        //     for (let i in this.items) {
-        //
-        //       const item = this.items[i];
-        //       // const src = item.image.small;
-        //       const image = item.image.image;
-        //       const width = item.imageWidth;
-        //       const height = item.row.imageHeight;
-        //
-        //       this.updateItem(item);
-        //
-        //       const x = item.currentX;
-        //       const y = item.currentY;
-        //
-        //       ctx.globalAlpha = 1;
-        //       ctx.fillStyle = "black";
-        //       ctx.fillRect(x, y, width, height);
-        //
-        //
-        //       ctx.globalAlpha = item.opacity;
-        //       ctx.drawImage(image, x, y, width, height);
-        //
-        //     }
-        //
-        //   }
-        // },
         {
-          class: "background",
+          tag: "canvas",
           init: wall => {
-
             const onFrame = () => {
               wall.render();
               requestAnimationFrame(onFrame);
             }
+
             requestAnimationFrame(onFrame);
           },
           update: wall => {
 
-            wall.children = this.items.map(item => {
-              return {
-                class: "thumb",
-                tag: "img",
-                init: thumb => {
-                  // thumb.element.src = item.image.small;
+            const canvas = wall.element;
 
-                  // thumb.element.src = `images/small/${item.image.id}.jpeg`; //item.image.small;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
 
-                  thumb.element.src = item.image.small;
-                  thumb.element.style.width = item.imageWidth.toFixed()+"px";
-                  thumb.element.style.height = item.row.imageHeight.toFixed()+"px";
-                },
-                update: thumb => {
+            const ctx = canvas.getContext("2d");
 
-                  this.updateItem(item);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                  const x = item.currentX;
-                  const y = item.currentY;
+            for (let i in this.items) {
 
-                  // thumb.element.style.zIndex = item.z.toFixed();
-                  thumb.element.style.filter = "brightness("+item.opacity.toFixed(4)+")";
+              const item = this.items[i];
+              // const src = item.image.small;
+              const image = item.image.image;
+              const width = item.imageWidth;
+              const height = item.row.imageHeight;
 
-                  // thumb.element.style.filter = "blur("+blur.toFixed()+"px)";
-                  // thumb.element.style.transform = "translate("+x.toFixed(4)+"px, "+y.toFixed(4)+"px)";
-                  thumb.element.style.transform = "translate3d("+x.toFixed(4)+"px, "+y.toFixed(4)+"px, 0px)";
-                }
-              };
-            });
+              this.updateItem(item);
+
+              const x = item.currentX;
+              const y = item.currentY;
+
+              ctx.globalAlpha = 1;
+              ctx.fillStyle = "black";
+              ctx.fillRect(x, y, width, height);
+
+
+              ctx.globalAlpha = item.opacity;
+              ctx.drawImage(item.canvas, x, y, width, height);
+
+            }
+
           }
         },
+        // {
+        //   class: "background",
+        //   init: wall => {
+        //
+        //     const onFrame = () => {
+        //       wall.render();
+        //       requestAnimationFrame(onFrame);
+        //     }
+        //     requestAnimationFrame(onFrame);
+        //   },
+        //   update: wall => {
+        //
+        //     wall.children = this.items.map(item => {
+        //       return {
+        //         class: "thumb",
+        //         // tag: "img",
+        //         // init: thumb => {
+        //         //   thumb.element.src = item.image.small;
+        //         //   thumb.element.style.width = item.imageWidth.toFixed()+"px";
+        //         //   thumb.element.style.height = item.row.imageHeight.toFixed()+"px";
+        //         // },
+        //
+        //         tag: "canvas",
+        //         init: canvas => {
+        //           canvas.element.width = item.imageWidth;
+        //           canvas.element.height = item.row.imageHeight;
+        //           const ctx = canvas.element.getContext("2d");
+        //           ctx.drawImage(item.image.image, 0, 0, item.imageWidth, item.row.imageHeight);
+        //
+        //           const width = 2;
+        //
+        //           const gradient = ctx.createLinearGradient(0, 0, width, 0);
+        //           gradient.addColorStop(0, "black");
+        //           gradient.addColorStop(1, "transparent");
+        //           ctx.fillStyle = gradient;
+        //           ctx.fillRect(0, 0, width, item.row.imageHeight);
+        //
+        //           const rightG = ctx.createLinearGradient(item.imageWidth-width, 0, item.imageWidth, 0);
+        //           rightG.addColorStop(0, "transparent");
+        //           rightG.addColorStop(1, "black");
+        //           ctx.fillStyle = rightG;
+        //           ctx.fillRect(item.imageWidth-width, 0, width, item.row.imageHeight);
+        //
+        //           const topG = ctx.createLinearGradient(0, 0, 0, width);
+        //           topG.addColorStop(0, "black");
+        //           topG.addColorStop(1, "transparent");
+        //           ctx.fillStyle = topG;
+        //           ctx.fillRect(0, 0, item.imageWidth, width);
+        //
+        //           const bottomG = ctx.createLinearGradient(0, item.row.imageHeight-width, 0, item.row.imageHeight);
+        //           bottomG.addColorStop(0, "transparent");
+        //           bottomG.addColorStop(1, "black");
+        //           ctx.fillStyle = bottomG;
+        //           ctx.fillRect(0, item.row.imageHeight-width, item.imageWidth, width);
+        //         },
+        //
+        //
+        //
+        //         update: thumb => {
+        //
+        //           this.updateItem(item);
+        //
+        //           const x = item.currentX;
+        //           const y = item.currentY;
+        //
+        //           // thumb.element.style.zIndex = item.z.toFixed();
+        //           thumb.element.style.filter = "brightness("+item.opacity.toFixed(4)+")";
+        //
+        //           // thumb.element.style.filter = "blur("+blur.toFixed()+"px)";
+        //           // thumb.element.style.transform = "translate("+x.toFixed(4)+"px, "+y.toFixed(4)+"px)";
+        //           thumb.element.style.transform = "translate3d("+x.toFixed(4)+"px, "+y.toFixed(4)+"px, 0px)";
+        //         }
+        //       };
+        //     });
+        //   }
+        // },
         {
           class: "popups",
           init: popups => {

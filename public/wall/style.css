@@ -80,7 +80,7 @@ figure {
 
   padding: 0 0;
 }
-.wall .background img.thumb {
+.wall .background .thumb {
   display: block;
   position: absolute;
 }

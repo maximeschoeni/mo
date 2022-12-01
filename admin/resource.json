@@ -20,7 +20,13 @@
           },
           {
             "title": "Files",
-            "hash": "table=files"
+            "hash": "table=files",
+            "items": [
+              {
+                "title": "Options",
+                "hash": "table=file-options"
+              }
+            ]
           },
           {
             "title": "Stories",
@@ -57,6 +63,10 @@
                 "hash": "table=torches-options"
               }
             ]
+          },
+          {
+            "title": "Options Générales",
+            "hash": "table=main-options"
           },
           {
             "title": "Logout",
@@ -331,12 +341,81 @@
         ]
       }
     },
-
-
-
-
-
-
+    {
+      "id": "file-options",
+      "type": "table",
+      "header": {
+        "children": [
+          {
+            "type": "title",
+            "value": "File Options"
+          }
+        ]
+      },
+      "body": {
+        "driver": "options",
+        "params": {
+          "id": "files"
+        },
+        "type": "table",
+        "children": [
+          {
+            "type": "array",
+            "key": "sizes",
+            "label": "Sizes",
+            "children": [
+              {
+                "type": "input",
+                "label": "Name",
+                "key": "name"
+              },
+              {
+                "type": "input",
+                "label": "Width",
+                "key": "width",
+                "width": "auto"
+              },
+              {
+                "type": "input",
+                "label": "Height",
+                "key": "height",
+                "width": "auto"
+              },
+              {
+                "type": "dropdown",
+                "label": "Mode",
+                "key": "mode",
+                "options": [
+                  {"id": "cover", "name": "Cover"},
+                  {"id": "contain", "name": "Contain"}
+                ],
+                "default": "cover",
+                "width": "auto"
+              },
+              "delete"
+            ]
+          },
+          {
+            "type": "button",
+            "title": "Regenerate all files",
+            "action": "regen-files",
+            "style": "width: 15em"
+          },
+          {
+            "type": "notice",
+            "key": "regen-files"
+          }
+        ]
+      },
+      "controls": {
+        "children": [
+          "save",
+          "separator",
+          "undo",
+          "redo"
+        ]
+      }
+    },
     {
       "id": "stories",
       "header": {
@@ -1109,6 +1188,12 @@
             "label": "Screensaver",
             "table": "files",
             "key": "screensaver"
+          },
+          {
+            "type": "input",
+            "key": "screensavertimeout",
+            "label": "ScreenSaver Timeout (in seconds)",
+            "placeholder": "3600"
           }
         ]
       },
@@ -1372,6 +1457,42 @@
                 "language_inheritance": false
               }
             ]
+          },
+          {
+            "type": "files",
+            "label": "ScreenSaver Images",
+            "key": "screensaverfiles",
+            "table": "files"
+          },
+          {
+            "type": "input",
+            "key": "screensavertimeout",
+            "label": "ScreenSaver Timeout (in seconds)",
+            "placeholder": "3600"
+          },
+          {
+            "type": "group",
+            "label": "ScreenSaver Lines",
+            "children": [
+              {
+                "type": "input",
+                "key": "line1",
+                "placeholder": "Allumage de la flamme",
+                "translatable": true
+              },
+              {
+                "type": "input",
+                "key": "line2",
+                "placeholder": "Torches",
+                "translatable": true
+              },
+              {
+                "type": "input",
+                "key": "line3",
+                "placeholder": "Touchez l‘écran pour commencer",
+                "translatable": true
+              }
+            ]
           }
         ]
       },
@@ -1394,6 +1515,42 @@
             "text": "fr",
             "active": ["=", ["request", "language", "string"], "fr"]
           },
+          "undo",
+          "redo"
+        ]
+      }
+    },
+    {
+      "id": "main-options",
+      "type": "table",
+      "header": {
+        "children": [
+          {
+            "type": "title",
+            "value": "Options générales"
+          }
+        ]
+      },
+      "body": {
+        "driver": "options",
+        "params": {
+          "id": "main"
+        },
+        "type": "table",
+        "children": [
+          {
+            "type": "input",
+            "label": "Pointer threshold",
+            "key": "pointerthresold",
+            "placeholder": 5,
+            "style": "width:10em;"
+          }
+        ]
+      },
+      "controls": {
+        "children": [
+          "save",
+          "separator",
           "undo",
           "redo"
         ]

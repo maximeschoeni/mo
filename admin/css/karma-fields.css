@@ -71,7 +71,7 @@ body.karma-table-open {
 }
 
 .karma-fields .loading:not(:focus),
-.karma-fields .editing:not(:focus) {
+.karma-fields .editing {
   color: var(--disabled-color) !important;
   border-color: var(--disabled-color) !important;
   outline-color: var(--disabled-color) !important;

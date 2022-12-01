@@ -1,6 +1,5 @@
 class Screen {
 
-
   constructor() {
 
     this.language = "fr";
@@ -8,6 +7,10 @@ class Screen {
     this.screenId = location.hash.slice(1) || "1";
 
     this.cache = {};
+
+    this.screensaver = new Screensaver();
+
+    this.onPop = () => {};
 
   }
 
@@ -26,31 +29,29 @@ class Screen {
     return "";
   }
 
-  onPop() {}
-
-  startScreensaver() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
-    this.onPop({
-      screenId: this.screenId
-    });
-    this.screensaving = true;
-    this.render();
-  }
-
-  stopScreensaver() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
-    this.timer = setTimeout(() => {
-      this.startScreensaver();
-    }, 6000000);
-    if (this.screensaving) {
-      this.screensaving = false;
-      this.render();
-    }
-  }
+  // startScreensaver() {
+  //   if (this.timer) {
+  //     clearTimeout(this.timer);
+  //   }
+  //   this.onPop({
+  //     screenId: this.screenId
+  //   });
+  //   this.screensaving = true;
+  //   this.render();
+  // }
+  //
+  // stopScreensaver() {
+  //   if (this.timer) {
+  //     clearTimeout(this.timer);
+  //   }
+  //   this.timer = setTimeout(() => {
+  //     this.startScreensaver();
+  //   }, 6000000);
+  //   if (this.screensaving) {
+  //     this.screensaving = false;
+  //     this.render();
+  //   }
+  // }
 
 
 
@@ -63,20 +64,74 @@ class Screen {
         this.screensaving = true;
         this.items = await this.fetch("items");
         const fileIds = this.items.reduce((ids, item) => [...ids, ...item.medias.filter(media => media.image && media.image.length).map(media => media.image[0])], []);
-        this.files = await this.fetch(`files?ids=${fileIds.join(",")}`);
+        // this.files = await this.fetch(`files?ids=${fileIds.join(",")}`);
+        this.files = await this.fetch(`files`);
         this.filesDirectory = Object.fromEntries(this.files.map(file => [file.id, file]));
+
+        this.options = await fetch(`/get/options/carousel`).then(response => response.json());
+        this.screensaver.timeout = this.options && this.options.screensavertimeout && this.options.screensavertimeout[0] || 3600;
+        this.screensaver.onStart = () => {
+          this.onPop({
+            screenId: this.screenId
+          });
+          screen.render();
+        };
+        this.screensaver.active = true;
+
+        this.mainOptions = await fetch(`/get/options/main`).then(response => response.json()) || {};
+
+        if (this.mainOptions.pointerthresold && this.mainOptions.pointerthresold[0]) {
+          this.pointerThresold = Number(this.mainOptions.pointerthresold[0]);
+        }
       },
       children: [
         {
           class: "screensaver",
-          init: screensaver => {
-            screensaver.element.innerHTML = "Screen Saver";
-            screensaver.element.onpointerdown = event => {
-              this.stopScreensaver();
-            }
-          },
+
           update: screensaver => {
-            screensaver.element.classList.toggle("hidden", !this.screensaving);
+
+            if (this.screensaver.active) {
+              screensaver.element.classList.remove("hidden");
+              document.body.offsetHeight; // -> force reflow
+              screensaver.element.ontransitionend = event => {
+                this.popupActive = false;
+                this.currentSlide = null;
+              };
+              screensaver.element.classList.add("active");
+            } else {
+              screensaver.element.classList.remove("active");
+              screensaver.element.ontransitionend = event => screensaver.element.classList.add("hidden");
+            }
+
+            screensaver.child = {
+              tag: "video",
+              init: video => {
+                video.element.loop = true;
+                video.element.mute = true;
+                video.element.muted = true;
+                video.element.onpointerdown = event => {
+                  this.screensaver.stop();
+                  this.render();
+                }
+              },
+              child: {
+                tag: "source",
+                update: async source => {
+                  const file = this.options && this.options.screensaver && this.options.screensaver[0] && this.filesDirectory[this.options.screensaver[0]];
+                  if (file && !source.element.src.endsWith(file.filename)) {
+                    source.element.type = file.type;
+                    source.element.src = "/uploads/" + file.filename;
+                  }
+                }
+              },
+              complete: video => {
+                if (this.screensaver.active) {
+                  video.element.play();
+                } else {
+                  video.element.pause();
+                }
+              }
+            }
           }
         },
         {
@@ -106,12 +161,13 @@ class Screen {
 
             };
 
-            new PointerTrap(slideshow.element);
+            new PointerTrap(slideshow.element, this.pointerThresold);
 
             slideshow.element.oncatch = (trap, event) => {
               if (this.currentSlide) return;
               event.preventDefault();
-              this.stopScreensaver();
+              // this.stopScreensaver();
+              this.screensaver.stop();
               this.player.shift(-trap.diffX/slideshow.element.clientWidth);
             }
 
@@ -119,10 +175,14 @@ class Screen {
               if (this.currentSlide) return;
               event.preventDefault();
 
+              this.screensaver.stop();
+
               if (trap.swipeRight || trap.click && trap.map.x < 0.5) {
                 this.player.prev();
               } else if (trap.swipeLeft || trap.click && trap.map.x >= 0.5) {
                 this.player.next();
+              } else if (trap.swipeFail) {
+                this.player.cancel();
               }
             }
 
@@ -140,17 +200,20 @@ class Screen {
                         item: item
                       });
 
-                      const canvasWidth = 1920;
-                      const canvasHeight = 1080;
+                      // const canvasWidth = window.innerWidth;
+                      // const canvasHeight = window.innerHeight;
+                      const canvasWidth = slideshow.element.clientWidth
+                      const canvasHeight = slideshow.element.clientHeight;
 
                       const medias = item.medias || [];
                       const media = medias.find(media => media.image && media.image.length);
                       const fileId = media && media.image[0];
                       const file = this.filesDirectory[fileId];
-                      const medium = file && file.sizes.find(size => size.key === "medium");
+                      // const medium = file && file.sizes.find(size => size.key === "medium");
+
 
                       const image = new Image(file.width, file.height);
-                      image.src = "/uploads/" + medium.filename;
+                      image.src = "/uploads/" + file.filename;
 
                       await new Promise(resolve => {
                         image.onload = event => resolve();
@@ -192,7 +255,7 @@ class Screen {
                             gabarit.element.style.height = `${100*height/canvasHeight}%`;
                           },
                           update: gabarit => {
-                            new PointerTrap(gabarit.element);
+                            new PointerTrap(gabarit.element, this.pointerThresold);
                             gabarit.element.onrelease = (trap, event) => {
                               const currentSlide = this.player.getCurrent();
                               if (trap.click && currentSlide && currentSlide.item === item) {
@@ -217,7 +280,7 @@ class Screen {
           },
           update: slideshow => {
             slideshow.element.classList.toggle("active", Boolean(this.currentSlide));
-            slideshow.element.classList.toggle("hidden", Boolean(this.screensaving));
+            // slideshow.element.classList.toggle("hidden", Boolean(this.screensaver.active));
           },
           ready: slideshow => {
             this.player.init();
@@ -227,6 +290,9 @@ class Screen {
           class: "popup",
           init: popup => {
             this.renderPopup = popup.render;
+            popup.element.onpointerdown = event => {
+              this.screensaver.stop();
+            }
           },
           update: popup => {
             popup.element.classList.toggle("active", Boolean(this.popupActive));
@@ -269,13 +335,15 @@ class Screen {
                                               tag: "img",
                                               init: img => {
                                                 img.element.draggable = false;
+                                                new PointerTrap(img.element, this.pointerThresold);
                                               },
                                               update: async img => {
                                                 const box = figure.element.getBoundingClientRect();
                                                 const isPortrait = Number(file.width)/Number(file.height) < box.width/box.height;
 
-                                                const big = file.sizes.find(size => size.key === "big");
-                                                const src = "/uploads/" + big.filename;
+                                                // const big = file.sizes.find(size => size.key === "carousel-slide") || file;
+                                                // const src = "/uploads/" + big.filename;
+                                                const src = "/uploads/" + file.filename;
 
                                                 if (!img.element.src.endsWith(src)) {
                                                   img.element.src = src;
@@ -325,41 +393,51 @@ class Screen {
                                                   });
                                                 }
 
-                                                if ('ontouchstart' in window) {
-                                                  img.element.ontouchstart = event => {
-                                                      const box = img.element.getBoundingClientRect();
-                                                      const onMouseMove = event => {
-                                                        updateZoom(event.touches[0].clientX, event.touches[0].clientY);
-                                                      }
-                                                      const onMouseUp = event => {
-                                                        document.removeEventListener("touchend", onMouseUp);
-                                                        document.removeEventListener("touchmove", onMouseMove);
-                                                        endZoom();
-                                                      }
-                                                      updateZoom(event.touches[0].clientX, event.touches[0].clientY);
-                                                      document.addEventListener("touchend", onMouseUp);
-                                                      document.addEventListener("touchmove", onMouseMove);
-                                                    }
+                                                img.element.oncatch = (trap) => {
+                                                  this.screensaver.stop();
+                                                  updateZoom(trap.x, trap.y);
+                                                };
+                                                img.element.onrelease = (trap) => {
+                                                  endZoom();
+                                                };
 
-                                                } else {
 
-                                                  img.element.onmousedown = event => {
-                                                    if (event.button === 0) {
-                                                      const onMouseMove = event => {
-                                                        updateZoom(event.clientX, event.clientY);
-                                                      }
-                                                      const onMouseUp = event => {
-                                                        document.removeEventListener("mouseup", onMouseUp);
-                                                        document.removeEventListener("mousemove", onMouseMove);
-                                                        endZoom();
-                                                      }
-                                                      onMouseMove(event.clientX, event.clientY);
-                                                      document.addEventListener("mouseup", onMouseUp);
-                                                      document.addEventListener("mousemove", onMouseMove);
-                                                    }
-                                                  }
 
-                                                }
+                                                // if ('ontouchstart' in window) {
+                                                //   img.element.ontouchstart = event => {
+                                                //       const box = img.element.getBoundingClientRect();
+                                                //       const onMouseMove = event => {
+                                                //         updateZoom(event.touches[0].clientX, event.touches[0].clientY);
+                                                //       }
+                                                //       const onMouseUp = event => {
+                                                //         document.removeEventListener("touchend", onMouseUp);
+                                                //         document.removeEventListener("touchmove", onMouseMove);
+                                                //         endZoom();
+                                                //       }
+                                                //       updateZoom(event.touches[0].clientX, event.touches[0].clientY);
+                                                //       document.addEventListener("touchend", onMouseUp);
+                                                //       document.addEventListener("touchmove", onMouseMove);
+                                                //     }
+                                                //
+                                                // } else {
+                                                //
+                                                //   img.element.onmousedown = event => {
+                                                //     if (event.button === 0) {
+                                                //       const onMouseMove = event => {
+                                                //         updateZoom(event.clientX, event.clientY);
+                                                //       }
+                                                //       const onMouseUp = event => {
+                                                //         document.removeEventListener("mouseup", onMouseUp);
+                                                //         document.removeEventListener("mousemove", onMouseMove);
+                                                //         endZoom();
+                                                //       }
+                                                //       onMouseMove(event.clientX, event.clientY);
+                                                //       document.addEventListener("mouseup", onMouseUp);
+                                                //       document.addEventListener("mousemove", onMouseMove);
+                                                //     }
+                                                //   }
+                                                //
+                                                // }
 
 
                                               }
@@ -446,7 +524,7 @@ class Screen {
                                                 img.element.draggable = false;
                                               },
                                               update: img => {
-                                                const medium = file.sizes.find(size => size.key === "medium");
+                                                const medium = file.sizes.find(size => size.key === "carousel-thumb");
                                                 const src = "/uploads/"+medium.filename;
                                                 if (!img.element.src.endsWith(src)) {
                                                   img.element.src = src;
@@ -548,7 +626,8 @@ class Screen {
                                 class: "button close",
                                 init: button => {
                                   button.element.onpointerdown = async event => {
-                                    this.stopScreensaver();
+                                    // this.stopScreensaver();
+                                    this.screensaver.stop();
 
                                     this.popupActive = false;
                                     await popup.render();
@@ -599,6 +678,7 @@ class Screen {
                                     update: content => {
                                       content.element.parentNode.classList.toggle("scrolled", content.element.scrollTop > 0);
                                       content.element.onscroll = event => {
+                                        this.screensaver.stop();
                                         content.element.parentNode.classList.toggle("scrolled", content.element.scrollTop > 0);
                                       }
                                       content.children = [

@@ -22,79 +22,81 @@ class PointerTrap {
 		this.element = element;
 		this.threshold = threshold;
 
-		// if ("ontouchstart" in window) {
+		if ("ontouchstart" in window) {
+
+			const ontouchmove = event => {
+				const x = event.touches[0].clientX;
+				const y = event.touches[0].clientY;
+				this.move(event, x, y);
+			}
+
+			const ontouchend = event => {
+				const x = event.touches[0].clientX;
+				const y = event.touches[0].clientY;
+				this.release(event, x, y);
+				document.removeEventListener("ontouchmove", ontouchmove);
+				document.removeEventListener("ontouchend", ontouchend);
+			}
+
+			element.ontouchstart = event => {
+				const x = event.touches[0].clientX;
+				const y = event.touches[0].clientY;
+				this.start(event, x, y);
+				document.addEventListener("ontouchmove", ontouchmove);
+				document.addEventListener("ontouchend", ontouchend);
+			}
+
+		} else {
+
+			const onmousemove = event => {
+				const x = event.clientX;
+				const y = event.clientY;
+				this.move(event, x, y);
+			}
+
+			const onmouseup = event => {
+				const x = event.clientX;
+				const y = event.clientY;
+				this.release(event, x, y);
+				document.removeEventListener("mousemove", onmousemove);
+				document.removeEventListener("mouseup", onmouseup);
+			}
+
+			element.onmousedown = event => {
+
+				const x = event.clientX;
+				const y = event.clientY;
+				this.start(event, x, y);
+				document.addEventListener("mousemove", onmousemove);
+				document.addEventListener("mouseup", onmouseup);
+
+			}
+
+		}
+
+		// const onpointermove = event => {
+		// 	const x = event.clientX;
+		// 	const y = event.clientY;
+		// 	this.move(event, x, y);
+		// }
 		//
-		// 	const ontouchmove = event => {
-		// 		const x = event.touches[0].clientX;
-		// 		const y = event.touches[0].clientY;
-		// 		this.move(event, x, y);
-		// 	}
+		// const onpointerup = event => {
+		// 	const x = event.clientX;
+		// 	const y = event.clientY;
+		// 	this.release(event, x, y);
+		// 	document.removeEventListener("pointermove", onpointermove);
+		// 	document.removeEventListener("pointerup", onpointerup);
+		// }
 		//
-		// 	const ontouchend = event => {
-		// 		const x = event.touches[0].clientX;
-		// 		const y = event.touches[0].clientY;
-		// 		this.release(event, x, y);
-		// 		document.removeEventListener("ontouchmove", ontouchmove);
-		// 		document.removeEventListener("ontouchend", ontouchend);
-		// 	}
+		// element.onpointerdown = event => {
 		//
-		// 	element.ontouchstart = event => {
-		// 		this.originX = event.touches[0].clientX;
-		// 		this.originY = event.touches[0].clientY;
-		// 		document.addEventListener("ontouchmove", ontouchmove);
-		// 		document.addEventListener("ontouchend", ontouchend);
-		// 	}
-		//
-		// } else {
-		//
-		// 	const onmousemove = event => {
-		// 		const x = event.clientX;
-		// 		const y = event.clientY;
-		// 		this.move(event, x, y);
-		// 	}
-		//
-		// 	const onmouseup = event => {
-		// 		const x = event.clientX;
-		// 		const y = event.clientY;
-		// 		this.release(event, x, y);
-		// 		document.removeEventListener("mousemove", onmousemove);
-		// 		document.removeEventListener("mouseup", onmouseup);
-		// 	}
-		//
-		// 	element.onmousedown = event => {
-		//
-		// 		this.originX = event.clientX;
-		// 		this.originY = event.clientY;
-		// 		document.addEventListener("mousemove", onmousemove);
-		// 		document.addEventListener("mouseup", onmouseup);
-		//
-		// 	}
+		// 	const x = event.clientX;
+		// 	const y = event.clientY;
+		// 	this.start(event, x, y);
+		// 	document.addEventListener("pointermove", onpointermove);
+		// 	document.addEventListener("pointerup", onpointerup);
 		//
 		// }
-
-		const onpointermove = event => {
-			const x = event.clientX;
-			const y = event.clientY;
-			this.move(event, x, y);
-		}
-
-		const onpointerup = event => {
-			const x = event.clientX;
-			const y = event.clientY;
-			this.release(event, x, y);
-			document.removeEventListener("pointermove", onpointermove);
-			document.removeEventListener("pointerup", onpointerup);
-		}
-
-		element.onpointerdown = event => {
-
-			const x = event.clientX;
-			const y = event.clientY;
-			this.start(event, x, y);
-			document.addEventListener("pointermove", onpointermove);
-			document.addEventListener("pointerup", onpointerup);
-
-		}
 
 	}
 

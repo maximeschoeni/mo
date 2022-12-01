@@ -155,6 +155,12 @@ class Stories {
 
           this.filesDirectory = Object.fromEntries(this.files.filter(file => file && file.id).map(file => [file.id, file]));
 
+          this.mainOptions = await fetch(`/get/options/main`).then(response => response.json()) || {};
+
+          if (this.mainOptions.pointerthresold && this.mainOptions.pointerthresold[0]) {
+            this.pointerThresold = Number(this.mainOptions.pointerthresold[0]);
+          }
+
         }
 
       },
@@ -193,7 +199,8 @@ class Stories {
                               tag: "img",
                               init: img => {
                                 img.element.draggable = false;
-                                img.element.src = "/uploads/" + file.filename;
+                                const size = file.sizes.find(size => size.key === "full-screen") || file;
+                                img.element.src = "/uploads/" + size.filename;
                               }
                             },
                             update: slide => {
@@ -383,6 +390,13 @@ class Stories {
                                                       children: medias.map((media, mediaIndex) => {
                                                         return {
                                                           class: "media-body",
+                                                          init: div => {
+                                                            new PointerTrap(div.element, this.pointerThresold);
+                                                            div.element.oncatch = (trap, event) => {
+                                                              event.preventDefault();
+                                                              div.element.scrollTop -= trap.deltaY;
+                                                            }
+                                                          },
                                                           update: async div => {
                                                             // div.element.innerHTML = media.body || "";
                                                             div.element.innerHTML = this.translateObject(media, "body");
@@ -425,7 +439,8 @@ class Stories {
                                                                 img.element.draggable = false;
                                                                 const file = country.image && this.filesDirectory[country.image];
                                                                 if (file) {
-                                                                  img.element.src = "/uploads/" + file.filename;
+                                                                  const size = file.sizes.find(size => size.key === "stories-country") || file;
+                                                                  img.element.src = "/uploads/" + size.filename;
                                                                 }
                                                               }
                                                             };
@@ -521,6 +536,14 @@ class Stories {
                                                                 children: [
                                                                   {
                                                                     tag: "ul",
+                                                                    class: "medals-list",
+                                                                    init: div => {
+                                                                      new PointerTrap(div.element, this.pointerThresold);
+                                                                      div.element.oncatch = (trap, event) => {
+                                                                        event.preventDefault();
+                                                                        div.element.scrollTop -= trap.deltaY;
+                                                                      }
+                                                                    },
                                                                     update: async ul => {
                                                                       const games = await this.groupGames(story);
                                                                       ul.children = games.map(game => {
@@ -529,6 +552,9 @@ class Stories {
                                                                           children: [
                                                                             {
                                                                               class: "medals",
+                                                                              update: medals => {
+                                                                                medals.element.classList.toggle("hidden", game.medals.length === 0);
+                                                                              },
                                                                               children: game.medals.map(medal => {
                                                                                 return {
                                                                                   class: "medal",
@@ -588,6 +614,19 @@ class Stories {
                                                                       })
                                                                     }
                                                                   },
+                                                                  // {
+                                                                  //   class: "scroller",
+                                                                  //   init: div => {
+                                                                  //     new PointerTrap(div.element, this.pointerThresold);
+                                                                  //     div.element.onmousedown = event => {
+                                                                  //       console.log("onmousedown");
+                                                                  //     }
+                                                                  //     div.element.oncatch = (trap, event) => {
+                                                                  //       event.preventDefault();
+                                                                  //       div.element.previousElementSibling.scrollTop -= trap.deltaY;
+                                                                  //     }
+                                                                  //   },
+                                                                  // },
                                                                   {
                                                                     class: "gradient"
                                                                   }
@@ -636,7 +675,7 @@ class Stories {
                                                           img.element.draggable = false;
                                                         },
                                                         update: img => {
-                                                          const size = file.sizes.find(size => size.key === "medium");
+                                                          const size = file.sizes.find(size => size.key === "stories-media") || file;
                                                           if (!img.element.src.endsWith(size.filename)) {
                                                             img.element.src = "/uploads/" + size.filename;
                                                           }
@@ -794,7 +833,7 @@ class Stories {
                                                     thumb.child = {
                                                       tag: "img",
                                                       init: img => {
-                                                        const size = file.sizes.find(size => size.key === "thumb");
+                                                        const size = file.sizes.find(size => size.key === "stories-thumb") || file;
                                                         img.element.src = "/uploads/" + size.filename;
                                                         img.element.draggable = false;
                                                       }
@@ -956,7 +995,8 @@ class Stories {
                                   const file = fileId && this.filesDirectory[fileId];
 
                                   if (file) {
-                                    img.element.src = "/uploads/" + file.filename;
+                                    const size = file.sizes.find(size => size.key === "stories-thumb") || file;
+                                    img.element.src = "/uploads/" + size.filename;
                                   }
                                 }
                               }

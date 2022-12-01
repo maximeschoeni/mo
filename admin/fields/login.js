@@ -34,33 +34,41 @@ KarmaFieldsAlpha.field.login = class extends KarmaFieldsAlpha.field.form {
         return KarmaFieldsAlpha.Nav.get("language") || "fr";
       }
 
-      // case "submit": {
-      //
-      //   const data = this.buffer.get();
-      //
-    	// 	const token = await KarmaFieldsAlpha.Gateway.post(`login`, data);
-      //
-      //   this.setCookie("name", data.name);
-      //   this.setCookie("token", token);
-      //
-      //   console.log("setcookie");
-      //
-    	// 	this.buffer.empty();
-      //
-      //   await this.render();
-      //   break;
-      //
-      // }
+      case "regen-files": {
+
+        const form = new KarmaFieldsAlpha.field.layout.medias({
+          driver: "files"
+        });
+
+        const buffer = new KarmaFieldsAlpha.Buffer("notice");
+        const results = await form.query({});
+        const files = results.filter(file => {
+          return file.filetype === "file" && (file.type === "image/jpeg" || file.type === "image/png");
+        });
+
+        for (let i = 0; i < files.length; i++) {
+
+          buffer.set(`Loading... (${i}/${files.length})`, "regen-files");
+          await this.render();
+          await form.regen(files[i].id);
+
+        }
+
+        buffer.set(`Complete!`, "regen-files");
+        await this.render();
+
+        break;
+
+      }
+
+      case "notice": {
+        const buffer = new KarmaFieldsAlpha.Buffer("notice");
+        console.log(buffer.get(), content.key);
+        return buffer.get(content.key);
+      }
 
       case "logout": {
-
         await KarmaFieldsAlpha.Gateway.post(`logout`);
-
-        // this.eraseCookie("name");
-        // this.eraseCookie("token");
-
-        // this.setCookie("name", "");
-        // this.setCookie("token", "");
         await this.render();
         break;
       }

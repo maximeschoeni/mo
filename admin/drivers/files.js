@@ -353,7 +353,7 @@ exports.files = class {
 
     // const dimensions = sizeOf(ROOT+"/uploads/" + file.name);
 
-    // if (size.width && size.width < dimensions.width || size.height && size.height < dimensions.height) {
+    if (size.width && size.width < dimensions.width || size.height && size.height < dimensions.height) {
 
       const resizedName = path.basename(file.name, extension) + "-" + name + extension;
       const newFileInfo = await sharp(ROOT+"/uploads/" + file.name).resize(size).toFile(ROOT+"/uploads/" + resizedName);
@@ -365,16 +365,16 @@ exports.files = class {
         height: size.height
       };
 
-    // } else {
-    //
-    //   return {
-    //     key: name,
-    //     filename: file.name,
-    //     width: dimensions.width,
-    //     height: dimensions.height
-    //   };
-    //
-    // }
+    } else {
+
+      return {
+        key: name,
+        filename: file.name,
+        width: dimensions.width,
+        height: dimensions.height
+      };
+
+    }
 
   }
 
@@ -463,21 +463,92 @@ exports.files = class {
     return true;
   }
 
-
-  async regen(id) {
+  async deleteSizes(id) {
 
     const file = await this.get(id);
 
-    const thumb = await this.createSize(id, "thumb", {width: 160, height: 160});
-    const tile = await this.createSize(id, "tile", {height: 100});
-    // const medium = await this.createSize(id, "medium", {width: Math.min(960, file.width)});
-    // const big = await this.createSize(id, "big", {width: Math.min(1920, file.width)});
-    const medium = await this.createSize(id, "medium", {width: 960});
-    const big = await this.createSize(id, "big", {width: 1920});
+    const sizes = file.sizes || []
+
+    for (let size of sizes) {
+
+      if (size.filename !== file.filename) {
+
+        await fs.rm(ROOT+"/uploads/" + size.filename, {force: true});
+
+      }
+
+    }
+
+  }
+
+
+  async regen(id) {
+    const data = await db.read();
+
+    const sizes = data.options && data.options.files && data.options.files.sizes || [];
+
+    await this.deleteSizes(id)
+
+    const sizeItems = [];
+    let thumb = [];
+
+    for (let {name, width, height, mode} of sizes) {
+
+      const dimension = {};
+
+      if (mode === "contain" && width && height) {
+
+        const rows = data.files && data.files.content || [];
+        const file = rows.find(row => row.id === id);
+        const fileRatio = file && Number(file.width)/Number(file.height) || 1;
+        const dimensionRatio = Number(width)/Number(height) || 1;
+
+        if (dimensionRatio > fileRatio) {
+
+          dimension.height = Number(height);
+
+        } else {
+
+          dimension.width = Number(width);
+
+        }
+
+      } else {
+
+        if (width) {
+
+          dimension.width = Number(width);
+
+        }
+
+        if (height) {
+
+          dimension.height = Number(height);
+
+        }
+
+      }
+
+      const sizeItem = await this.createSize(id, name, dimension);
+
+      sizeItems.push(sizeItem);
+
+      if (name === "thumb") {
+
+        thumb.push(sizeItem);
+
+      }
+
+    }
+
+    // const thumb = await this.createSize(id, "thumb", {width: 160, height: 160});
+    // const tile = await this.createSize(id, "tile", {height: 100});
+    // const medium = await this.createSize(id, "medium", {width: 960});
+    // const big = await this.createSize(id, "big", {width: 1920});
 
     await this.update({
-      thumb: [thumb],
-      sizes: [thumb, tile, medium, big]
+      thumb: thumb,
+      sizes: sizeItems
     }, id);
 
   }
