@@ -408,7 +408,7 @@ class Torches {
                                           //   img.element.src = this.getFileURL(medium.filename);
                                           // }
                                           img.element.src = this.getFileURL(file.filename);
-                                          img.element.style.width = `${file.width*0.007}em`;
+                                          img.element.style.width = `${file.width*0.01}em`;
                                         }
                                       }
                                     },
@@ -424,7 +424,7 @@ class Torches {
                                           // if (medium) {
                                           //   img.element.src = this.getFileURL(medium.filename);
                                           // }
-                                          // img.element.style.width = `${file.width*0.007}em`;
+                                          img.element.style.width = `${file.width*0.01}em`;
                                           img.element.src = this.getFileURL(file.filename);
                                         }
                                       }
