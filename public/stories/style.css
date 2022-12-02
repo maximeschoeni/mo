@@ -795,15 +795,18 @@ body {
 
 .pagination .pagination-thumb.index-0 {
   transform: translateX(-2.12em);
-  opacity: 0
+  opacity: 0;
+  pointer-events: none;
 }
 .pagination .pagination-thumb.index-1 {
   transform: translateX(-0.32em);
-  opacity: 0
+  opacity: 0;
+  pointer-events: none;
 }
 .pagination .pagination-thumb.index-2 {
   transform: translateX(1.48em);
-  opacity: 0
+  opacity: 0;
+  pointer-events: none;
 }
 .pagination .pagination-thumb.index-3 {
   transform: translateX(3.28em);
@@ -835,14 +838,17 @@ body {
 .pagination .pagination-thumb.index-10 {
   transform: translateX(16.28em);
   opacity: 0;
+  pointer-events: none;
 }
 .pagination .pagination-thumb.index-11 {
   transform: translateX(18.08em);
   opacity: 0;
+  pointer-events: none;
 }
 .pagination .pagination-thumb.index-12 {
   transform: translateX(19.88em);
   opacity: 0;
+  pointer-events: none;
 }
 
 .pagination .pagination-thumb.index-6::before {

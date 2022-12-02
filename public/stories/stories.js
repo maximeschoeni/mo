@@ -977,9 +977,11 @@ class Stories {
                           thumb.element.classList.toggle("current", x === 0);
 
                           thumb.element.onpointerdown = event => {
-                            this.player.stop();
-                            this.nextSlide = index;
-                            this.renderContent();
+                            if (x > -4 && x < 4) {
+                              this.player.stop();
+                              this.nextSlide = index;
+                              this.renderContent();
+                            }
                           }
 
                           if (x <= 4) {

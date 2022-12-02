@@ -524,7 +524,7 @@ class Screen {
                                                 img.element.draggable = false;
                                               },
                                               update: img => {
-                                                const medium = file.sizes.find(size => size.key === "carousel-thumb");
+                                                const medium = file.sizes.find(size => size.key === "carousel-thumb") || file;
                                                 const src = "/uploads/"+medium.filename;
                                                 if (!img.element.src.endsWith(src)) {
                                                   img.element.src = src;
