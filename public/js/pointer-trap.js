@@ -15,6 +15,19 @@
 
 
 
+// var input = document.createElement("textarea");
+// input.style.position = "absolute";
+// input.style.zIndex = 10000;
+// input.style.top = 0;
+// input.style.width = "500px";
+// input.style.height = "300px";
+//
+// document.addEventListener("DOMContentLoaded", event => {
+// 	document.body.appendChild(input);
+// });
+
+
+
 class PointerTrap {
 
 	constructor(element, threshold = 5) {
@@ -31,19 +44,18 @@ class PointerTrap {
 			}
 
 			const ontouchend = event => {
-				const x = event.touches[0].clientX;
-				const y = event.touches[0].clientY;
-				this.release(event, x, y);
-				document.removeEventListener("ontouchmove", ontouchmove);
-				document.removeEventListener("ontouchend", ontouchend);
+				this.release(event);
+				document.removeEventListener("touchmove", ontouchmove);
+				document.removeEventListener("touchend", ontouchend);
 			}
 
 			element.ontouchstart = event => {
 				const x = event.touches[0].clientX;
 				const y = event.touches[0].clientY;
 				this.start(event, x, y);
-				document.addEventListener("ontouchmove", ontouchmove);
-				document.addEventListener("ontouchend", ontouchend);
+				document.addEventListener("touchmove", ontouchmove);
+				document.addEventListener("touchend", ontouchend);
+
 			}
 
 		} else {
@@ -84,6 +96,9 @@ class PointerTrap {
 		// 	const x = event.clientX;
 		// 	const y = event.clientY;
 		// 	this.release(event, x, y);
+		//
+		//
+		//
 		// 	document.removeEventListener("pointermove", onpointermove);
 		// 	document.removeEventListener("pointerup", onpointerup);
 		// }
@@ -157,8 +172,7 @@ class PointerTrap {
 		}
 	}
 
-	release(event, x, y) {
-		this.move(event, x, y);
+	release(event) {
 
 		this.swipeRight = (this.maxDX > -this.minDX && this.maxDX > this.maxDY && this.maxDX > -this.minDY && this.diffX > this.maxDX-this.threshold);
 		this.swipeLeft = (this.minDX < -this.maxDX && this.minDX < this.minDY && this.minDX < -this.maxDY && this.diffX < this.minDX+this.threshold);

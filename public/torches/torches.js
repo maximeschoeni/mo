@@ -388,7 +388,7 @@ class Torches {
                                   update: li => {
                                     li.element.onrelease = (trap, event) => {
                                       this.screensaver.stop();
-                                      if (event.button === 0 && Math.abs(trap.diffX) < 5) {
+                                      if (trap.click) {
                                         this.currentTorch = torche;
                                         content.render();
                                       }
