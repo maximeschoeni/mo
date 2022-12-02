@@ -133,8 +133,8 @@ class PointerTrap {
 		this.box = this.element.getBoundingClientRect();
 
 		this.map = {
-			x: (x - this.box.left)/box.width,
-			y: (y - this.box.top)/box.height
+			x: (x - this.box.left)/this.box.width,
+			y: (y - this.box.top)/this.box.height
 		};
 
 
