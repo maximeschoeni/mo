@@ -47,6 +47,8 @@ body {
   font-family: "tom-pro";
 
   user-select: none;
+
+  overflow: hidden;
 }
 
 #container {

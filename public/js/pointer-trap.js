@@ -130,6 +130,13 @@ class PointerTrap {
 		this.tX = x;
 		this.tY = y;
 
+		this.box = this.element.getBoundingClientRect();
+
+		this.map = {
+			x: (x - this.box.left)/box.width,
+			y: (y - this.box.top)/box.height
+		};
+
 
 		if (this.element.onstart) {
 			this.element.onstart(this, event);
@@ -159,11 +166,11 @@ class PointerTrap {
 		this.minDX = Math.min(this.diffX, this.minDX || 0);
 		this.minDY = Math.min(this.diffY, this.minDY || 0);
 
-		const box = this.element.getBoundingClientRect();
+
 
 		this.map = {
-			x: (x - box.left)/box.width,
-			y: (y - box.top)/box.height
+			x: (x - this.box.left)/box.width,
+			y: (y - this.box.top)/box.height
 		};
 
 
