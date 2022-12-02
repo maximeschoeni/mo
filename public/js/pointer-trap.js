@@ -14,7 +14,7 @@
 // }
 
 
-
+//
 // var input = document.createElement("textarea");
 // input.style.position = "absolute";
 // input.style.zIndex = 10000;
@@ -27,6 +27,12 @@
 // });
 
 
+
+// document.addEventListener("pointermove", event => {
+// 	event.preventDefault();
+// 	event.stopImmediatePropagation();
+// 	input.value = `${event.clientX}`;
+// });
 
 class PointerTrap {
 
@@ -102,11 +108,11 @@ class PointerTrap {
 		}
 
 		const onpointerup = event => {
-			const x = event.clientX;
-			const y = event.clientY;
-			this.release(event, x, y);
+			// const x = event.clientX;
+			// const y = event.clientY;
+			this.release(event);
 
-
+// input.value = "Jg";
 
 			document.removeEventListener("pointermove", onpointermove);
 			document.removeEventListener("pointerup", onpointerup);

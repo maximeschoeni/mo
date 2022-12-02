@@ -37,6 +37,8 @@ body {
   /* background-color: black; */
   font-family: "tom-pro";
   user-select: none;
+
+  touch-action: none;
 }
 ul {
   padding: 0;

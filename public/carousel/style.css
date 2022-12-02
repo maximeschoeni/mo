@@ -49,6 +49,8 @@ body {
   user-select: none;
 
   overflow: hidden;
+
+  touch-action: none;
 }
 
 #container {
