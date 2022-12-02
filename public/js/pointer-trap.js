@@ -19,8 +19,8 @@
 // input.style.position = "absolute";
 // input.style.zIndex = 10000;
 // input.style.top = 0;
-// input.style.width = "500px";
-// input.style.height = "300px";
+// input.style.width = "200px";
+// input.style.height = "100px";
 //
 // document.addEventListener("DOMContentLoaded", event => {
 // 	document.body.appendChild(input);
@@ -39,29 +39,29 @@ class PointerTrap {
 		//
 		// if ("ontouchstart" in window) {
 
-			const ontouchmove = event => {
-				console.log("touchmove");
-				const x = event.touches[0].clientX;
-				const y = event.touches[0].clientY;
-				this.move(event, x, y);
-			}
-
-			const ontouchend = event => {
-				console.log("touchend");
-				this.release(event);
-				document.removeEventListener("touchmove", ontouchmove);
-				document.removeEventListener("touchend", ontouchend);
-			}
-
-			element.ontouchstart = event => {
-				console.log("touchstart");
-				const x = event.touches[0].clientX;
-				const y = event.touches[0].clientY;
-				this.start(event, x, y);
-				document.addEventListener("touchmove", ontouchmove);
-				document.addEventListener("touchend", ontouchend);
-
-			}
+			// const ontouchmove = event => {
+			// 	console.log("touchmove");
+			// 	const x = event.touches[0].clientX;
+			// 	const y = event.touches[0].clientY;
+			// 	this.move(event, x, y);
+			// }
+			//
+			// const ontouchend = event => {
+			// 	console.log("touchend");
+			// 	this.release(event);
+			// 	document.removeEventListener("touchmove", ontouchmove);
+			// 	document.removeEventListener("touchend", ontouchend);
+			// }
+			//
+			// element.ontouchstart = event => {
+			// 	console.log("touchstart");
+			// 	const x = event.touches[0].clientX;
+			// 	const y = event.touches[0].clientY;
+			// 	this.start(event, x, y);
+			// 	document.addEventListener("touchmove", ontouchmove);
+			// 	document.addEventListener("touchend", ontouchend);
+			//
+			// }
 
 		// } else {
 		//
@@ -93,32 +93,34 @@ class PointerTrap {
 		//
 		// }
 
-		// const onpointermove = event => {
-		// 	const x = event.clientX;
-		// 	const y = event.clientY;
-		// 	this.move(event, x, y);
-		// }
-		//
-		// const onpointerup = event => {
-		// 	const x = event.clientX;
-		// 	const y = event.clientY;
-		// 	this.release(event, x, y);
-		//
-		//
-		//
-		// 	document.removeEventListener("pointermove", onpointermove);
-		// 	document.removeEventListener("pointerup", onpointerup);
-		// }
-		//
-		// element.onpointerdown = event => {
-		//
-		// 	const x = event.clientX;
-		// 	const y = event.clientY;
-		// 	this.start(event, x, y);
-		// 	document.addEventListener("pointermove", onpointermove);
-		// 	document.addEventListener("pointerup", onpointerup);
-		//
-		// }
+		const onpointermove = event => {
+			const x = event.clientX;
+			const y = event.clientY;
+
+			// input.value = `${x} ${y}`;
+			this.move(event, x, y);
+		}
+
+		const onpointerup = event => {
+			const x = event.clientX;
+			const y = event.clientY;
+			this.release(event, x, y);
+
+
+
+			document.removeEventListener("pointermove", onpointermove);
+			document.removeEventListener("pointerup", onpointerup);
+		}
+
+		element.onpointerdown = event => {
+
+			const x = event.clientX;
+			const y = event.clientY;
+			this.start(event, x, y);
+			document.addEventListener("pointermove", onpointermove);
+			document.addEventListener("pointerup", onpointerup);
+
+		}
 
 	}
 
