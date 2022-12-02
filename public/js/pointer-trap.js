@@ -64,12 +64,14 @@ class PointerTrap {
 		} else {
 
 			const onmousemove = event => {
+				console.log("mousemove");
 				const x = event.clientX;
 				const y = event.clientY;
 				this.move(event, x, y);
 			}
 
 			const onmouseup = event => {
+				console.log("mouseup");
 				const x = event.clientX;
 				const y = event.clientY;
 				this.release(event, x, y);
@@ -78,7 +80,7 @@ class PointerTrap {
 			}
 
 			element.onmousedown = event => {
-
+				console.log("mousedown");
 				const x = event.clientX;
 				const y = event.clientY;
 				this.start(event, x, y);
