@@ -35,6 +35,8 @@ class PointerTrap {
 		this.element = element;
 		this.threshold = threshold;
 
+		console.log("ontouchstart", "ontouchstart" in window);
+
 		if ("ontouchstart" in window) {
 
 			const ontouchmove = event => {
