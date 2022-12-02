@@ -471,6 +471,9 @@ class Torches {
                   },
                   update: popup => {
                     popup.element.classList.toggle("hidden", !this.currentTorch);
+
+                    this.currentSection = "relay";
+                    
                     popup.children = [
                       {
                         class: "popup-background"

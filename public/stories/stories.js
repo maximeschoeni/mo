@@ -28,6 +28,8 @@ class Stories {
 
   static svgCache = {};
 
+  static showInfo = false;
+
   static async fetchSvg(name) {
     if (!this.svgCache[name]) {
       this.svgCache[name] = fetch(`images/${name}`).then(response => response.text());
@@ -272,6 +274,8 @@ class Stories {
                   this.screensaverStop();
                 };
 
+                this.showInfo = false;
+
 
               },
               children: [
@@ -374,7 +378,7 @@ class Stories {
                                           {
                                             class: "info-frame",
                                             update: frame => {
-                                              frame.element.classList.toggle("flip", story.showInfo === true);
+                                              frame.element.classList.toggle("flip", this.showInfo === true);
                                               frame.children = [
                                                 {
                                                   class: "pile",
@@ -411,7 +415,7 @@ class Stories {
                                                         class: "toggle-button",
                                                         init: button => {
                                                           button.element.onpointerdown = event => {
-                                                            story.showInfo = !story.showInfo;
+                                                            this.showInfo = !this.showInfo;
                                                             frame.render();
                                                           }
                                                         },
@@ -450,7 +454,7 @@ class Stories {
                                                           class: "toggle-button",
                                                           init: button => {
                                                             button.element.onpointerdown = event => {
-                                                              story.showInfo = !story.showInfo;
+                                                              this.showInfo = !this.showInfo;
                                                               frame.render();
                                                             }
                                                           },
@@ -644,7 +648,7 @@ class Stories {
                                                         init: async button => {
                                                           button.element.innerHTML = await this.fetchSvg("arrowClose.svg");
                                                           button.element.onpointerdown = event => {
-                                                            story.showInfo = !story.showInfo;
+                                                            this.showInfo = !this.showInfo;
                                                             frame.render();
                                                           }
                                                         }
