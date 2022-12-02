@@ -38,18 +38,21 @@ class PointerTrap {
 		if ("ontouchstart" in window) {
 
 			const ontouchmove = event => {
+				console.log("touchmove");
 				const x = event.touches[0].clientX;
 				const y = event.touches[0].clientY;
 				this.move(event, x, y);
 			}
 
 			const ontouchend = event => {
+				console.log("touchend");
 				this.release(event);
 				document.removeEventListener("touchmove", ontouchmove);
 				document.removeEventListener("touchend", ontouchend);
 			}
 
 			element.ontouchstart = event => {
+				console.log("touchstart");
 				const x = event.touches[0].clientX;
 				const y = event.touches[0].clientY;
 				this.start(event, x, y);
