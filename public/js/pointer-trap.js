@@ -35,9 +35,9 @@ class PointerTrap {
 		this.element = element;
 		this.threshold = threshold;
 
-		console.log("ontouchstart", "ontouchstart" in window);
-
-		if ("ontouchstart" in window) {
+		// console.log("ontouchstart", "ontouchstart" in window);
+		//
+		// if ("ontouchstart" in window) {
 
 			const ontouchmove = event => {
 				console.log("touchmove");
@@ -63,35 +63,35 @@ class PointerTrap {
 
 			}
 
-		} else {
-
-			const onmousemove = event => {
-				console.log("mousemove");
-				const x = event.clientX;
-				const y = event.clientY;
-				this.move(event, x, y);
-			}
-
-			const onmouseup = event => {
-				console.log("mouseup");
-				const x = event.clientX;
-				const y = event.clientY;
-				this.release(event, x, y);
-				document.removeEventListener("mousemove", onmousemove);
-				document.removeEventListener("mouseup", onmouseup);
-			}
-
-			element.onmousedown = event => {
-				console.log("mousedown");
-				const x = event.clientX;
-				const y = event.clientY;
-				this.start(event, x, y);
-				document.addEventListener("mousemove", onmousemove);
-				document.addEventListener("mouseup", onmouseup);
-
-			}
-
-		}
+		// } else {
+		//
+		// 	const onmousemove = event => {
+		// 		console.log("mousemove");
+		// 		const x = event.clientX;
+		// 		const y = event.clientY;
+		// 		this.move(event, x, y);
+		// 	}
+		//
+		// 	const onmouseup = event => {
+		// 		console.log("mouseup");
+		// 		const x = event.clientX;
+		// 		const y = event.clientY;
+		// 		this.release(event, x, y);
+		// 		document.removeEventListener("mousemove", onmousemove);
+		// 		document.removeEventListener("mouseup", onmouseup);
+		// 	}
+		//
+		// 	element.onmousedown = event => {
+		// 		console.log("mousedown");
+		// 		const x = event.clientX;
+		// 		const y = event.clientY;
+		// 		this.start(event, x, y);
+		// 		document.addEventListener("mousemove", onmousemove);
+		// 		document.addEventListener("mouseup", onmouseup);
+		//
+		// 	}
+		//
+		// }
 
 		// const onpointermove = event => {
 		// 	const x = event.clientX;
