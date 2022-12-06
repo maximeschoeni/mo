@@ -28,12 +28,6 @@
 
 
 
-// document.addEventListener("pointermove", event => {
-// 	event.preventDefault();
-// 	event.stopImmediatePropagation();
-// 	input.value = `${event.clientX}`;
-// });
-
 class PointerTrap {
 
 	constructor(element, threshold = 5) {
@@ -103,17 +97,11 @@ class PointerTrap {
 			const x = event.clientX;
 			const y = event.clientY;
 
-			// input.value = `${x} ${y}`;
 			this.move(event, x, y);
 		}
 
 		const onpointerup = event => {
-			// const x = event.clientX;
-			// const y = event.clientY;
 			this.release(event);
-
-// input.value = "Jg";
-
 			document.removeEventListener("pointermove", onpointermove);
 			document.removeEventListener("pointerup", onpointerup);
 		}

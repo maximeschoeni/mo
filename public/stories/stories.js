@@ -355,6 +355,8 @@ class Stories {
                                 slide.element.classList.toggle("hidden", x > 1);
                                 slide.element.classList.toggle("current", x === 0);
 
+                                const isCurrentSlide = x === 0;
+
 
                                 if (x <= 1) {
                                   slide.children = [
@@ -395,6 +397,7 @@ class Stories {
                                                         return {
                                                           class: "media-body",
                                                           init: div => {
+
                                                             new PointerTrap(div.element, this.pointerThresold);
                                                             div.element.oncatch = (trap, event) => {
                                                               event.preventDefault();
@@ -402,9 +405,15 @@ class Stories {
                                                             }
                                                           },
                                                           update: async div => {
+                                                            // div.element.scrollTop = 0;
+
                                                             // div.element.innerHTML = media.body || "";
                                                             div.element.innerHTML = this.translateObject(media, "body");
                                                             div.element.classList.toggle("active", this.currentMedia === mediaIndex);
+
+                                                            if (isCurrentSlide && this.currentMedia === mediaIndex) {
+                                                              div.element.scrollTop = 0;
+                                                            }
                                                           }
                                                         }
                                                       })
@@ -535,6 +544,16 @@ class Stories {
                                                             },
                                                             {
                                                               class: "games-body",
+                                                              init: div => {
+
+
+                                                                new PointerTrap(div.element, this.pointerThresold);
+                                                                div.element.oncatch = (trap, event) => {
+                                                                  event.preventDefault();
+                                                                  const ul = div.element.querySelector(".medals-list");
+                                                                  ul.scrollTop -= trap.deltaY;
+                                                                }
+                                                              },
                                                               child: {
                                                                 class: "games-body-content",
                                                                 children: [
@@ -542,13 +561,14 @@ class Stories {
                                                                     tag: "ul",
                                                                     class: "medals-list",
                                                                     init: div => {
-                                                                      new PointerTrap(div.element, this.pointerThresold);
-                                                                      div.element.oncatch = (trap, event) => {
-                                                                        event.preventDefault();
-                                                                        div.element.scrollTop -= trap.deltaY;
-                                                                      }
+                                                                      // new PointerTrap(div.element, this.pointerThresold);
+                                                                      // div.element.oncatch = (trap, event) => {
+                                                                      //   event.preventDefault();
+                                                                      //   div.element.scrollTop -= trap.deltaY;
+                                                                      // }
                                                                     },
                                                                     update: async ul => {
+                                                                      ul.element.scrollTop = 0;
                                                                       const games = await this.groupGames(story);
                                                                       ul.children = games.map(game => {
                                                                         return {

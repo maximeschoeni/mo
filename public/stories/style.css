@@ -55,6 +55,8 @@ body {
   line-height: 1.2em;
 
 
+  -webkit-tap-highlight-color: transparent;
+
   /* background-color: black; */
 
 
