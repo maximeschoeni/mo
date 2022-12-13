@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Wall</title>
     <link href="style.css" rel="stylesheet">
     <script src="../js/build-v7.7.js"></script>
@@ -9,17 +10,23 @@
     <script src="../js/swipe-v2.js"></script>
     <script src="../js/media-player-v4.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="../js/database.js"></script>
+    <script src="media.js"></script>
+    <script src="tiles.js"></script>
     <script src="wall.js"></script>
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
 
   </head>
   <body>
+
     <div id="container"></div>
+    <!-- <textarea id="ta" style="position:fixed;bottom:0;left:0;z-index:9999999"></textarea> -->
     <script>
+      // var TA = document.getElementById("ta");
 
       var socket = io();
       var wall = new Wall();
+
+
 
       build(wall.build(), document.getElementById("container"));
 
@@ -28,5 +35,6 @@
       });
 
     </script>
+
   </body>
 </html>

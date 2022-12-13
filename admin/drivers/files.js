@@ -353,10 +353,22 @@ exports.files = class {
 
     // const dimensions = sizeOf(ROOT+"/uploads/" + file.name);
 
-    if (size.width && size.width < dimensions.width || size.height && size.height < dimensions.height) {
+    if ((size.width || size.height) || (!size.width || size.width < dimensions.width) && (!size.height || size.height < dimensions.height)) {
 
       const resizedName = path.basename(file.name, extension) + "-" + name + extension;
       const newFileInfo = await sharp(ROOT+"/uploads/" + file.name).resize(size).toFile(ROOT+"/uploads/" + resizedName);
+
+      if (!size.width) {
+
+        size.width = Math.round(size.height*dimensions.width/dimensions.height);
+
+      }
+
+      if (!size.height) {
+
+        size.height = Math.round(size.width*dimensions.height/dimensions.width);
+
+      }
 
       return {
         key: name,
@@ -505,11 +517,11 @@ exports.files = class {
 
         if (dimensionRatio > fileRatio) {
 
-          dimension.height = Number(height);
+          dimension.width = Number(width);
 
         } else {
 
-          dimension.width = Number(width);
+          dimension.height = Number(height);
 
         }
 

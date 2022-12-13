@@ -42,6 +42,19 @@ exports.db = class {
       if (this.data) {
         const content = JSON.stringify(this.data, null, "  ");
         fs.writeFile(ROOT+"/db.json", content);
+
+        // const cleanData = {};
+        //
+        // for (let driver in this.data) {
+        //
+        //   cleanData[driver] = this.data[driver].content.filter(item => !item.trash);
+        //
+        // }
+        //
+        // const cleanContent = JSON.stringify(cleanData);
+        //
+        // await fs.writeFile(ROOT+"/data.js", `const DATA = ${cleanContent};`);
+
       }
     }, 2000);
 
