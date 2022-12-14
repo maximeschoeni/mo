@@ -79,11 +79,11 @@ class Tile {
     this.items = [];
 
     let x = 0;
-    let y = this.margin;
+    let y = this.margin*window.devicePixelRatio;
 
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    const totalHeight = screenHeight-this.margin;
+    const screenWidth = window.innerWidth*window.devicePixelRatio;
+    const screenHeight = window.innerHeight*window.devicePixelRatio;
+    const totalHeight = screenHeight-this.margin*window.devicePixelRatio;
 
 
     let shuffleArray = this.shuffleArray(tiles);
@@ -98,14 +98,14 @@ class Tile {
       row.index = i;
       row.width = 0;
       row.height = ((totalHeight-y)/(this.numRow-i))*(1 + (Math.random()-0.5)*0.5*((this.numRow-i-1)/this.numRow));
-      row.imageHeight = row.height - this.margin*2;
+      row.imageHeight = row.height - this.margin*2*window.devicePixelRatio;
       row.speed = this.speed*row.height;
-      row.y = y + this.margin;
-      row.offsetWidth = this.offsetWidth*row.height;
+      row.y = y + this.margin*window.devicePixelRatio;
+      row.offsetWidth = this.offsetWidth*row.height*window.devicePixelRatio;
 
       const offset = Math.floor(Math.random()*tiles.length);
 
-      while (x < screenWidth + row.offsetWidth) {
+      while (x < screenWidth + row.offsetWidth*window.devicePixelRatio) {
 
         const tile = shuffleArray[imageIndex];
         imageIndex++;
@@ -115,14 +115,14 @@ class Tile {
         }
 
         const imageWidth = (row.imageHeight/tile.height)*tile.width;
-        const width = imageWidth+this.margin*2;
+        const width = imageWidth+this.margin*2*window.devicePixelRatio;
 
         const item = {
           image: tile,
           tile: tile,
           width: width,
           imageWidth: imageWidth,
-          x: x + this.margin,
+          x: x + this.margin*window.devicePixelRatio,
           row: row,
           canvas: tile.createCanvas(width, row.imageHeight)
         };

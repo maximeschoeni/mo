@@ -80,7 +80,7 @@ class Wall {
 
       await media.loadFile();
 
-      this.loadInfo = `loading medias... (${(100*i/fileIds.length).toFixed()}%)`;
+      this.loadInfo = `loading medias... (${(100*(i+1)/fileIds.length).toFixed()}%)`;
       await this.render();
 
       this.medias.push(media);
@@ -106,7 +106,7 @@ class Wall {
 
       tiles.push(tile);
 
-      this.loadInfo = `loading tiles... (${(100*j/tileFiles.length).toFixed()}%)`;
+      this.loadInfo = `loading tiles... (${(100*(j+1)/tileFiles.length).toFixed()}%)`;
       await this.render();
 
     }
@@ -143,7 +143,7 @@ class Wall {
     }
 
     const transition = 8;
-    const force = 12*window.innerHeight;
+    const force = 12*window.innerHeight*window.devicePixelRatio;
 
     let gX = (item.x-item.currentX)/transition;
     let gY = (item.row.y-item.currentY)/transition;
@@ -369,6 +369,7 @@ class Wall {
               wall.children = [
                 {
                   tag: "canvas",
+                  class: "tiles",
                   init: wall => {
                     const onFrame = () => {
                       wall.render();
@@ -380,8 +381,8 @@ class Wall {
 
                     const canvas = wall.element;
 
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
+                    canvas.width = window.innerWidth*window.devicePixelRatio;
+                    canvas.height = window.innerHeight*window.devicePixelRatio;
 
                     const ctx = canvas.getContext("2d");
 

@@ -110,7 +110,7 @@ class Screen {
       const media = new Media(file);
       this.mediaLibrary[fileId] = media;
       await media.loadFile();
-      this.loadInfo = `loading images... (${(100*i/fileIds.length).toFixed()}%)`;
+      this.loadInfo = `loading images... (${(100*(i+1)/fileIds.length).toFixed()}%)`;
       await this.render();
     }
 

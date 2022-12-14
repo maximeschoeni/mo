@@ -108,7 +108,13 @@ figure {
   position: relative;
   overflow: hidden;
 }
-.wall .background {
+
+.wall canvas.tiles {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* .wall .background {
   position: absolute;
   width: 100vw;
   height: 100vh;
@@ -118,7 +124,7 @@ figure {
 .wall .background .thumb {
   display: block;
   position: absolute;
-}
+} */
 
 .wall .popups {
   /* position: absolute;
