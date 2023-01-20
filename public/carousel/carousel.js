@@ -694,7 +694,7 @@ class Screen {
                                         child: {
                                           tag: "span",
                                           update: span => {
-                                            span.element.innerHTML = this.language === "en" ? "English" : "Français";
+                                            span.element.innerHTML = this.language === "en" ? "Français" : "English";
                                           }
                                         }
                                       },
@@ -747,7 +747,7 @@ class Screen {
                                         child: {
                                           tag: "h1",
                                           update: title => {
-                                            title.element.innerHTML = this.currentItem["jeux"+this.getSuffix()];
+                                            title.element.innerHTML = this.currentItem["jeux"+this.getSuffix()] || this.currentItem.jeux || "";
                                           }
                                         }
                                       },
@@ -777,7 +777,7 @@ class Screen {
                                                           update: text => {
                                                             const mediaImageId = media.image && media.image[0] || "";
                                                             const key = `text${this.getSuffix()}`;
-                                                            text.element.innerHTML = media[key];
+                                                            text.element.innerHTML = media[key] || media.text || "";
                                                             if (mediaImageId === this.currentMedia.id && text.element.offsetTop !== content.element.scrollTop) {
                                                               // content.element.scrollTo(0, text.element.offsetTop);
                                                               TinyAnimate.animate(content.element.scrollTop, text.element.offsetTop, 200, value => {
@@ -793,7 +793,7 @@ class Screen {
                                                 {
                                                   class: "text",
                                                   update: content => {
-                                                    content.element.innerHTML = this.currentItem["note"+this.getSuffix()];
+                                                    content.element.innerHTML = this.currentItem["note"+this.getSuffix()] || this.currentItem.note || "";
                                                   }
                                                 },
                                                 {
